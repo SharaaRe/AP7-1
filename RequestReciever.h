@@ -1,6 +1,8 @@
 #ifndef REQUEST_RECIEVER
 #define REQUEST_RECIEVER
 
+class Request;
+
 #include <string>
 #include <vector>
 
@@ -9,7 +11,7 @@
 class RequestReciever 
 {
 public:
-    void read_request();
+    Request recieve_request();
 
 private:
     std::string request_line;
@@ -17,6 +19,6 @@ private:
     void control_format(std::vector<std::string> request_tokens);
     bool check_valid_token(std::string token, std::vector <std::string> valid_tokens);
 
-}
+};
 
 #endif
