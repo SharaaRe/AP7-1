@@ -2,7 +2,7 @@
 
 using namespace std;
 
-bool Utils::is_in_string(char character, string checkString)
+ bool Utils::is_in_string(char character, string checkString)
 {
     for (int i = 0; i < checkString.length(); i++)
         if (character == checkString[i])
@@ -10,7 +10,7 @@ bool Utils::is_in_string(char character, string checkString)
     return false;
 }
 
-int find(string word, vector <string> line)
+int Utils::find(string word, vector <string> line)
 {
     for (int i = 0; i < line.size(); i++)
     {
@@ -21,7 +21,7 @@ int find(string word, vector <string> line)
 }
 
 
-vector <string> Utils::split_line(string line, string delimiters)
+ vector <string> Utils::split_line(string line, string delimiters)
 {
     // string delimiters = "   ";
     vector <string>  tokens;
