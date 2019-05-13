@@ -43,3 +43,20 @@ vector <string> Utils::split_line(string line, string delimiters)
     return tokens;  
 }
 
+vector <string> Utils::merge_tokens(int from, int to, vector <string> words)
+{
+    string merged = words[from];
+    for (int i = from + 1; i <= to; i++)
+    {
+        merged += words[i];
+    }
+
+    words[from] = merged;
+    for (int i = from + 1; i <= to; i++)
+    {
+        words.erase(words.begin() + i);
+    }
+
+    return words;
+}
+

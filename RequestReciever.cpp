@@ -1,15 +1,17 @@
 #include <iostream>
 
+#include "Request.h"
+
 #include "RequestReciever.h"
 
 #include "Exceptions.h"
 
 #include "Utils.h"
 
-#define GET "GET"
-#define PUT "PUT"
-#define DELETE "DELETE"
-#define POST "POST"
+#define GET_ "GET"
+#define PUT_ "PUT"
+#define DELETE_ "DELETE"
+#define POST_ "POST"
 
 #define SIGN_UP "signup"
 #define LOGIN "login"
@@ -34,6 +36,8 @@ Request RequestReciever::recieve_request()
 
     vector <string> tokens = parse_request();
     control_format(tokens);
+
+    return Request(tokens);
     
 }
 
@@ -48,8 +52,12 @@ vector <string> RequestReciever::parse_request()
     string delimiters = "   ";
     vector <string> tokens = Utils::split_line(request_line, delimiters);
     int operator_index = Utils::find("?", tokens);
+    int to;
     if (operator_index!= NOT_FOUND)
-        tokens = Utils::merge_tokens(1, operator_index - 1, tokens);
+        to = operator_index - 1;
+    else
+        to = tokens.size() - 1;
+    tokens = Utils::merge_tokens(1, to, tokens);
 }
 
 
@@ -62,7 +70,7 @@ vector <string> RequestReciever::parse_request()
 void RequestReciever::control_format(vector <string> tokens)
 {
 
-    vector <string> standard_methods = {GET, PUT, POST, DELETE};
+    vector <string> standard_methods = {GET_, PUT_, POST_, DELETE_};
     vector <string> standard_urls = {SIGN_UP, FILMS, PUBLISHED, REPLIES, 
             COMMENTS, FOLLOWERS, MONEY, BUY, RATE, PURCHASED};
 
@@ -74,8 +82,6 @@ void RequestReciever::control_format(vector <string> tokens)
         throw new NotFound();
 
     
-
-
 }
 
 
