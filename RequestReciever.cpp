@@ -46,9 +46,10 @@ Request RequestReciever::recieve_request()
 vector <string> RequestReciever::parse_request()
 {
     string delimiters = "   ";
-    Utils util();
-    vector <string> tokens = util.split_line(request_line, delimiters);
-    int operator_index = util.find()
+    vector <string> tokens = Utils::split_line(request_line, delimiters);
+    int operator_index = Utils::find("?", tokens);
+    if (operator_index!= NOT_FOUND)
+        tokens = Utils::merge_tokens(1, operator_index - 1, tokens);
 }
 
 
@@ -62,11 +63,9 @@ void RequestReciever::control_format(vector <string> tokens)
 {
 
     vector <string> standard_methods = {GET, PUT, POST, DELETE};
-    vector <string> standard_urls = {#define SIGN_UP, FILMS, PUBLISHED, REPLIES, 
+    vector <string> standard_urls = {SIGN_UP, FILMS, PUBLISHED, REPLIES, 
             COMMENTS, FOLLOWERS, MONEY, BUY, RATE, PURCHASED};
 
-    int seprator_index = find(_operator, raw_request);
-        
 
     if (!valid_token(tokens[0], standard_methods))
         throw new BadRequest();
@@ -80,11 +79,11 @@ void RequestReciever::control_format(vector <string> tokens)
 }
 
 
-bool RequestReciever::valid_token(std::string token, std::vector <std::string> valid_tokens)
+bool RequestReciever::valid_token(string token, vector <string> valid_tokens)
 {
     for (int i = 0; i < valid_tokens.size(); i++)
     {
-        if (tokens[0] == valid_tokens[i])
+        if (token == valid_tokens[i])
             return true;
     }
     return false;
