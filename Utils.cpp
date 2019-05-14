@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "Utils.h"
 
 using namespace std;
@@ -33,6 +35,7 @@ int Utils::find(string word, vector <string> line)
             if (length > 0)
                 tokens.push_back(line.substr(start, length));
 
+
             start = i+1;
             length = 0;
         } 
@@ -40,6 +43,8 @@ int Utils::find(string word, vector <string> line)
             length++;
     }
     tokens.push_back(line.substr(start, length));
+
+
     return tokens;  
 }
 
