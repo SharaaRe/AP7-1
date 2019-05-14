@@ -35,10 +35,12 @@ Request RequestReciever::recieve_request()
     getline(cin, request_line);
 
     vector <string> tokens = parse_request();
-    control_format(tokens);
 
+    control_format(tokens);
+    
     return Request(tokens);
     
+
 }
 
 
@@ -52,12 +54,16 @@ vector <string> RequestReciever::parse_request()
     string delimiters = "   ";
     vector <string> tokens = Utils::split_line(request_line, delimiters);
     int operator_index = Utils::find("?", tokens);
+
     int to;
     if (operator_index!= NOT_FOUND)
         to = operator_index - 1;
     else
         to = tokens.size() - 1;
     tokens = Utils::merge_tokens(1, to, tokens);
+
+
+    return tokens;
 }
 
 
@@ -76,10 +82,11 @@ void RequestReciever::control_format(vector <string> tokens)
 
 
     if (!valid_token(tokens[0], standard_methods))
-        throw new BadRequest();
+        throw new BadRequest(95);
+
     
     if (!valid_token(tokens[1], standard_urls))
-        throw new NotFound();
+        throw new NotFound(100);
 
     
 }
