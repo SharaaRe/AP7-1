@@ -1,0 +1,1762 @@
+#ifndef CLIENT_H
+#define CLIENT_H
+
+
+#include <string>
+#include <vector>
+
+#include "User.h"
+
+class Film;
+class Publisher;
+class Notification;
+class Comment;
+
+class Client :public User
+{
+public:
+    Client(std::string email, std::string username, std::string password, int age);
+
+    void follow(int following_id);
+    void increase_credit(int amount);
+    void purchase_film(int film_id, int price);
+    virtual int get_type();
+
+protected:
+    static int last_id_created;
+    std::string email;
+    int age;
+    int credit;
+    std::vector <int> purchased;
+    std::vector <int> followings;
+    std::vector <Notification*> notifications;
+
+
+};
+
+
+#endif#ifndef CONTROLLER_H
+#define CONTROLLER_H
+
+#include "Request.h"
+class Response;
+
+class Controller 
+{
+    public:
+        Controller();
+        virtual Response put(Request* request);
+        virtual Response get(Request* request);
+        virtual Response post(Request* request);
+        virtual Response delete_(Request* request);
+    protected:
+        Request* current_request;
+        // virtual void post_required_params();
+        // virtual void post_optional_params();
+        // virtual void put_required_params();
+        // virtual void put_optional_params();        
+        // virtual void get_required_params();
+        // virtual void get_optional_params();
+        // virtual void delete_required_params();
+        // virtual void delete_optional_params();
+};
+
+#endif#ifndef DATABASE_H
+#define DATABASE_H
+
+#include <map>
+#include <string>
+
+class Film;
+class Client;
+class Publisher;
+class User;
+
+class DataBase 
+{
+public:
+    static DataBase* get_instance();
+    void add_client(User* new_client);
+    // void add_publisher(Publisher* new_publisher);
+    void add_film(Film* new_film);
+
+    User* search_client(int id);
+    User* search_client(std::string username);
+    Publisher* search_publisher(int id);
+    Film* search_film(int id);
+
+    bool film_exist(int id);
+    bool publisher_exist(int id);
+    bool client_exist(int id);
+    bool valid_username(std::string username);
+
+    ~DataBase();
+private:
+    std::map <int, Film*> films;
+    std::map <int, User*> clients;
+    std::map <int, Publisher*> publishers;
+    std::map <std::string, int> id;
+    // DataBase
+    static DataBase* instance;
+
+};
+
+#endif#include <exception>
+
+#include <string>
+
+// typedef std::exception Exception;
+
+class Exception :public std::exception
+{
+public:
+    Exception(std::string description);
+    Exception();
+protected:
+    std::string description;
+};
+
+
+class NotFound :public Exception
+{
+public:
+    NotFound(std::string detail);
+    virtual const char* what() const throw();
+private:
+    std::string details;
+};
+
+class BadRequest :public Exception
+{
+public:
+    BadRequest(std::string detail);
+    virtual const char* what() const throw();
+private:
+    std::string details;    
+};
+
+class PermissionDenied :public Exception
+{
+public:
+    PermissionDenied(std::string detail);
+    virtual const char* what() const throw();
+private:
+    std::string details;    
+};#ifndef FILMS_H
+#define FILMS_H
+
+#include <string>
+#include <vector>
+#include <map>
+
+#define NOT_CHANGED "not changed"
+#define VALUE_NOT_CHANGED  -1
+
+class Comment;
+
+class Film
+{
+public:
+    Film(std::string name, int year, int length, int price, std::string summery, std::string director);
+    void add_comment(Comment* new_comment);
+    void reply_comment(int comment_id, std::string reply_content);
+    void delete_comment(int comment_id);
+
+    void set_name(std::string name);
+    std::string get_name();
+    void set_year(int year);
+    int get_year();
+    void set_length(int length);
+    int get_length();
+    void set_summery(std::string summery);
+    std::string get_summemry();
+    void set_director(std::string director);
+    std::string get_director();
+
+    int get_id();
+
+private:
+    static int last_id_created;
+    int id;
+    std::string name;
+    int year;
+    int length; //minutes
+    int price;
+    std::string summery;
+    std::string director;
+
+    std::map <int, Comment*> comments;
+    int last_comment_id;
+    
+
+    float rate;
+};
+
+#endif#ifndef LOGIN_CONTROLLER_H
+#define LOGIN_CONTROLLER_H
+
+#include "Controller.h"
+
+class LoginController :public Controller
+{
+    public:
+        virtual Response post(Request* request);
+    private:
+        virtual void post_required_params() = 0;
+        virtual void post_optional_params() = 0;
+};
+
+#endif/* MD5
+ converted to C++ class by Frank Thilo (thilo@unix-ag.org)
+ for bzflag (http://www.bzflag.org)
+ 
+   based on:
+ 
+   md5.h and md5.c
+   reference implementation of RFC 1321
+ 
+   Copyright (C) 1991-2, RSA Data Security, Inc. Created 1991. All
+rights reserved.
+ 
+License to copy and use this software is granted provided that it
+is identified as the "RSA Data Security, Inc. MD5 Message-Digest
+Algorithm" in all material mentioning or referencing this software
+or this function.
+ 
+License is also granted to make and use derivative works provided
+that such works are identified as "derived from the RSA Data
+Security, Inc. MD5 Message-Digest Algorithm" in all material
+mentioning or referencing the derived work.
+ 
+RSA Data Security, Inc. makes no representations concerning either
+the merchantability of this software or the suitability of this
+software for any particular purpose. It is provided "as is"
+without express or implied warranty of any kind.
+ 
+These notices must be retained in any copies of any part of this
+documentation and/or software.
+ 
+*/
+ 
+#ifndef BZF_MD5_H
+#define BZF_MD5_H
+ 
+#include <cstring>
+#include <iostream>
+ 
+ 
+// a small class for calculating MD5 hashes of strings or byte arrays
+// it is not meant to be fast or secure
+//
+// usage: 1) feed it blocks of uchars with update()
+//      2) finalize()
+//      3) get hexdigest() string
+//      or
+//      MD5(std::string).hexdigest()
+//
+// assumes that char is 8 bit and int is 32 bit
+class MD5
+{
+public:
+  typedef unsigned int size_type; // must be 32bit
+ 
+  MD5();
+  MD5(const std::string& text);
+  void update(const unsigned char *buf, size_type length);
+  void update(const char *buf, size_type length);
+  MD5& finalize();
+  std::string hexdigest() const;
+  friend std::ostream& operator<<(std::ostream&, MD5 md5);
+ 
+private:
+  void init();
+  typedef unsigned char uint1; //  8bit
+  typedef unsigned int uint4;  // 32bit
+  enum {blocksize = 64}; // VC6 won't eat a const static int here
+ 
+  void transform(const uint1 block[blocksize]);
+  static void decode(uint4 output[], const uint1 input[], size_type len);
+  static void encode(uint1 output[], const uint4 input[], size_type len);
+ 
+  bool finalized;
+  uint1 buffer[blocksize]; // bytes that didn't fit in last 64 byte chunk
+  uint4 count[2];   // 64bit counter for number of bits (lo, hi)
+  uint4 state[4];   // digest so far
+  uint1 digest[16]; // the result
+ 
+  // low level logic operations
+  static inline uint4 F(uint4 x, uint4 y, uint4 z);
+  static inline uint4 G(uint4 x, uint4 y, uint4 z);
+  static inline uint4 H(uint4 x, uint4 y, uint4 z);
+  static inline uint4 I(uint4 x, uint4 y, uint4 z);
+  static inline uint4 rotate_left(uint4 x, int n);
+  static inline void FF(uint4 &a, uint4 b, uint4 c, uint4 d, uint4 x, uint4 s, uint4 ac);
+  static inline void GG(uint4 &a, uint4 b, uint4 c, uint4 d, uint4 x, uint4 s, uint4 ac);
+  static inline void HH(uint4 &a, uint4 b, uint4 c, uint4 d, uint4 x, uint4 s, uint4 ac);
+  static inline void II(uint4 &a, uint4 b, uint4 c, uint4 d, uint4 x, uint4 s, uint4 ac);
+};
+ 
+std::string md5(const std::string str);
+ 
+#endif
+#ifndef PUBLISHER_H
+#define PUBLISHER_H
+
+#include "Client.h"
+
+#include <map>
+
+class Film;
+
+class Publisher: public Client
+{
+public:
+    Publisher(std::string email, std::string username, std::string password, int age);
+    bool valid_login_data(std::string user, std::string password);
+    virtual void add_film(Film* film);
+    virtual void delete_film(int film_id);
+    virtual bool film_is_published_by_user(int film_id);
+    virtual std::vector <std::string> get_followers();
+    virtual void reply_comment(int film_id, int comment_id);
+protected:
+    std::map <int, Film*> published;
+    std::vector <std::string> followers; //keep users ids;
+};
+
+#endif#ifndef REQUEST_H
+#define REQUEST_H
+
+#include <string>
+#include <vector>
+#include <map>
+
+enum METHODS {GET, PUT, POST, DELETE};
+
+#define GET_ "GET"
+#define PUT_ "PUT"
+#define DELETE_ "DELETE"
+#define POST_ "POST"
+
+#define SIGN_UP "signup"
+#define LOGIN "login"
+#define FILMS "films"
+#define PUBLISHED "published"
+#define REPLIES "replies"
+#define COMMENTS "comments"
+#define FOLLOWERS "followers"
+#define MONEY "money"
+#define BUY "buy"
+#define RATE "rate"
+#define PURCHASED "purchased"
+#define NOTIFICATION "notification read"
+
+class Request
+{
+public:
+    Request(std::vector<std::string>);
+    void print_request(); //this should be deleted
+    std::string get_request_param(std::string);
+    int get_method();
+    std::string get_url();
+private:
+    int method;
+    std::string url;
+    std::map <std::string, std::string> parameters;
+};
+
+
+#endif#ifndef REQUEST_RECIEVER
+#define REQUEST_RECIEVER
+
+class Request;
+
+#include <string>
+#include <vector>
+
+#include "Request.h"
+
+class RequestReciever 
+{
+public:
+    Request recieve_request();
+
+private:
+    std::string request_line;
+    std::vector <std::string> parse_request();
+    void control_format(std::vector<std::string> request_tokens);
+    bool check_valid_token(std::string token, std::vector <std::string> valid_tokens);
+    bool valid_token(std::string token, std::vector <std::string> valid_tokens);
+
+};
+
+#endif#ifndef RESPONSE_H
+#define RESPONSE_H
+
+#include <string>
+
+enum res_type{SUCCESSFUL, ERROR};
+#define OK "OK"
+
+class Response
+{
+public:
+    Response(int type, std::string content);
+    friend std::ostream& operator<<(std::ostream&, const Response& respones);
+protected:
+    int type;
+    std::string content;
+};
+
+#endif#ifndef SIGNUP_CONTROLLER_H
+#define SIGNUP_CONTROLLER_H
+
+#include "Controller.h"
+
+class SignupController: public Controller
+{
+public:
+    virtual Response post(Request* req);
+protected:
+    std::string username;
+    std::string password;
+    std::string email;
+    int age;
+    void post_required_params();
+    bool is_publisher();
+
+};
+
+
+#endif#ifndef USER_H
+#define USER_H
+
+
+#include <string>
+#include <vector>
+
+enum UserType {ADMIN, CLIENT, USER};
+
+
+class User
+{
+public:
+    User(std::string username, std::string password);
+    bool valid_login(std::string username, std::string password);
+
+    std::string get_username();
+    int get_id();
+    virtual int get_type();
+
+protected:
+    // static int type;
+    int id;
+    std::string email;
+    std::string username;
+    std::string password;
+};
+
+
+#endif#ifndef USER_SERVICE_H
+#define USER_SERVICE_H
+
+#define USERNAME "username"
+#define PASSWORD "password"
+#define EMAIL "email"
+#define AGE "age"
+#define PUBLISHER "publisher"
+
+#include "Request.h"
+
+class Response;
+class DataBase;
+
+class   UserService
+{
+public:
+    UserService();
+    Response signup(std::string email, std::string username, std::string password, int age, bool publisher);
+    Response login(std::string username, std::string password);
+    Response follow(std::string following);
+    Response get_followers();
+private:
+    DataBase* database;
+
+};
+
+#endif#ifndef SESSION_MANAGEMENT_H
+#define SESSION_MANAGEMENT_H
+
+class User;
+
+class UserSessionManagement 
+{
+public:
+    static UserSessionManagement* get_instance();
+    void set_logged_user(User* logged_user);
+    bool is_publisher();
+    bool is_admin();
+private:
+    UserSessionManagement();
+    static UserSessionManagement* instance;
+    User* logged_user;
+};
+
+#endif#ifndef UT_FLIX_H
+#define UT_FLIX_H
+
+#include <string>
+
+class DataBase;
+class Controller;
+class RequestReciever;
+
+class UtFlix 
+{
+public:
+    UtFlix* get_instance();
+    ~UtFlix();
+private:
+    UtFlix();
+    static UtFlix* instance;
+    DataBase* database;
+    RequsetReciever* interface;
+    Controller* controler;
+    std::string logged_in_username;
+
+};
+
+
+#endif#ifndef UTILS_H
+#define UTILS_H
+
+#include <string>
+#include <vector>
+
+#define NOT_FOUND -1
+
+class Utils 
+{
+public:
+    Utils() {};
+    static int find(std::string word, std::vector <std::string> sentence);
+    static std::vector <std::string> merge_tokens(int from, int to, std::vector <std::string> words);
+    static std::vector <std::string> split_line(std::string line, std::string delimiters);
+    static bool is_in_string(char character, std::string checkString);
+    static bool is_valid_email(std::string email);
+    static bool is_valid_number(std::string number);
+// private:
+    // int something_alaki;
+
+};
+
+#endif#include "Client.h"
+
+#include "Exceptions.h"
+
+using namespace std;
+
+int Client::last_id_created = 0;
+
+Client::Client(string _email, string _username, string _password, int _age)
+    :User(_username, _password), email(_email), age(_age)
+{
+    last_id_created++;
+    id = last_id_created;
+}
+
+
+void Client::follow(int following_id)
+{
+    followings.push_back(following_id);
+}
+
+void Client::increase_credit(int amount)
+{
+    credit += amount;
+}
+
+void Client::purchase_film(int film_id, int price)
+{
+    if (credit < price);
+        // throw some exception
+    credit -= price;
+    purchased.push_back(film_id);
+}
+
+int Client::get_type()
+{
+    return CLIENT;
+}
+
+
+#include "Controller.h"
+
+#include "Response.h"
+#include "Exceptions.h"
+
+Controller::Controller()
+{}
+
+Response Controller::put(Request* request)
+{
+    return Response(ERROR, BadRequest("not matching method and url").what());
+}
+
+Response Controller::get(Request* request)
+{
+    return Response(ERROR, BadRequest("not matching method and url").what());
+}
+
+Response Controller::post(Request* request)
+{
+    return Response(ERROR, BadRequest("not matching method and url").what());
+}
+
+Response Controller::delete_(Request* request)
+{
+    return Response(ERROR, BadRequest("not matching method and url").what());
+}#include "DataBase.h"
+#include "User.h"
+
+#include <Exceptions.h>
+
+using namespace std;
+
+DataBase* DataBase::instance = nullptr;
+
+DataBase* DataBase::get_instance()
+{
+    if (instance == nullptr)
+        instance = new DataBase();
+    return instance;
+}
+
+DataBase::~DataBase()
+{
+    for (map <int, User*> ::iterator it = clients.begin() ; it != clients.end(); it++)
+        delete it->second;
+}
+
+
+void DataBase::add_client(User* new_user)
+{
+    clients.insert(pair <int, User*> (new_user->get_id(), new_user));
+
+    if (id.find(new_user->get_username()) == id.end())
+        id.insert(pair<string, int> (new_user->get_username(), new_user->get_id()));
+}
+
+User* DataBase::search_client(int id)
+{
+    if (clients.find(id) != clients.end())
+        return clients[id];
+    
+    else
+        throw new NotFound("not found in database");
+}
+
+User* DataBase::search_client(std::string username)
+{
+    if(id.find(username) != id.end())
+        return search_client(id[username]);
+}
+
+Publisher* DataBase::search_publisher(int id)
+{
+    if (publishers.find(id) != publishers.end())
+        return publishers[id];
+    else 
+        throw new NotFound("publisher not found in database");
+}
+
+Film* DataBase::search_film(int film_id)
+{
+    if (films.find(film_id) != films.end())
+        return films[film_id];
+    else 
+        throw new NotFound("film not found in data base");
+}
+
+bool DataBase::film_exist(int id)
+{
+    return films.find(id) != films.end();
+}
+
+bool DataBase::client_exist(int id)
+{
+    return clients.find(id) != clients.end();
+}
+
+bool DataBase::publisher_exist(int id)
+{
+    return publishers.find(id) != publishers.end();
+}
+
+bool DataBase::valid_username(string username)
+{
+    return id.find(username) == id.end();
+}
+//entities must add toghether or one by one
+
+
+
+#include <string>
+
+#include "Exceptions.h"
+
+using namespace std;
+
+const char* BadRequest::what() const throw()
+{
+    string response = "Bad Request";
+    response += "  details:  " + details;
+    return response.c_str();
+
+}
+
+BadRequest::BadRequest(std::string _detail)
+    :exception(), details(_detail)
+{}
+
+const char* NotFound::what() const throw()
+{
+    string response = "Not Found";
+    response += "  details:  " + details;
+    return response.c_str();
+}
+
+NotFound::NotFound(std::string _detail)
+    :exception(), details(_detail)
+{}
+
+const char* PermissionDenied::what() const throw()
+{
+    string response = "Permission Denied";
+    response += "  details:  " + details;
+    return response.c_str();
+}
+
+PermissionDenied::PermissionDenied(std::string _detail)
+    :exception(), details(_detail)
+{}#include "Film.h"
+
+#include "Exceptions.h"
+
+using namespace std;
+
+int Film::last_id_created = 0;
+
+Film::Film(string _name, int _year, int _length, int _price, string _summery, string _director)
+    : name(name), year(_year), length(_length), summery(_summery), director(_director)
+{
+    last_id_created++;
+    id = last_id_created;
+    last_comment_id = 0;
+    rate = 0;
+}
+
+void Film::add_comment(Comment* new_comment)
+{
+    last_comment_id++;
+    comments[id] = new_comment;
+}
+
+
+void Film::reply_comment(int comment_id, string reply_content)
+{
+    if(comments.find(comment_id) == comments.end())
+        throw new NotFound("comment id not found");
+    else    ;
+        //comment should have reply here, complete it later
+}
+
+void Film::delete_comment(int comment_id)
+{
+    if(comments.find(comment_id) == comments.end())
+        throw new NotFound("comment id not found");
+    else
+        comments.erase(comment_id); 
+}
+
+
+void Film::set_name(string _name)
+{
+    name = _name;
+}
+
+string Film::get_name()
+{
+    return name;
+}
+
+void Film::set_year(int _year)
+{
+    year = _year;
+}
+
+int Film::get_year()
+{
+    return year;
+}
+
+void Film::set_year(int _year)
+{
+    year = _year;
+}
+
+int Film::get_year()
+{
+    return year;
+}
+
+void Film::set_summery(string _summery)
+{
+    summery = _summery;
+}
+
+string Film::get_summemry()
+{
+    return summery;
+}
+
+void Film::set_director(string _director)
+{
+    director = _director;
+}
+
+string Film::get_director()
+{
+    return director;
+}
+
+int Film::get_id()
+{
+    return id;
+}
+
+
+
+
+
+
+#include "LoginController.h"
+
+#include "Response.h"
+#include "Request.h"
+#include "Utils.h"
+#include "Exceptions.h"
+#include "UserService.h"
+#include "UserService.h"
+#include "md5.h"
+
+
+Response LoginController::post(Request* req)
+{
+    current_request = req;
+    try
+    {
+        post_required_params();
+        post_optional_params();
+        return UserService().login(req->get_request_param(USERNAME),
+                md5(req->get_request_param(PASSWORD)));
+    }
+    catch(Exception* er)
+    {
+        return Response(ERROR, er->what());
+    }
+}
+
+void LoginController::post_required_params()
+{
+    try
+    {
+        // if (Utils::is_valid_email(current_request->get_request_param("email")))
+        //     throw new BadRequest("email is not valid"); copy this to signup controller
+        current_request->get_request_param(USERNAME);
+        current_request->get_request_param(PASSWORD);
+
+    }
+    catch(NotFound* er)
+    {
+        delete er;
+        throw new BadRequest("a parameter has not found");
+    }
+}#include <iostream>
+
+
+#include "RequestReciever.h"
+#include "Request.h"
+
+using namespace std;
+
+int main()
+{
+    try
+    {
+        Request my_request = RequestReciever().recieve_request();
+        my_request.print_request();
+        return 0;
+    }
+    catch(std::exception* er)
+    {
+        cout<< er->what() << endl;
+    }
+}   /* MD5
+ converted to C++ class by Frank Thilo (thilo@unix-ag.org)
+ for bzflag (http://www.bzflag.org)
+ 
+   based on:
+ 
+   md5.h and md5.c
+   reference implemantion of RFC 1321
+ 
+   Copyright (C) 1991-2, RSA Data Security, Inc. Created 1991. All
+rights reserved.
+ 
+License to copy and use this software is granted provided that it
+is identified as the "RSA Data Security, Inc. MD5 Message-Digest
+Algorithm" in all material mentioning or referencing this software
+or this function.
+ 
+License is also granted to make and use derivative works provided
+that such works are identified as "derived from the RSA Data
+Security, Inc. MD5 Message-Digest Algorithm" in all material
+mentioning or referencing the derived work.
+ 
+RSA Data Security, Inc. makes no representations concerning either
+the merchantability of this software or the suitability of this
+software for any particular purpose. It is provided "as is"
+without express or implied warranty of any kind.
+ 
+These notices must be retained in any copies of any part of this
+documentation and/or software.
+ 
+*/
+ 
+/* interface header */
+#include "md5.h"
+ 
+/* system implementation headers */
+#include <cstdio>
+ 
+ 
+// Constants for MD5Transform routine.
+#define S11 7
+#define S12 12
+#define S13 17
+#define S14 22
+#define S21 5
+#define S22 9
+#define S23 14
+#define S24 20
+#define S31 4
+#define S32 11
+#define S33 16
+#define S34 23
+#define S41 6
+#define S42 10
+#define S43 15
+#define S44 21
+ 
+///////////////////////////////////////////////
+ 
+// F, G, H and I are basic MD5 functions.
+inline MD5::uint4 MD5::F(uint4 x, uint4 y, uint4 z) {
+  return x&y | ~x&z;
+}
+ 
+inline MD5::uint4 MD5::G(uint4 x, uint4 y, uint4 z) {
+  return x&z | y&~z;
+}
+ 
+inline MD5::uint4 MD5::H(uint4 x, uint4 y, uint4 z) {
+  return x^y^z;
+}
+ 
+inline MD5::uint4 MD5::I(uint4 x, uint4 y, uint4 z) {
+  return y ^ (x | ~z);
+}
+ 
+// rotate_left rotates x left n bits.
+inline MD5::uint4 MD5::rotate_left(uint4 x, int n) {
+  return (x << n) | (x >> (32-n));
+}
+ 
+// FF, GG, HH, and II transformations for rounds 1, 2, 3, and 4.
+// Rotation is separate from addition to prevent recomputation.
+inline void MD5::FF(uint4 &a, uint4 b, uint4 c, uint4 d, uint4 x, uint4 s, uint4 ac) {
+  a = rotate_left(a+ F(b,c,d) + x + ac, s) + b;
+}
+ 
+inline void MD5::GG(uint4 &a, uint4 b, uint4 c, uint4 d, uint4 x, uint4 s, uint4 ac) {
+  a = rotate_left(a + G(b,c,d) + x + ac, s) + b;
+}
+ 
+inline void MD5::HH(uint4 &a, uint4 b, uint4 c, uint4 d, uint4 x, uint4 s, uint4 ac) {
+  a = rotate_left(a + H(b,c,d) + x + ac, s) + b;
+}
+ 
+inline void MD5::II(uint4 &a, uint4 b, uint4 c, uint4 d, uint4 x, uint4 s, uint4 ac) {
+  a = rotate_left(a + I(b,c,d) + x + ac, s) + b;
+}
+ 
+//////////////////////////////////////////////
+ 
+// default ctor, just initailize
+MD5::MD5()
+{
+  init();
+}
+ 
+//////////////////////////////////////////////
+ 
+// nifty shortcut ctor, compute MD5 for string and finalize it right away
+MD5::MD5(const std::string &text)
+{
+  init();
+  update(text.c_str(), text.length());
+  finalize();
+}
+ 
+//////////////////////////////
+ 
+void MD5::init()
+{
+  finalized=false;
+ 
+  count[0] = 0;
+  count[1] = 0;
+ 
+  // load magic initialization constants.
+  state[0] = 0x67452301;
+  state[1] = 0xefcdab89;
+  state[2] = 0x98badcfe;
+  state[3] = 0x10325476;
+}
+ 
+//////////////////////////////
+ 
+// decodes input (unsigned char) into output (uint4). Assumes len is a multiple of 4.
+void MD5::decode(uint4 output[], const uint1 input[], size_type len)
+{
+  for (unsigned int i = 0, j = 0; j < len; i++, j += 4)
+    output[i] = ((uint4)input[j]) | (((uint4)input[j+1]) << 8) |
+      (((uint4)input[j+2]) << 16) | (((uint4)input[j+3]) << 24);
+}
+ 
+//////////////////////////////
+ 
+// encodes input (uint4) into output (unsigned char). Assumes len is
+// a multiple of 4.
+void MD5::encode(uint1 output[], const uint4 input[], size_type len)
+{
+  for (size_type i = 0, j = 0; j < len; i++, j += 4) {
+    output[j] = input[i] & 0xff;
+    output[j+1] = (input[i] >> 8) & 0xff;
+    output[j+2] = (input[i] >> 16) & 0xff;
+    output[j+3] = (input[i] >> 24) & 0xff;
+  }
+}
+ 
+//////////////////////////////
+ 
+// apply MD5 algo on a block
+void MD5::transform(const uint1 block[blocksize])
+{
+  uint4 a = state[0], b = state[1], c = state[2], d = state[3], x[16];
+  decode (x, block, blocksize);
+ 
+  /* Round 1 */
+  FF (a, b, c, d, x[ 0], S11, 0xd76aa478); /* 1 */
+  FF (d, a, b, c, x[ 1], S12, 0xe8c7b756); /* 2 */
+  FF (c, d, a, b, x[ 2], S13, 0x242070db); /* 3 */
+  FF (b, c, d, a, x[ 3], S14, 0xc1bdceee); /* 4 */
+  FF (a, b, c, d, x[ 4], S11, 0xf57c0faf); /* 5 */
+  FF (d, a, b, c, x[ 5], S12, 0x4787c62a); /* 6 */
+  FF (c, d, a, b, x[ 6], S13, 0xa8304613); /* 7 */
+  FF (b, c, d, a, x[ 7], S14, 0xfd469501); /* 8 */
+  FF (a, b, c, d, x[ 8], S11, 0x698098d8); /* 9 */
+  FF (d, a, b, c, x[ 9], S12, 0x8b44f7af); /* 10 */
+  FF (c, d, a, b, x[10], S13, 0xffff5bb1); /* 11 */
+  FF (b, c, d, a, x[11], S14, 0x895cd7be); /* 12 */
+  FF (a, b, c, d, x[12], S11, 0x6b901122); /* 13 */
+  FF (d, a, b, c, x[13], S12, 0xfd987193); /* 14 */
+  FF (c, d, a, b, x[14], S13, 0xa679438e); /* 15 */
+  FF (b, c, d, a, x[15], S14, 0x49b40821); /* 16 */
+ 
+  /* Round 2 */
+  GG (a, b, c, d, x[ 1], S21, 0xf61e2562); /* 17 */
+  GG (d, a, b, c, x[ 6], S22, 0xc040b340); /* 18 */
+  GG (c, d, a, b, x[11], S23, 0x265e5a51); /* 19 */
+  GG (b, c, d, a, x[ 0], S24, 0xe9b6c7aa); /* 20 */
+  GG (a, b, c, d, x[ 5], S21, 0xd62f105d); /* 21 */
+  GG (d, a, b, c, x[10], S22,  0x2441453); /* 22 */
+  GG (c, d, a, b, x[15], S23, 0xd8a1e681); /* 23 */
+  GG (b, c, d, a, x[ 4], S24, 0xe7d3fbc8); /* 24 */
+  GG (a, b, c, d, x[ 9], S21, 0x21e1cde6); /* 25 */
+  GG (d, a, b, c, x[14], S22, 0xc33707d6); /* 26 */
+  GG (c, d, a, b, x[ 3], S23, 0xf4d50d87); /* 27 */
+  GG (b, c, d, a, x[ 8], S24, 0x455a14ed); /* 28 */
+  GG (a, b, c, d, x[13], S21, 0xa9e3e905); /* 29 */
+  GG (d, a, b, c, x[ 2], S22, 0xfcefa3f8); /* 30 */
+  GG (c, d, a, b, x[ 7], S23, 0x676f02d9); /* 31 */
+  GG (b, c, d, a, x[12], S24, 0x8d2a4c8a); /* 32 */
+ 
+  /* Round 3 */
+  HH (a, b, c, d, x[ 5], S31, 0xfffa3942); /* 33 */
+  HH (d, a, b, c, x[ 8], S32, 0x8771f681); /* 34 */
+  HH (c, d, a, b, x[11], S33, 0x6d9d6122); /* 35 */
+  HH (b, c, d, a, x[14], S34, 0xfde5380c); /* 36 */
+  HH (a, b, c, d, x[ 1], S31, 0xa4beea44); /* 37 */
+  HH (d, a, b, c, x[ 4], S32, 0x4bdecfa9); /* 38 */
+  HH (c, d, a, b, x[ 7], S33, 0xf6bb4b60); /* 39 */
+  HH (b, c, d, a, x[10], S34, 0xbebfbc70); /* 40 */
+  HH (a, b, c, d, x[13], S31, 0x289b7ec6); /* 41 */
+  HH (d, a, b, c, x[ 0], S32, 0xeaa127fa); /* 42 */
+  HH (c, d, a, b, x[ 3], S33, 0xd4ef3085); /* 43 */
+  HH (b, c, d, a, x[ 6], S34,  0x4881d05); /* 44 */
+  HH (a, b, c, d, x[ 9], S31, 0xd9d4d039); /* 45 */
+  HH (d, a, b, c, x[12], S32, 0xe6db99e5); /* 46 */
+  HH (c, d, a, b, x[15], S33, 0x1fa27cf8); /* 47 */
+  HH (b, c, d, a, x[ 2], S34, 0xc4ac5665); /* 48 */
+ 
+  /* Round 4 */
+  II (a, b, c, d, x[ 0], S41, 0xf4292244); /* 49 */
+  II (d, a, b, c, x[ 7], S42, 0x432aff97); /* 50 */
+  II (c, d, a, b, x[14], S43, 0xab9423a7); /* 51 */
+  II (b, c, d, a, x[ 5], S44, 0xfc93a039); /* 52 */
+  II (a, b, c, d, x[12], S41, 0x655b59c3); /* 53 */
+  II (d, a, b, c, x[ 3], S42, 0x8f0ccc92); /* 54 */
+  II (c, d, a, b, x[10], S43, 0xffeff47d); /* 55 */
+  II (b, c, d, a, x[ 1], S44, 0x85845dd1); /* 56 */
+  II (a, b, c, d, x[ 8], S41, 0x6fa87e4f); /* 57 */
+  II (d, a, b, c, x[15], S42, 0xfe2ce6e0); /* 58 */
+  II (c, d, a, b, x[ 6], S43, 0xa3014314); /* 59 */
+  II (b, c, d, a, x[13], S44, 0x4e0811a1); /* 60 */
+  II (a, b, c, d, x[ 4], S41, 0xf7537e82); /* 61 */
+  II (d, a, b, c, x[11], S42, 0xbd3af235); /* 62 */
+  II (c, d, a, b, x[ 2], S43, 0x2ad7d2bb); /* 63 */
+  II (b, c, d, a, x[ 9], S44, 0xeb86d391); /* 64 */
+ 
+  state[0] += a;
+  state[1] += b;
+  state[2] += c;
+  state[3] += d;
+ 
+  // Zeroize sensitive information.
+  memset(x, 0, sizeof x);
+}
+ 
+//////////////////////////////
+ 
+// MD5 block update operation. Continues an MD5 message-digest
+// operation, processing another message block
+void MD5::update(const unsigned char input[], size_type length)
+{
+  // compute number of bytes mod 64
+  size_type index = count[0] / 8 % blocksize;
+ 
+  // Update number of bits
+  if ((count[0] += (length << 3)) < (length << 3))
+    count[1]++;
+  count[1] += (length >> 29);
+ 
+  // number of bytes we need to fill in buffer
+  size_type firstpart = 64 - index;
+ 
+  size_type i;
+ 
+  // transform as many times as possible.
+  if (length >= firstpart)
+  {
+    // fill buffer first, transform
+    memcpy(&buffer[index], input, firstpart);
+    transform(buffer);
+ 
+    // transform chunks of blocksize (64 bytes)
+    for (i = firstpart; i + blocksize <= length; i += blocksize)
+      transform(&input[i]);
+ 
+    index = 0;
+  }
+  else
+    i = 0;
+ 
+  // buffer remaining input
+  memcpy(&buffer[index], &input[i], length-i);
+}
+ 
+//////////////////////////////
+ 
+// for convenience provide a verson with signed char
+void MD5::update(const char input[], size_type length)
+{
+  update((const unsigned char*)input, length);
+}
+ 
+//////////////////////////////
+ 
+// MD5 finalization. Ends an MD5 message-digest operation, writing the
+// the message digest and zeroizing the context.
+MD5& MD5::finalize()
+{
+  static unsigned char padding[64] = {
+    0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  };
+ 
+  if (!finalized) {
+    // Save number of bits
+    unsigned char bits[8];
+    encode(bits, count, 8);
+ 
+    // pad out to 56 mod 64.
+    size_type index = count[0] / 8 % 64;
+    size_type padLen = (index < 56) ? (56 - index) : (120 - index);
+    update(padding, padLen);
+ 
+    // Append length (before padding)
+    update(bits, 8);
+ 
+    // Store state in digest
+    encode(digest, state, 16);
+ 
+    // Zeroize sensitive information.
+    memset(buffer, 0, sizeof buffer);
+    memset(count, 0, sizeof count);
+ 
+    finalized=true;
+  }
+ 
+  return *this;
+}
+ 
+//////////////////////////////
+ 
+// return hex representation of digest as string
+std::string MD5::hexdigest() const
+{
+  if (!finalized)
+    return "";
+ 
+  char buf[33];
+  for (int i=0; i<16; i++)
+    sprintf(buf+i*2, "%02x", digest[i]);
+  buf[32]=0;
+ 
+  return std::string(buf);
+}
+ 
+//////////////////////////////
+ 
+std::ostream& operator<<(std::ostream& out, MD5 md5)
+{
+  return out << md5.hexdigest();
+}
+ 
+//////////////////////////////
+ 
+std::string md5(const std::string str)
+{
+    MD5 md5 = MD5(str);
+ 
+    return md5.hexdigest();
+}#include "Publisher.h"
+
+#include "Film.h"
+
+#include "Exceptions.h"
+
+using namespace std;
+
+Publisher::Publisher(string email, string username, string password, int age)
+    :Client(email, username, password, age)
+{}
+
+bool Publisher::valid_login_data(string _username, string _password)
+{
+    if (username == _username && password == _password)
+        return true;
+    else   
+        return false;
+}
+
+void Publisher::add_film(Film* new_film)
+{   
+    published.insert(pair<int, Film*> (new_film->get_id(), new_film));
+}
+
+void Publisher:: delete_film(int film_id)
+{
+    if (published.find(film_id) == published.end())
+        throw new PermissionDenied("film id doesn't belong to user");
+    else
+        published.erase(film_id);
+}
+
+bool Publisher::film_is_published_by_user(int film_id)
+{
+    if (published.find(film_id) == published.end())
+        return false;
+    else
+        return true;
+}
+
+
+std::vector <std::string> Publisher::get_followers()
+{
+    return followers;
+}
+
+
+void Publisher:: reply_comment(int film_id, int comment_id)
+{
+
+}
+
+#include <iostream>
+
+#include "Request.h"
+
+#include "Exceptions.h"
+
+
+using namespace std;
+
+
+
+Request::Request(vector <string> raw_request)
+{
+    map <string, int> methods = {{"GET",GET}, {"PUT", PUT}, {"POST",POST}, {"DELETE",DELETE}};
+    string _operator = "?";
+    const int COMPLEX_REQ_SIZE = 5;
+
+    method = methods[raw_request[0]];
+    url = raw_request[1];
+
+
+    if (raw_request.size() >= COMPLEX_REQ_SIZE)
+    {
+        cout << "number of tokens : " << raw_request.size() << endl;
+        if ((raw_request.size() - 3 )% 2 == 1)
+            throw new BadRequest("key and values are not pair");
+        for (int i = COMPLEX_REQ_SIZE - 1; i < raw_request.size(); i+=2)
+        {
+            parameters.insert(pair<string, string>(raw_request[i - 1], raw_request[i]));
+        }
+    }
+
+}
+
+void Request::print_request()
+{
+    cout << "method is  " << method << "  urls is:" << url << endl;
+    for (map <string, string>::iterator it = parameters.begin(); it != parameters.end(); it++)
+    cout << it->first << "   " << it->second << endl;
+}
+
+string Request::get_request_param(string key)
+{
+    string NOT_FOUND = "not found";
+    if (parameters.find(key) != parameters.end())
+        return parameters[key];
+    else
+        throw new NotFound("param doesn't exist");
+}
+
+int Request::get_method()
+{
+    return method;
+}
+
+std::string Request::get_url()
+{
+    return url;
+}#include <iostream>
+
+#include "Request.h"
+
+#include "RequestReciever.h"
+
+#include "Exceptions.h"
+
+#include "Utils.h"
+
+
+
+
+
+using namespace std;
+
+Request RequestReciever::recieve_request()
+{
+    getline(cin, request_line);
+
+    vector <string> tokens = parse_request();
+
+    control_format(tokens);
+    
+    return Request(tokens);
+    
+
+}
+
+
+//these two must be in utils
+
+
+
+
+vector <string> RequestReciever::parse_request()
+{
+    string delimiters = "   ";
+    vector <string> tokens = Utils::split_line(request_line, delimiters);
+    int operator_index = Utils::find("?", tokens);
+
+    int to;
+    if (operator_index!= NOT_FOUND)
+        to = operator_index - 1;
+    else
+        to = tokens.size() - 1;
+    tokens = Utils::merge_tokens(1, to, tokens);
+
+
+    return tokens;
+}
+
+
+
+
+
+
+
+
+void RequestReciever::control_format(vector <string> tokens)
+{
+
+    vector <string> standard_methods = {GET_, PUT_, POST_, DELETE_};
+    vector <string> standard_urls = {SIGN_UP/*, FILMS, PUBLISHED, REPLIES, 
+            COMMENTS, FOLLOWERS, MONEY, BUY, RATE, PURCHASED, NOTIFICATION*/};
+
+
+    if (!valid_token(tokens[0], standard_methods))
+        throw new BadRequest("method is not standard");
+
+    
+    if (!valid_token(tokens[1], standard_urls))
+        throw new NotFound("url is not standard");
+
+    
+}
+
+
+bool RequestReciever::valid_token(string token, vector <string> valid_tokens)
+{
+    for (int i = 0; i < valid_tokens.size(); i++)
+    {
+        if (token == valid_tokens[i])
+            return true;
+    }
+    return false;
+}#include "Response.h"
+
+using namespace std;
+
+Response::Response(int _type, string _content)
+    :type(_type), content(_content)
+{}
+
+
+
+ostream& operator<<(ostream& out, const Response& responese)
+{
+    out << responese.content;
+    return out;
+}#include "SignupController.h"
+
+#include <string>
+
+#include "DataBase.h"
+#include "User.h"
+#include "Client.h";
+#include "Publisher.h"
+#include "Response.h"
+#include "UserService.h"
+#include "Utils.h"
+#include "Exceptions.h"
+#include "md5.h"
+
+#define TRUE "true"
+#define FALSE "fasle"
+
+using namespace std;
+
+Response SignupController::post(Request* req)
+{
+    try
+    {
+        User* new_user;
+        post_required_params();
+        post_required_params();
+        return UserService().signup(email, username, password, age, is_publisher);
+    }
+    catch (Exception& er)
+    {
+        return Response(ERROR, er.what());
+    }
+}
+
+void SignupController::post_required_params()
+{
+    email = current_request->get_request_param(EMAIL);
+    if (! Utils::is_valid_email(email))
+        throw BadRequest("email is not valid");
+
+    username = current_request->get_request_param(USERNAME);
+
+    password = md5(current_request->get_request_param(PASSWORD));
+
+    if (!Utils::is_valid_number(current_request->get_request_param(AGE))
+            && stoi(current_request->get_request_param(AGE)) <= 0)
+        throw BadRequest("age is not valid");
+    else 
+        age = stoi (current_request->get_request_param(AGE));
+}
+
+
+
+
+bool SignupController::is_publisher()
+{
+    constexpr char* NOT_ASSIGNED = "not assigned";
+    string publisher_flag = NOT_ASSIGNED;
+    try
+    {
+        publisher_flag = current_request->get_request_param(PUBLISHER);
+    }
+    catch(Exception& er)
+    {
+        return;
+    }
+    if (publisher_flag != TRUE || publisher_flag != FALSE || publisher_flag != NOT_ASSIGNED)
+            throw BadRequest("value of publisher flag is not valid");
+
+    return publisher_flag == TRUE? true : false;
+}#include "User.h"
+
+using namespace std;
+
+
+User::User(string _username, string _password)
+    :username(_username), password(_password)
+{}
+
+bool User::valid_login(string _username, string _password)
+{
+    return (username == _username && password == _password);
+}
+
+int User::get_id()
+{
+    return id;
+}
+
+std::string User::get_username()
+{
+    return username;
+}
+
+int User::get_type()
+{
+    return ADMIN;
+}
+#include "UserService.h"
+
+#include "Response.h"
+#include "Request.h"
+#include "DataBase.h"
+#include "Client.h"
+#include "Publisher.h"
+#include "md5.h"
+#include "Exceptions.h"
+#include "UserSessionManagement.h"
+
+using namespace std;
+
+UserService::UserService()
+{
+    database = DataBase::get_instance();
+}
+
+Response UserService::signup(std::string email, std::string username, std::string password, int age, bool publisher)
+{
+    try
+    {
+        if(database->valid_username(username))
+        {
+            User* new_client;
+            if (publisher)
+                new_client = new Publisher(email,username, password, age);
+            else
+                new_client = new Client(email,username, password, age);
+
+            database->add_client(new_client);
+            login(username, password);
+            return Response(SUCCESSFUL, OK);
+        }
+        else 
+            throw new BadRequest("username already exists");
+    }
+    catch(Exception& er)
+    {
+        Response res(ERROR, er.what());
+        return res;
+    }
+    
+}
+
+Response UserService::login(string username, string password)
+{
+    try
+    {
+        if (database->search_client(username)->valid_login(username, password))
+        {    
+            UserSessionManagement::get_instance()->set_logged_user(database->search_client(username));
+            return Response(SUCCESSFUL, OK);
+        }
+        else 
+            throw new BadRequest("wrong password");
+    }
+    catch(Exception& er)
+    {
+        Response res(ERROR, er.what());
+    }
+}
+
+Response UserService::follow(std::string following)
+{}
+
+Response UserService::get_followers()
+{}
+#include "UserSessionManagement.h"
+
+#include "User.h"
+
+UserSessionManagement* UserSessionManagement::instance = nullptr;
+
+UserSessionManagement* UserSessionManagement::get_instance()
+{
+    if (instance == nullptr)
+        instance = new UserSessionManagement();
+
+    return  instance;
+}
+
+void UserSessionManagement::set_logged_user(User* _logged_user)
+{
+    // if (logged_user != nullptr)
+    //     throw "some exception in case log out do exist";
+
+    logged_user = _logged_user;
+}
+
+bool UserSessionManagement::is_publisher()
+{
+    if (logged_user->get_type())
+        return true;
+    else 
+        return false;
+}
+
+#include "Utils.h"
+
+#include <iostream>
+#include <regex>
+
+
+using namespace std;
+
+ bool Utils::is_in_string(char character, string checkString)
+{
+    for (int i = 0; i < checkString.length(); i++)
+        if (character == checkString[i])
+            return true;
+    return false;
+}
+
+int Utils::find(string word, vector <string> line)
+{
+    for (int i = 0; i < line.size(); i++)
+    {
+        if (line[i] == word)
+            return i;
+    }
+    return NOT_FOUND;
+}
+
+
+ vector <string> Utils::split_line(string line, string delimiters)
+{
+    // string delimiters = "   ";
+    vector <string>  tokens;
+    int start = 0; int length = 0;
+    for (int i = 0; i < line.length(); i++)
+    {
+        if (is_in_string(line[i], delimiters))
+        {
+            if (length > 0)
+                tokens.push_back(line.substr(start, length));
+
+
+            start = i+1;
+            length = 0;
+        } 
+        else
+            length++;
+    }
+    tokens.push_back(line.substr(start, length));
+
+
+    return tokens;  
+}
+
+vector <string> Utils::merge_tokens(int from, int to, vector <string> words)
+{
+    string merged = words[from];
+    for (int i = from + 1; i <= to; i++)
+    {
+        merged += "/";
+        merged += words[i];
+        // cout << merged << endl;
+    }
+
+    words[from] = merged;
+    for (int i = from + 1; i <= to; i++)
+    {
+        words.erase(words.begin() + i);
+    }
+
+    // for (int i = 0; i< words.size(); i++)
+    //     cout << words[i] << endl;
+
+    return words;
+}
+
+bool Utils::is_valid_email(string email)
+{
+    auto pattern = R"(^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$)"s;
+    auto rx = std::regex{pattern, std::regex_constants::icase};
+    return std::regex_match(email, rx);
+}
+
+bool Utils::is_valid_number(string number)
+{
+    if (number.empty())
+        return false;
+    for (int i = 0; i < number.size(); i++)
+        if (!isdigit(number[i]))
+            return false;
+    return true;
+}
+
