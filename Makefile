@@ -1,5 +1,8 @@
-CC = g++ -std=c++11
-
+ifdef DEBUG
+	CC = g++ -g -DDEBUG -std=c++11
+else
+	CC = g++ -g -std=c++11
+endif
 OBJECTS = \
 		main.o \
 		Utils.o \
@@ -14,7 +17,9 @@ OBJECTS = \
 		ControllerManager.o \
 		SignupController.o \
 		LoginController.o \
+		FilmController.o \
 		UserService.o \
+		FilmService.o \
 		User.o \
 		Client.o \
 		Publisher.o \
@@ -119,7 +124,17 @@ LoginControllerSensivityList = \
 		Request.h \
 		Response.h \
 
-
+FilmControllerSensivityList = \
+		FilmController.cpp \
+		FilmController.h \
+		Controller.h \
+		FilmService.h \
+		User.h \
+		Client.h \
+		Film.h \
+		UserSessionManagement.h \
+		Request.h \
+		Response.h \		
 
 UserServiceSensivityList = \
 		UserService.cpp \
@@ -131,6 +146,15 @@ UserServiceSensivityList = \
 		Exceptions.h \
 		UserSessionManagement.h \
 		DataBase.h \
+
+FilmServiceSensivityList = \
+		FilmService.cpp \
+		FilmService.h \
+		DataBase.h \
+		Exceptions.h \
+		UserSessionManagement.h \
+		Client.h \
+		Publisher.h \
 
 
 UserSensivityList = \
@@ -228,4 +252,4 @@ UTflix.out: $(OBJECTS)
 
 clean:
 	rm *.o
-	rm a.out
+	rm UTflix.out

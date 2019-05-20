@@ -27,7 +27,14 @@ int main()
         }
         catch(Exception& er)
         {
-            cout<< er.error() << endl;
+            #ifdef DEBUG
+                cout<< er.error() << endl;            
+            #endif
+            
+            #ifndef DEBUG 
+                cout << er.what() << endl;
+            #endif
+
         }
     }
 
