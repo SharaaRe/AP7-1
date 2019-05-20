@@ -28,6 +28,7 @@ public:
     std::string get_summemry();
     void set_director(std::string director);
     std::string get_director();
+    int get_price();
 
     int get_id();
 

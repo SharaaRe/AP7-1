@@ -4,36 +4,33 @@
 
 #include <string>
 #include <vector>
+#include <map>
+
+#include "User.h"
 
 class Film;
 class Publisher;
 class Notification;
 class Comment;
 
-
-class Client 
+class Client :public User
 {
 public:
     Client(std::string email, std::string username, std::string password, int age);
-    void follow(int following_id);
+
+    void follow(Publisher* follwing);
     void increase_credit(int amount);
-    void purchase_film(int film_id, int price);
-    // void add_comment(Comment* new_comment);
-    virtual void add_film(Film*);
-    virtual void delete_film(int film_id);
-    virtual bool film_is_published_by_user(int film_id);
-    virtual std::vector <std::string> get_followers();
-    virtual void reply_comment(int film_id, int comment_id);
+    void purchase_film(Film* film);
+    bool is_purchased(int film_id);
+    virtual int get_type();
+
 protected:
     static int last_id_created;
-    int id;
     std::string email;
-    std::string username;
-    std::string password;
     int age;
     int credit;
-    std::vector <int> purchased;
-    std::vector <int> followings;
+    std::map <int, Film*> purchased;
+    std::map <int, const Publisher*> followings;
     std::vector <Notification*> notifications;
 
 

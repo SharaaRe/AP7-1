@@ -1,6 +1,8 @@
-#include <iostream>
-
 #include "Utils.h"
+
+#include <iostream>
+#include <regex>
+
 
 using namespace std;
 
@@ -53,7 +55,9 @@ vector <string> Utils::merge_tokens(int from, int to, vector <string> words)
     string merged = words[from];
     for (int i = from + 1; i <= to; i++)
     {
+        merged += "/";
         merged += words[i];
+        // cout << merged << endl;
     }
 
     words[from] = merged;
@@ -62,6 +66,26 @@ vector <string> Utils::merge_tokens(int from, int to, vector <string> words)
         words.erase(words.begin() + i);
     }
 
+    // for (int i = 0; i< words.size(); i++)
+    //     cout << words[i] << endl;
+
     return words;
+}
+
+bool Utils::is_valid_email(string email)
+{
+    auto pattern = R"(^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$)";
+    auto rx = std::regex{pattern, std::regex_constants::icase};
+    return std::regex_match(email, rx);
+}
+
+bool Utils::is_valid_number(string number)
+{
+    if (number.empty())
+        return false;
+    for (int i = 0; i < number.size(); i++)
+        if (!isdigit(number[i]))
+            return false;
+    return true;
 }
 

@@ -8,23 +8,7 @@
 
 #include "Utils.h"
 
-#define GET_ "GET"
-#define PUT_ "PUT"
-#define DELETE_ "DELETE"
-#define POST_ "POST"
 
-#define SIGN_UP "signup"
-#define LOGIN "login"
-#define FILMS "films"
-#define PUBLISHED "published"
-#define REPLIES "replies"
-#define COMMENTS "comments"
-#define FOLLOWERS "followers"
-#define MONEY "money"
-#define BUY "buy"
-#define RATE "rate"
-#define PURCHASED "purchased"
-#define NOTIFICATION //what the fuck :D
 
 
 
@@ -77,16 +61,16 @@ void RequestReciever::control_format(vector <string> tokens)
 {
 
     vector <string> standard_methods = {GET_, PUT_, POST_, DELETE_};
-    vector <string> standard_urls = {SIGN_UP, FILMS, PUBLISHED, REPLIES, 
-            COMMENTS, FOLLOWERS, MONEY, BUY, RATE, PURCHASED};
+    vector <string> standard_urls = {SIGN_UP, LOGIN /*, FILMS, PUBLISHED, REPLIES, 
+            COMMENTS, FOLLOWERS, MONEY, BUY, RATE, PURCHASED, NOTIFICATION*/};
 
 
     if (!valid_token(tokens[0], standard_methods))
-        throw new BadRequest(95);
+        throw  BadRequest("method is not standard");
 
     
     if (!valid_token(tokens[1], standard_urls))
-        throw new NotFound(100);
+        throw  NotFound("url is not standard");
 
     
 }

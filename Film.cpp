@@ -54,15 +54,6 @@ void Film::set_year(int _year)
     year = _year;
 }
 
-int Film::get_year()
-{
-    return year;
-}
-
-void Film::set_year(int _year)
-{
-    year = _year;
-}
 
 int Film::get_year()
 {
@@ -89,10 +80,17 @@ string Film::get_director()
     return director;
 }
 
+int Film::get_price()
+{
+    return price;
+}
+
 int Film::get_id()
 {
     return id;
 }
+
+
 
 
 

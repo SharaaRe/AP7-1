@@ -2,38 +2,54 @@
 
 #include "Exceptions.h"
 
+
 using namespace std;
+
+Exception::Exception(std::string _description)
+    :exception(), description(_description)
+{}
+
+
+const string BadRequest::error() const throw()
+{
+    string response = "Bad Request";
+    response += "  details:  " + description;
+    return response;
+
+}
+
+const string NotFound::error() const throw()
+{
+    string response = "Not Found";
+    response += "  details:  " + description;
+    return response.c_str();
+}
+
+
+
+const string PermissionDenied::error() const throw()
+{
+    string response = "Permission Denied";
+    response += "  details:  " + description;
+    return response.c_str();
+}
 
 const char* BadRequest::what() const throw()
 {
-    string response = "Bad Request";
-    response += "  details:  " + details;
-    return response.c_str();
+    return "Bad Request";
 
 }
-
-BadRequest::BadRequest(std::string _detail)
-    :exception(), details(_detail)
-{}
 
 const char* NotFound::what() const throw()
+
 {
-    string response = "Not Found";
-    response += "  details:  " + details;
-    return response.c_str();
+    return "Not Found";
 }
 
-NotFound::NotFound(std::string _detail)
-    :exception(), details(_detail)
-{}
+
 
 const char* PermissionDenied::what() const throw()
 {
-    string response = "Permission Denied";
-    response += "  details:  " + details;
-    return response.c_str();
+    return "Permissoin Denied";
 }
 
-PermissionDenied::PermissionDenied(std::string _detail)
-    :exception(), details(_detail)
-{}

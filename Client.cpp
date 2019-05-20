@@ -1,20 +1,29 @@
 #include "Client.h"
+#include <iostream>
 
 #include "Exceptions.h"
 
+#include "Publisher.h"
+#include "Film.h"
+
+using namespace std;
+
 int Client::last_id_created = 0;
 
-Client::Client(std::string _email, std::string _username, std::string _password, int _age)
-    :email(_email), username(_username), password(_password), age(_age)
+Client::Client(string _email, string _username, string _password, int _age)
+    :User(_username, _password), email(_email), age(_age)
 {
     last_id_created++;
     id = last_id_created;
 }
 
 
-void Client::follow(int following_id)
+void Client::follow(Publisher* following)
 {
-    followings.push_back(following_id);
+    if (followings.find(following->get_id()) == followings.end())
+        followings.insert(pair <int, const Publisher*> (following->get_id(), following));
+    else 
+        throw BadRequest("this publisher is already followed");
 }
 
 void Client::increase_credit(int amount)
@@ -22,33 +31,20 @@ void Client::increase_credit(int amount)
     credit += amount;
 }
 
-void Client::purchase_film(int film_id, int price)
+void Client::purchase_film(Film* film)
 {
-    if (credit < price);
+    if (credit < film->get_price());
         // throw some exception
-    credit -= price;
-    purchased.push_back(film_id);
+    if (purchased.find(film->get_id()) != purchased.end())
+        throw BadRequest("film is already purchased");
+    credit -= film->get_price();
+    purchased.insert(pair <int, Film*> (film->get_id(), film));
+
 }
 
-
-void Client::add_film(Film* new_film)
+int Client::get_type()
 {
-    throw new PermissionDenied("non publisher client cant add a film");
-}
-
-// void reply_comment(int film_id, int comment_id)
-// {
-//     throw new PermissionDenied("non publisher client cant reply to comments");
-// }
-
-bool film_is_published_by_user(int film_id)
-{
-    throw new PermissionDenied("non publisher clients have not published any films");
-}
-
-std::vector <std::string> get_followers()
-{
-    throw new PermissionDenied("non publisher clients dont have followers");
+    return CLIENT;
 }
 
 

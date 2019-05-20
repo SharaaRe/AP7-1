@@ -14,6 +14,8 @@ public:
     static std::vector <std::string> merge_tokens(int from, int to, std::vector <std::string> words);
     static std::vector <std::string> split_line(std::string line, std::string delimiters);
     static bool is_in_string(char character, std::string checkString);
+    static bool is_valid_email(std::string email);
+    static bool is_valid_number(std::string number);
 // private:
     // int something_alaki;
 

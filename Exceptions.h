@@ -2,29 +2,39 @@
 
 #include <string>
 
-class NotFound :public std::exception
+// typedef std::exception Exception;
+
+class Exception :public std::exception
 {
 public:
-    NotFound(std::string detail);
-    virtual const char* what() const throw();
-private:
-    std::string details;
+    Exception(std::string description);
+    Exception();
+    virtual const std::string error() const throw() = 0;
+protected:
+    std::string description;
 };
 
-class BadRequest :public std::exception
+
+class NotFound :public Exception
 {
 public:
-    BadRequest(std::string detail);
+    NotFound(std::string detail) : Exception(detail) {}
+    virtual const std::string error() const throw();
     virtual const char* what() const throw();
-private:
-    std::string details;    
 };
 
-class PermissionDenied :public std::exception
+class BadRequest :public Exception
 {
 public:
-    PermissionDenied(std::string detail);
-    virtual const char* what() const throw();
-private:
-    std::string details;    
+    BadRequest(std::string detail) : Exception(detail) {}
+    virtual const std::string error() const throw();
+    virtual const char* what() const throw();   
+};
+
+class PermissionDenied :public Exception
+{
+public:
+    PermissionDenied(std::string detail) : Exception(detail) {}
+    virtual const std::string error() const throw();
+    virtual const char* what() const throw();    
 };

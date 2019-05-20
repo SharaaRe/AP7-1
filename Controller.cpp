@@ -4,24 +4,26 @@
 #include "Exceptions.h"
 
 Controller::Controller()
-{}
-
-Response* Controller::put(Request* request)
 {
-    return new Response(ERROR, BadRequest("not matching method and url").what());
+    current_request = NULL;
 }
 
-Response* Controller::get(Request* request)
+Response Controller::put(Request* request)
 {
-    return new Response(ERROR, BadRequest("not matching method and url").what());
+    return Response(ERROR, BadRequest("not matching method and url").error());
 }
 
-Response* Controller::post(Request* request)
+Response Controller::get(Request* request)
 {
-    return new Response(ERROR, BadRequest("not matching method and url").what());
+    return Response(ERROR, BadRequest("not matching method and url").error());
 }
 
-Response* Controller::delete_(Request* request)
+Response Controller::post(Request* request)
 {
-    return new Response(ERROR, BadRequest("not matching method and url").what());
+    return Response(ERROR, BadRequest("not matching method and url").error());
+}
+
+Response Controller::delete_(Request* request)
+{
+    return Response(ERROR, BadRequest("not matching method and url").error());
 }

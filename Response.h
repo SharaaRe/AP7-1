@@ -3,12 +3,15 @@
 
 #include <string>
 
-enum {SUCCESSFUL, ERROR};
+enum res_type{SUCCESSFUL, ERROR, EMPTY};
+#define OK "OK"
 
 class Response
 {
 public:
     Response(int type, std::string content);
+    Response();
+    std::string get_content() {return content;};
     friend std::ostream& operator<<(std::ostream&, const Response& respones);
 protected:
     int type;

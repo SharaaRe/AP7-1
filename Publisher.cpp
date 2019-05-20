@@ -1,14 +1,15 @@
 #include "Publisher.h"
 
 #include "Film.h"
-
 #include "Exceptions.h"
+#include "DataBase.h"
 
 using namespace std;
 
 Publisher::Publisher(string email, string username, string password, int age)
     :Client(email, username, password, age)
 {}
+
 
 void Publisher::add_film(Film* new_film)
 {   
@@ -23,11 +24,16 @@ void Publisher:: delete_film(int film_id)
         published.erase(film_id);
 }
 
-bool film_is_published_by_user(int film_id)
-{}
+bool Publisher::film_is_published_by_user(int film_id) const
+{
+    if (published.find(film_id) == published.end())
+        return false;
+    else
+        return true;
+}
 
 
-std::vector <std::string> Publisher::get_followers()
+std::vector <int> Publisher::get_followers() const
 {
     return followers;
 }
@@ -35,6 +41,8 @@ std::vector <std::string> Publisher::get_followers()
 
 void Publisher:: reply_comment(int film_id, int comment_id)
 {
-
+    Film* film = DataBase::get_instance()->search_film(film_id);
+    if (film_is_published_by_user(film_id));
+        // if comment do exist or something
 }
 

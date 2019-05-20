@@ -21,9 +21,9 @@ Request::Request(vector <string> raw_request)
 
     if (raw_request.size() >= COMPLEX_REQ_SIZE)
     {
-        cout << "number of tokens : " << raw_request.size() << endl;
+        // cout << "number of tokens : " << raw_request.size() << endl;
         if ((raw_request.size() - 3 )% 2 == 1)
-            throw new BadRequest("key and values are not pair");
+            throw BadRequest("key and values are not pair");
         for (int i = COMPLEX_REQ_SIZE - 1; i < raw_request.size(); i+=2)
         {
             parameters.insert(pair<string, string>(raw_request[i - 1], raw_request[i]));
@@ -45,7 +45,7 @@ string Request::get_request_param(string key)
     if (parameters.find(key) != parameters.end())
         return parameters[key];
     else
-        throw new NotFound("param doesn't exist");
+        throw    NotFound("param doesn't exist");
 }
 
 int Request::get_method()
