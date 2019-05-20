@@ -14,7 +14,7 @@
 #include "md5.h"
 
 #define TRUE "true"
-#define FALSE "fasle"
+#define FALSE "false"
 
 using namespace std;
 
@@ -76,7 +76,7 @@ bool SignupController::is_publisher()
     {
         return false;
     }
-    if (publisher_flag != TRUE || publisher_flag != FALSE || publisher_flag != NOT_ASSIGNED)
+    if (publisher_flag != TRUE && publisher_flag != FALSE && publisher_flag != NOT_ASSIGNED)
             throw BadRequest("value of publisher flag is not valid");
 
     return publisher_flag == TRUE? true : false;

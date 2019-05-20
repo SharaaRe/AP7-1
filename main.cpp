@@ -23,7 +23,7 @@ int main()
             cout << "main line 19" << endl;
             controller_manager.run_controller(&my_request);
             cout << "main line 21" << endl;    
-            // cout << controller_manager.get_response().get_content() << endl;
+            cout << controller_manager.get_response() << endl;
         }
         catch(Exception& er)
         {

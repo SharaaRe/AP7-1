@@ -2,6 +2,7 @@
 
 #include "Client.h"
 #include "User.h"
+#include "Film.h"
 #include "Exceptions.h"
 
 using namespace std;
@@ -35,6 +36,12 @@ void DataBase::add_client(Client* new_user)
         delete new_user;
         throw BadRequest("user name and id already exist");
     }
+}
+
+void DataBase::add_film(Film* new_film)
+{
+    if (films.find(new_film->get_id()) == films.end())
+        films.insert(pair <int, Film*> (new_film->get_id(), new_film));
 }
 
 Client* DataBase::search_client(int id)

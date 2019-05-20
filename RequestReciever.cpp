@@ -61,7 +61,7 @@ void RequestReciever::control_format(vector <string> tokens)
 {
 
     vector <string> standard_methods = {GET_, PUT_, POST_, DELETE_};
-    vector <string> standard_urls = {SIGN_UP, LOGIN /*, FILMS, PUBLISHED, REPLIES, 
+    vector <string> standard_urls = {SIGN_UP, LOGIN , FILMS/*, PUBLISHED, REPLIES, 
             COMMENTS, FOLLOWERS, MONEY, BUY, RATE, PURCHASED, NOTIFICATION*/};
 
 
