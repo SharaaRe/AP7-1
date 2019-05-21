@@ -42,9 +42,34 @@ void Client::purchase_film(Film* film)
 
 }
 
+void Client::new_notif(Notification new_notif)
+{
+    notifications.push_back(new_notif);
+}
+
 int Client::get_type()
 {
     return CLIENT;
+}
+
+
+
+
+vector <Notification> Client::get_notification()
+{
+    vector <Notification> res = notifications;
+    for (int i = 0; i < notifications.size(); i++)
+    {
+        read_notification.push_back(notifications[i]);
+    }
+    notifications.clear();
+    return res;
+}
+
+
+vector <Notification> Client::get_read_notification()
+{
+    return read_notification;
 }
 
 

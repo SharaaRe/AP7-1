@@ -3,6 +3,7 @@
 
 #include <vector>
 
+#define USER_ID "user_id"
 #define USERNAME "username"
 #define PASSWORD "password"
 #define EMAIL "email"
@@ -15,7 +16,9 @@ class Response;
 class DataBase;
 class Client;
 
-class   UserService
+typedef std::string Notification;
+
+class UserService
 {
 public:
     UserService();
@@ -25,6 +28,8 @@ public:
     std::vector <const Client*> get_followers();
 private:
     DataBase* database;
+    Notification follow_notification(Client follower);
+    
 
 };
 

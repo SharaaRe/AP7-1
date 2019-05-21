@@ -1,5 +1,7 @@
 #include "UserService.h"
 
+#include <sstream>
+
 #include "Response.h"
 #include "Request.h"
 #include "DataBase.h"
@@ -38,32 +40,36 @@ void UserService::login(string username, string password)
 
 void  UserService::follow(int following_id)
 {
-    User* logged_user = UserSessionManagement::get_instance()->get_logged_user();
+    Client* logged_client = UserSessionManagement::get_instance()->get_logged_client();
 
     Publisher* publisher = dynamic_cast <Publisher*> (database->search_client(following_id));
     if (publisher != nullptr)
     {
-        Client* logged_client = dynamic_cast <Client*> (logged_user);
-        if (logged_client != nullptr)
-            logged_client->follow(publisher);
-        else 
-            throw PermissionDenied("logged user is not a client");
+        logged_client->follow(publisher);
+        publisher->new_notif(follow_notification(*logged_client));
     }
-    throw BadRequest("following id doesnt belong to a publisher");
+    else 
+        throw BadRequest("following id doesnt belong to a publisher");
 }
+
 
 vector <const Client*> UserService::get_followers()
 {
-    Publisher* publisher = dynamic_cast<Publisher*>(UserSessionManagement::get_instance()->get_logged_user());
+    Publisher* publisher = UserSessionManagement::get_instance()->get_logged_publisher();
+
     vector <int> follower_ids;
-    if (publisher != nullptr)
-        follower_ids = publisher->get_followers();
-    else 
-        throw PermissionDenied("this user can't have followers");
-    
+    follower_ids = publisher->get_followers();
+
     vector <const Client*> followers;
     for (int i = 0; i < follower_ids.size(); i++)
         followers.push_back(database->search_client(follower_ids[i]));
     
     return followers;
+}
+
+Notification UserService::follow_notification(Client client)
+{
+    stringstream notif;
+    notif << "User " << client.get_username() << "with id" << client.get_id() << "follow you.";
+    return notif.str();
 }

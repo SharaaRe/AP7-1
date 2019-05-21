@@ -8,10 +8,13 @@
 
 #include "User.h"
 
+
+
 class Film;
 class Publisher;
-class Notification;
 class Comment;
+
+typedef std::string Notification;
 
 class Client :public User
 {
@@ -21,8 +24,12 @@ public:
     void follow(Publisher* follwing);
     void increase_credit(int amount);
     void purchase_film(Film* film);
+    void new_notif(Notification new_notif);
+    
     bool is_purchased(int film_id);
     virtual int get_type();
+    std::vector <Notification> get_notification();
+    std::vector <Notification> get_read_notification();
 
 protected:
     static int last_id_created;
@@ -31,7 +38,8 @@ protected:
     int credit;
     std::map <int, Film*> purchased;
     std::map <int, const Publisher*> followings;
-    std::vector <Notification*> notifications;
+    std::vector <Notification> notifications;
+    std::vector <Notification> read_notification;
 
 
 };
