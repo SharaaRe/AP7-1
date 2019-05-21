@@ -27,7 +27,7 @@ public:
     void new_notif(Notification new_notif);
 
     bool is_purchased(int film_id) const;
-    virtual int get_type();
+    virtual int get_type() const;
     std::string get_email() const;
     std::vector <Notification> get_notification();
     std::vector <Notification> get_read_notification();

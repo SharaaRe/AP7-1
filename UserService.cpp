@@ -46,6 +46,7 @@ void  UserService::follow(int following_id)
     if (publisher != nullptr)
     {
         logged_client->follow(publisher);
+        publisher->add_follower(logged_client->get_id());
         publisher->new_notif(follow_notification(*logged_client));
     }
     else 

@@ -18,6 +18,7 @@ public:
 private:
     Publisher* publisher_user();
     void check_edit_access(int id);
+    void send_film_add_notif(std::vector <int> followers_id);
 };
 
 #endif

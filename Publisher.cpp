@@ -32,6 +32,11 @@ bool Publisher::film_is_published_by_user(int film_id) const
         return true;
 }
 
+void Publisher::add_follower(int id)
+{
+    followers.push_back(id);
+}
+
 
 std::vector <int> Publisher::get_followers() const
 {
