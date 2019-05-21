@@ -3,6 +3,8 @@
 #include <iostream>
 #include <regex>
 
+#include "Exceptions.h"
+
 
 using namespace std;
 
@@ -89,3 +91,11 @@ bool Utils::is_valid_number(string number)
     return true;
 }
 
+
+int Utils::string_integer_value(string number)
+{
+    if (is_valid_number(number))
+        return stoi(number);
+    else
+        throw BadRequest("value is not a number");
+}

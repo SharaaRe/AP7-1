@@ -14,9 +14,9 @@ public:
     User(std::string username, std::string password);
     bool valid_login(std::string username, std::string password);
 
-    std::string get_username();
-    int get_id();
-    virtual int get_type();
+    std::string get_username() const;
+    int get_id() const;
+    virtual int get_type() const;
 
 protected:
     // static int type;

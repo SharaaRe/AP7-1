@@ -1,6 +1,9 @@
 #include "UserSessionManagement.h"
 
+#include "Exceptions.h"
 #include "User.h"
+#include "Publisher.h"
+#include "Client.h"
 
 UserSessionManagement* UserSessionManagement::instance = nullptr;
 
@@ -23,6 +26,20 @@ void UserSessionManagement::set_logged_user(User* _logged_user)
 User* UserSessionManagement::get_logged_user()
 {
     return logged_user;
+}
+
+Publisher* UserSessionManagement::get_logged_publisher()
+{
+    Publisher* publisher = dynamic_cast <Publisher*> (logged_user);
+    if (publisher == NULL)
+        throw PermissionDenied("this is not publisher type");
+}
+
+Client* UserSessionManagement::get_logged_client()
+{
+    Client* client = dynamic_cast <Client*> (logged_user);
+    if (client == NULL)
+        throw PermissionDenied("this is not client type");
 }
 
 bool UserSessionManagement::is_publisher()

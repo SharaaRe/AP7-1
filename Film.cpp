@@ -1,6 +1,7 @@
 #include "Film.h"
 
 #include "Exceptions.h"
+#include "Comment.h"
 
 using namespace std;
 
@@ -25,10 +26,10 @@ bool Film::is_available()
     return available;
 }
 
-void Film::add_comment(Comment* new_comment)
+void Film::add_comment(std::string content)
 {
     last_comment_id++;
-    comments[id] = new_comment;
+    comments[last_comment_id] = Comment(last_comment_id, content);
 }
 
 
@@ -36,8 +37,8 @@ void Film::reply_comment(int comment_id, string reply_content)
 {
     if(comments.find(comment_id) == comments.end())
         throw new NotFound("comment id not found");
-    else    ;
-        //comment should have reply here, complete it later
+    else
+        comments[comment_id].add_reply(reply_content);
 }
 
 void Film::delete_comment(int comment_id)

@@ -4,36 +4,66 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 #include "User.h"
 
+
+
 class Film;
 class Publisher;
-class Notification;
 class Comment;
+
+typedef std::string Notification;
 
 class Client :public User
 {
 public:
     Client(std::string email, std::string username, std::string password, int age);
 
-    void follow(int following_id);
+    void follow(Publisher* follwing);
     void increase_credit(int amount);
-    void purchase_film(int film_id, int price);
+    void purchase_film(Film* film);
+    void new_notif(Notification new_notif);
+    
+    bool is_purchased(int film_id);
     virtual int get_type();
+    std::vector <Notification> get_notification();
+    std::vector <Notification> get_read_notification();
 
 protected:
     static int last_id_created;
     std::string email;
     int age;
     int credit;
-    std::vector <int> purchased;
-    std::vector <int> followings;
-    std::vector <Notification*> notifications;
+    std::map <int, Film*> purchased;
+    std::map <int, const Publisher*> followings;
+    std::vector <Notification> notifications;
+    std::vector <Notification> read_notification;
 
 
 };
 
+
+#endif#ifndef COMMENTS_H
+#define COMMENTS_H
+
+#include <string>
+
+class Comment 
+{
+public:
+    Comment() = default;
+    Comment(int id, std::string content);
+    void add_reply(std::string reply);
+    int get_id() const ;
+    std::string get_content() const;
+    std::string get_reply() const;
+private:
+    int id;
+    std::string content;
+    std::string reply;
+};
 
 #endif#ifndef CONTROLLER_H
 #define CONTROLLER_H
@@ -51,15 +81,32 @@ class Controller
         virtual Response delete_(Request* request);
     protected:
         Request* current_request;
-        // virtual void post_required_params();
-        // virtual void post_optional_params();
-        // virtual void put_required_params();
-        // virtual void put_optional_params();        
-        // virtual void get_required_params();
-        // virtual void get_optional_params();
-        // virtual void delete_required_params();
-        // virtual void delete_optional_params();
+
 };
+
+#endif#ifndef CONTROLLER_MANAGER_H
+#define CONTROLLER_MANAGER_H
+
+#include <map>
+#include <string>
+
+#include "Controller.h"
+#include "Request.h"
+#include "Response.h"
+
+class ControllerManager 
+{
+public:
+    ControllerManager();
+    ~ControllerManager();
+    void run_controller(Request* request);
+    Response get_response();
+private:
+    std::map <std::string, Controller*> controllers;
+    Response response;
+
+};
+
 
 #endif#ifndef DATABASE_H
 #define DATABASE_H
@@ -76,12 +123,12 @@ class DataBase
 {
 public:
     static DataBase* get_instance();
-    void add_client(User* new_client);
+    void add_client(Client* new_client);
     // void add_publisher(Publisher* new_publisher);
     void add_film(Film* new_film);
 
-    User* search_client(int id);
-    User* search_client(std::string username);
+    Client* search_client(int id);
+    Client* search_client(std::string username);
     Publisher* search_publisher(int id);
     Film* search_film(int id);
 
@@ -93,8 +140,9 @@ public:
     ~DataBase();
 private:
     std::map <int, Film*> films;
-    std::map <int, User*> clients;
-    std::map <int, Publisher*> publishers;
+    std::map <int, Client*> clients;
+    // std::map <int, Publisher*> publishers;
+    std::map <std::string, User*> admins;
     std::map <std::string, int> id;
     // DataBase
     static DataBase* instance;
@@ -112,6 +160,7 @@ class Exception :public std::exception
 public:
     Exception(std::string description);
     Exception();
+    virtual const std::string error() const throw() = 0;
 protected:
     std::string description;
 };
@@ -120,29 +169,57 @@ protected:
 class NotFound :public Exception
 {
 public:
-    NotFound(std::string detail);
+    NotFound(std::string detail) : Exception(detail) {}
+    virtual const std::string error() const throw();
     virtual const char* what() const throw();
-private:
-    std::string details;
 };
 
 class BadRequest :public Exception
 {
 public:
-    BadRequest(std::string detail);
-    virtual const char* what() const throw();
-private:
-    std::string details;    
+    BadRequest(std::string detail) : Exception(detail) {}
+    virtual const std::string error() const throw();
+    virtual const char* what() const throw();   
 };
 
 class PermissionDenied :public Exception
 {
 public:
-    PermissionDenied(std::string detail);
-    virtual const char* what() const throw();
-private:
-    std::string details;    
-};#ifndef FILMS_H
+    PermissionDenied(std::string detail) : Exception(detail) {}
+    virtual const std::string error() const throw();
+    virtual const char* what() const throw();    
+};#ifndef FILM_CONTROLLER_H
+#define FILM_CONTROLLER_H
+
+#include <string>
+
+#include "Controller.h"
+#include "FilmService.h"
+
+class FilmController :public Controller
+{
+    public:
+        FilmController();
+        virtual Response post(Request* request);
+        virtual Response put(Request* request);
+        virtual Response delete_(Request* request);
+    private:
+        int id;
+        FilmService film_service;
+        std::string name;
+        int year;
+        int length;
+        int price;
+        std::string summery;
+        std::string director;
+        void post_required_params();
+        void put_params();
+        void re_initialize();
+        void set_id_param();
+};
+
+#endif
+#ifndef FILMS_H
 #define FILMS_H
 
 #include <string>
@@ -152,13 +229,15 @@ private:
 #define NOT_CHANGED "not changed"
 #define VALUE_NOT_CHANGED  -1
 
-class Comment;
+#include "Comment.h"
 
 class Film
 {
 public:
     Film(std::string name, int year, int length, int price, std::string summery, std::string director);
-    void add_comment(Comment* new_comment);
+    void delete_();
+    bool is_available();
+    void add_comment(std::string comment_content);
     void reply_comment(int comment_id, std::string reply_content);
     void delete_comment(int comment_id);
 
@@ -172,7 +251,7 @@ public:
     std::string get_summemry();
     void set_director(std::string director);
     std::string get_director();
-
+    int get_price();
     int get_id();
 
 private:
@@ -184,26 +263,67 @@ private:
     int price;
     std::string summery;
     std::string director;
+    bool available;
 
-    std::map <int, Comment*> comments;
+    std::map <int, Comment> comments;
     int last_comment_id;
     
 
     float rate;
 };
 
+#endif#ifndef FILM_SERVICE_H
+#define FILM_SERVICE_H
+
+#include <string>
+
+#define NOT_CHANGED "not changed"
+#define VALUE_NOT_CHANGED -1
+
+class Publisher;
+
+class FilmService
+{
+public:
+    void add_film(std::string name, int year, int length, int price, std::string summery, std::string director);
+    void edit_film(int id, std::string name = NOT_CHANGED, int year = VALUE_NOT_CHANGED,int length = VALUE_NOT_CHANGED,
+             std::string summery = NOT_CHANGED, std::string director = NOT_CHANGED);
+    void delete_(int id);
+private:
+    Publisher* publisher_user();
+    void check_edit_access(int id);
+};
+
+#endif#ifndef FOLLOWER_CONTROLLER_H
+#define FOLLOWER_CONTROLLER_H
+
+#include <vector> 
+
+#include "Controller.h"
+#include "UserService.h"
+
+class FollowerController :public Controller
+{
+public:
+    virtual Response post(Request* request);
+    virtual Response get(Request* request);
+private:
+    UserService user_service;
+    Response get_follower_response(std::vector <const Client*> clients);
+};
+
 #endif#ifndef LOGIN_CONTROLLER_H
 #define LOGIN_CONTROLLER_H
 
 #include "Controller.h"
+#include "Response.h"
 
 class LoginController :public Controller
 {
     public:
         virtual Response post(Request* request);
     private:
-        virtual void post_required_params() = 0;
-        virtual void post_optional_params() = 0;
+        virtual void post_required_params();
 };
 
 #endif/* MD5
@@ -299,7 +419,22 @@ private:
 std::string md5(const std::string str);
  
 #endif
-#ifndef PUBLISHER_H
+#ifndef NOTIFICATION_H
+#define NOTIFICATION_H
+
+#include <string>
+
+class Notification 
+{
+    Notification(std::string content);
+    bool is_read();
+private:
+    std::string content;
+    bool read;
+};
+
+
+#endif#ifndef PUBLISHER_H
 #define PUBLISHER_H
 
 #include "Client.h"
@@ -312,15 +447,14 @@ class Publisher: public Client
 {
 public:
     Publisher(std::string email, std::string username, std::string password, int age);
-    bool valid_login_data(std::string user, std::string password);
     virtual void add_film(Film* film);
     virtual void delete_film(int film_id);
-    virtual bool film_is_published_by_user(int film_id);
-    virtual std::vector <std::string> get_followers();
+    virtual bool film_is_published_by_user(int film_id) const;
+    virtual std::vector <int> get_followers() const;
     virtual void reply_comment(int film_id, int comment_id);
 protected:
     std::map <int, Film*> published;
-    std::vector <std::string> followers; //keep users ids;
+    std::vector <int> followers; //keep users ids;
 };
 
 #endif#ifndef REQUEST_H
@@ -394,13 +528,15 @@ private:
 
 #include <string>
 
-enum res_type{SUCCESSFUL, ERROR};
+enum res_type{SUCCESSFUL, ERROR, EMPTY};
 #define OK "OK"
 
 class Response
 {
 public:
     Response(int type, std::string content);
+    Response();
+    std::string get_content() {return content;};
     friend std::ostream& operator<<(std::ostream&, const Response& respones);
 protected:
     int type;
@@ -415,12 +551,14 @@ protected:
 class SignupController: public Controller
 {
 public:
-    virtual Response post(Request* req);
+    virtual Response post(Request* request);
+
 protected:
     std::string username;
     std::string password;
     std::string email;
     int age;
+    bool publisher_flag;
     void post_required_params();
     bool is_publisher();
 
@@ -434,7 +572,7 @@ protected:
 #include <string>
 #include <vector>
 
-enum UserType {ADMIN, CLIENT, USER};
+enum UserType {ADMIN, CLIENT, PUBLISHER};
 
 
 class User
@@ -459,27 +597,35 @@ protected:
 #endif#ifndef USER_SERVICE_H
 #define USER_SERVICE_H
 
+#include <vector>
+
+#define USER_ID "user_id"
 #define USERNAME "username"
 #define PASSWORD "password"
 #define EMAIL "email"
 #define AGE "age"
-#define PUBLISHER "publisher"
+#define PUBLISHER_PARAM "publisher"
 
 #include "Request.h"
 
 class Response;
 class DataBase;
+class Client;
 
-class   UserService
+typedef std::string Notification;
+
+class UserService
 {
 public:
     UserService();
-    Response signup(std::string email, std::string username, std::string password, int age, bool publisher);
-    Response login(std::string username, std::string password);
-    Response follow(std::string following);
-    Response get_followers();
+    void signup(std::string email, std::string username, std::string password, int age, bool publisher);
+    void login(std::string username, std::string password);
+    void follow(int publisher_id);
+    std::vector <const Client*> get_followers();
 private:
     DataBase* database;
+    Notification follow_notification(Client follower);
+    
 
 };
 
@@ -487,16 +633,21 @@ private:
 #define SESSION_MANAGEMENT_H
 
 class User;
+class Client;
+class Publisher;
 
 class UserSessionManagement 
 {
 public:
     static UserSessionManagement* get_instance();
     void set_logged_user(User* logged_user);
+    User* get_logged_user();
+    Publisher* get_logged_publisher();
+    Client* get_logged_client();
     bool is_publisher();
     bool is_admin();
 private:
-    UserSessionManagement();
+    // UserSessionManagement() = default;
     static UserSessionManagement* instance;
     User* logged_user;
 };
@@ -550,8 +701,12 @@ public:
 };
 
 #endif#include "Client.h"
+#include <iostream>
 
 #include "Exceptions.h"
+
+#include "Publisher.h"
+#include "Film.h"
 
 using namespace std;
 
@@ -565,9 +720,12 @@ Client::Client(string _email, string _username, string _password, int _age)
 }
 
 
-void Client::follow(int following_id)
+void Client::follow(Publisher* following)
 {
-    followings.push_back(following_id);
+    if (followings.find(following->get_id()) == followings.end())
+        followings.insert(pair <int, const Publisher*> (following->get_id(), following));
+    else 
+        throw BadRequest("this publisher is already followed");
 }
 
 void Client::increase_credit(int amount)
@@ -575,17 +733,74 @@ void Client::increase_credit(int amount)
     credit += amount;
 }
 
-void Client::purchase_film(int film_id, int price)
+void Client::purchase_film(Film* film)
 {
-    if (credit < price);
+    if (credit < film->get_price());
         // throw some exception
-    credit -= price;
-    purchased.push_back(film_id);
+    if (purchased.find(film->get_id()) != purchased.end())
+        throw BadRequest("film is already purchased");
+    credit -= film->get_price();
+    purchased.insert(pair <int, Film*> (film->get_id(), film));
+
+}
+
+void Client::new_notif(Notification new_notif)
+{
+    notifications.push_back(new_notif);
 }
 
 int Client::get_type()
 {
     return CLIENT;
+}
+
+
+
+
+vector <Notification> Client::get_notification()
+{
+    vector <Notification> res = notifications;
+    for (int i = 0; i < notifications.size(); i++)
+    {
+        read_notification.push_back(notifications[i]);
+    }
+    notifications.clear();
+    return res;
+}
+
+
+vector <Notification> Client::get_read_notification()
+{
+    return read_notification;
+}
+
+
+#include "Comment.h"
+
+Comment::Comment(int _id, std::string _content)
+    :id(_id), content(_content)
+{
+
+}
+
+void Comment::add_reply(std::string _reply)
+{
+    reply = _reply;
+}
+
+
+std::string Comment::get_reply() const
+{
+    return reply;
+}
+
+std::string Comment::get_content() const
+{
+    return content;
+
+int Comment::get_id() const
+{
+    return id;
 }
 
 
@@ -595,30 +810,79 @@ int Client::get_type()
 #include "Exceptions.h"
 
 Controller::Controller()
-{}
+{
+    current_request = NULL;
+}
 
 Response Controller::put(Request* request)
 {
-    return Response(ERROR, BadRequest("not matching method and url").what());
+    return Response(ERROR, BadRequest("not matching method and url").error());
 }
 
 Response Controller::get(Request* request)
 {
-    return Response(ERROR, BadRequest("not matching method and url").what());
+    return Response(ERROR, BadRequest("not matching method and url").error());
 }
 
 Response Controller::post(Request* request)
 {
-    return Response(ERROR, BadRequest("not matching method and url").what());
+    return Response(ERROR, BadRequest("not matching method and url").error());
 }
 
 Response Controller::delete_(Request* request)
 {
-    return Response(ERROR, BadRequest("not matching method and url").what());
-}#include "DataBase.h"
-#include "User.h"
+    return Response(ERROR, BadRequest("not matching method and url").error());
+}#include "ControllerManager.h"
 
-#include <Exceptions.h>
+#include <iostream> //delete it 
+
+#include "SignupController.h"
+#include "LoginController.h"
+
+using namespace std;
+
+ControllerManager::ControllerManager()
+{
+    controllers.insert(pair <std::string, Controller*> (SIGN_UP, new SignupController()));
+    controllers.insert(pair <std::string, Controller*> (LOGIN, new LoginController()));
+}
+
+ControllerManager::~ControllerManager()
+{
+    for (map <std::string, Controller*> ::iterator it = controllers.begin(); it != controllers.end(); it++)
+        delete (it->second);
+}
+
+void ControllerManager::run_controller(Request* request)
+{
+    response = Response();
+    Controller* controller = controllers[request->get_url()];
+    switch (request->get_method())
+    {
+        case GET:
+            response = controller->get(request);
+            break;
+        case POST:
+            response = controller->post(request);
+            break;            
+        case PUT:
+            response = controller->put(request);
+            break;
+        case DELETE:
+            response = controller->delete_(request);
+            break;
+    }
+}
+
+Response ControllerManager::get_response()
+{
+    return response;
+}#include "DataBase.h"
+
+#include "Client.h"
+#include "User.h"
+#include "Film.h"
+#include "Exceptions.h"
 
 using namespace std;
 
@@ -633,20 +897,33 @@ DataBase* DataBase::get_instance()
 
 DataBase::~DataBase()
 {
-    for (map <int, User*> ::iterator it = clients.begin() ; it != clients.end(); it++)
+    for (map <int, Client*> ::iterator it = clients.begin() ; it != clients.end(); it++)
         delete it->second;
 }
 
 
-void DataBase::add_client(User* new_user)
+void DataBase::add_client(Client* new_user)
 {
-    clients.insert(pair <int, User*> (new_user->get_id(), new_user));
-
-    if (id.find(new_user->get_username()) == id.end())
+    if (valid_username(new_user->get_username())
+            && clients.find(new_user->get_id()) == clients.end())
+    {
+        clients.insert(pair <int, Client*> (new_user->get_id(), new_user));
         id.insert(pair<string, int> (new_user->get_username(), new_user->get_id()));
+    }
+    else 
+    {
+        delete new_user;
+        throw BadRequest("user name and id already exist");
+    }
 }
 
-User* DataBase::search_client(int id)
+void DataBase::add_film(Film* new_film)
+{
+    if (films.find(new_film->get_id()) == films.end())
+        films.insert(pair <int, Film*> (new_film->get_id(), new_film));
+}
+
+Client* DataBase::search_client(int id)
 {
     if (clients.find(id) != clients.end())
         return clients[id];
@@ -655,19 +932,12 @@ User* DataBase::search_client(int id)
         throw new NotFound("not found in database");
 }
 
-User* DataBase::search_client(std::string username)
+Client* DataBase::search_client(std::string username)
 {
     if(id.find(username) != id.end())
         return search_client(id[username]);
 }
 
-Publisher* DataBase::search_publisher(int id)
-{
-    if (publishers.find(id) != publishers.end())
-        return publishers[id];
-    else 
-        throw new NotFound("publisher not found in database");
-}
 
 Film* DataBase::search_film(int film_id)
 {
@@ -687,11 +957,6 @@ bool DataBase::client_exist(int id)
     return clients.find(id) != clients.end();
 }
 
-bool DataBase::publisher_exist(int id)
-{
-    return publishers.find(id) != publishers.end();
-}
-
 bool DataBase::valid_username(string username)
 {
     return id.find(username) == id.end();
@@ -704,50 +969,212 @@ bool DataBase::valid_username(string username)
 
 #include "Exceptions.h"
 
+
 using namespace std;
+
+Exception::Exception(std::string _description)
+    :exception(), description(_description)
+{}
+
+
+const string BadRequest::error() const throw()
+{
+    string response = "Bad Request";
+    response += "  details:  " + description;
+    return response;
+
+}
+
+const string NotFound::error() const throw()
+{
+    string response = "Not Found";
+    response += "  details:  " + description;
+    return response.c_str();
+}
+
+
+
+const string PermissionDenied::error() const throw()
+{
+    string response = "Permission Denied";
+    response += "  details:  " + description;
+    return response.c_str();
+}
 
 const char* BadRequest::what() const throw()
 {
-    string response = "Bad Request";
-    response += "  details:  " + details;
-    return response.c_str();
+    return "Bad Request";
 
 }
-
-BadRequest::BadRequest(std::string _detail)
-    :exception(), details(_detail)
-{}
 
 const char* NotFound::what() const throw()
+
 {
-    string response = "Not Found";
-    response += "  details:  " + details;
-    return response.c_str();
+    return "Not Found";
 }
 
-NotFound::NotFound(std::string _detail)
-    :exception(), details(_detail)
-{}
+
 
 const char* PermissionDenied::what() const throw()
 {
-    string response = "Permission Denied";
-    response += "  details:  " + details;
-    return response.c_str();
+    return "Permissoin Denied";
 }
 
-PermissionDenied::PermissionDenied(std::string _detail)
-    :exception(), details(_detail)
-{}#include "Film.h"
+#include "FilmController.h"
+
+#include "FilmService.h"
+#include "Utils.h"
+#include "Response.h"
+#include "Exceptions.h"
+
+#define FILM_ID "film_id"
+#define NAME "name"
+#define YEAR "year"
+#define LENGTH "length"
+#define PRICE "price"
+#define SUMMERY "summery"
+#define DIRECTOR "director"
+
+using namespace std;
+
+FilmController::FilmController()
+{}
+
+Response FilmController::post(Request* request)
+{
+    re_initialize();
+    current_request = request;
+    try
+    {
+        film_service.add_film(name, year, length, price, summery, director);
+        return Response(SUCCESSFUL, OK);
+    }
+    catch(Exception& er)
+    {
+        return Response(ERROR, er.error());
+    }
+}
+
+void FilmController::post_required_params()
+{
+    name = current_request->get_request_param(NAME);
+    string year_string = current_request->get_request_param(YEAR);
+    string length_string = current_request->get_request_param(LENGTH);
+    string price_string = current_request->get_request_param(PRICE);
+    summery = current_request->get_request_param(SUMMERY);
+    director = current_request->get_request_param(DIRECTOR);
+
+    if (Utils::is_valid_number(year_string) && Utils::is_valid_number(length_string)
+             && Utils::is_valid_number(price_string))
+        
+    {
+        year = stoi(year_string);
+        length = stoi(length_string);
+        price = stoi(price_string);
+        if (year < 0 && length < 0 && price < 0)
+            throw BadRequest("numbers are not valid");
+    }
+    else 
+        throw BadRequest("numbers are not a number");   
+}
+
+
+Response FilmController::put(Request* request)
+{
+    try
+    {
+        current_request = request;
+        put_params();
+        film_service.edit_film(id, name, year, length, summery, director);
+        return Response(SUCCESSFUL, OK);
+    }
+    catch(Exception& er)
+    {
+        return Response(ERROR, er.error());
+    }
+
+}
+
+Response FilmController::delete_(Request* request)
+{
+    try
+    {
+        re_initialize();
+        current_request = request;
+        set_id_param();
+        film_service.delete_(id);
+        Response(SUCCESSFUL, OK);
+    }
+    catch(Exception& er)
+    {
+        return Response(ERROR, er.error());
+    }
+
+}
+
+void FilmController::put_params()
+{
+    re_initialize();
+
+    string year_string, length_string;
+
+    set_id_param();
+    try{name = current_request->get_request_param(NAME);}
+    catch(NotFound) {}
+
+    try{summery = current_request->get_request_param(NAME);}
+    catch(NotFound) {}
+
+    try{director = current_request->get_request_param(NAME);}
+    catch(NotFound) {}    
+
+    try{
+        year_string = current_request->get_request_param(NAME);
+        if (Utils::is_valid_number(year_string))
+            year = stoi(year_string);
+    }
+    catch(NotFound) {}
+
+    try{
+        length_string = current_request->get_request_param(NAME);
+        if (Utils::is_valid_number(length_string))
+        year = stoi(length_string);
+        }
+    catch(NotFound) {}
+}
+
+void FilmController::re_initialize()
+{
+    name = NOT_CHANGED;
+    year = VALUE_NOT_CHANGED;
+    length = VALUE_NOT_CHANGED;
+    price = VALUE_NOT_CHANGED;
+    summery = NOT_CHANGED;
+    director = NOT_CHANGED;
+}
+
+void FilmController::set_id_param()
+{
+    try {
+        if (!Utils::is_valid_number(current_request->get_request_param(FILM_ID)))
+        throw BadRequest("id is not a number");
+        id = stoi(current_request->get_request_param(FILM_ID));
+    }
+    catch(NotFound)
+    {
+        throw BadRequest("film id parameter not found");
+    }
+}#include "Film.h"
 
 #include "Exceptions.h"
+#include "Comment.h"
 
 using namespace std;
 
 int Film::last_id_created = 0;
 
 Film::Film(string _name, int _year, int _length, int _price, string _summery, string _director)
-    : name(name), year(_year), length(_length), summery(_summery), director(_director)
+    : name(name), year(_year), length(_length), summery(_summery), director(_director), available(true)
 {
     last_id_created++;
     id = last_id_created;
@@ -755,10 +1182,20 @@ Film::Film(string _name, int _year, int _length, int _price, string _summery, st
     rate = 0;
 }
 
-void Film::add_comment(Comment* new_comment)
+void Film::delete_()
+{
+    available = false;
+}
+
+bool Film::is_available()
+{
+    return available;
+}
+
+void Film::add_comment(std::string content)
 {
     last_comment_id++;
-    comments[id] = new_comment;
+    comments[last_comment_id] = Comment(last_comment_id, content);
 }
 
 
@@ -766,8 +1203,8 @@ void Film::reply_comment(int comment_id, string reply_content)
 {
     if(comments.find(comment_id) == comments.end())
         throw new NotFound("comment id not found");
-    else    ;
-        //comment should have reply here, complete it later
+    else
+        comments[comment_id].add_reply(reply_content);
 }
 
 void Film::delete_comment(int comment_id)
@@ -794,19 +1231,21 @@ void Film::set_year(int _year)
     year = _year;
 }
 
+
 int Film::get_year()
 {
     return year;
 }
 
-void Film::set_year(int _year)
+void Film::set_length(int _length)
 {
-    year = _year;
+    year = _length;
 }
 
-int Film::get_year()
+
+int Film::get_length()
 {
-    return year;
+    return length;
 }
 
 void Film::set_summery(string _summery)
@@ -829,6 +1268,11 @@ string Film::get_director()
     return director;
 }
 
+int Film::get_price()
+{
+    return price;
+}
+
 int Film::get_id()
 {
     return id;
@@ -839,7 +1283,83 @@ int Film::get_id()
 
 
 
-#include "LoginController.h"
+
+
+#include "FilmService.h"
+
+#include <string>
+
+#include "DataBase.h"
+#include "UserSessionManagement.h"
+#include "Publisher.h"
+#include "Film.h"
+#include "Exceptions.h"
+
+using namespace std;
+
+void FilmService::add_film(string name, int year, int length, int price, string summery, string director)
+{
+    Publisher* publisher = publisher_user();
+    Film* new_film = new Film(name, year, length, price, summery, director);
+    DataBase::get_instance()->add_film(new_film);
+    publisher->add_film(new_film);
+}
+
+void FilmService::edit_film(int id, string _name, int _year,int _length, string _summery, string _director)
+{
+    string name, summery, director;
+    int  length, year;
+    Film* film = DataBase::get_instance()->search_film(id);
+    check_edit_access(id);
+
+    if (name != NOT_CHANGED)
+        film->set_name(name);
+    if (summery != NOT_CHANGED)
+        film->set_summery(summery);
+    if (director != NOT_CHANGED)
+        film->set_director(director);
+    if (year != VALUE_NOT_CHANGED)
+        film->set_year(year); 
+    if (length != VALUE_NOT_CHANGED)
+        film->set_length(length);   
+}
+
+void FilmService::delete_(int id)
+{
+    Film* film = DataBase::get_instance()->search_film(id);
+    check_edit_access(id);
+    film->delete_();
+}
+// void FilmService::
+
+Publisher* FilmService::publisher_user()
+{
+    Publisher* publisher = dynamic_cast <Publisher*> (UserSessionManagement::get_instance()->get_logged_user());
+    if (publisher == NULL)
+        throw PermissionDenied("this user doesnt access to edit films");
+    return publisher;
+}
+
+
+
+void FilmService::check_edit_access(int id)
+{
+    Publisher* publisher = publisher_user();
+    if (!publisher->film_is_published_by_user(id))
+        throw PermissionDenied("this film doesn't belong to this user");
+    
+}#include "FollowerController.h"
+
+#include "Utils.h"
+
+
+Response FollowerController::post(Request* request)
+{
+    current_request = request;
+    int id = Utils::string_integer_value(request->get_request_param(USER_ID));
+
+    user_service.follow(id);
+}#include "LoginController.h"
 
 #include "Response.h"
 #include "Request.h"
@@ -856,13 +1376,12 @@ Response LoginController::post(Request* req)
     try
     {
         post_required_params();
-        post_optional_params();
-        return UserService().login(req->get_request_param(USERNAME),
+        UserService().login(req->get_request_param(USERNAME),
                 md5(req->get_request_param(PASSWORD)));
     }
     catch(Exception* er)
     {
-        return Response(ERROR, er->what());
+        return Response(ERROR, er->error());
     }
 }
 
@@ -870,37 +1389,55 @@ void LoginController::post_required_params()
 {
     try
     {
-        // if (Utils::is_valid_email(current_request->get_request_param("email")))
-        //     throw new BadRequest("email is not valid"); copy this to signup controller
         current_request->get_request_param(USERNAME);
         current_request->get_request_param(PASSWORD);
 
     }
-    catch(NotFound* er)
+    catch(NotFound& er)
     {
-        delete er;
-        throw new BadRequest("a parameter has not found");
+        throw BadRequest("a required parameter has not found");
     }
 }#include <iostream>
 
 
 #include "RequestReciever.h"
+#include "ControllerManager.h"
 #include "Request.h"
+#include "Response.h"
+#include "Exceptions.h"
+
+#include "DataBase.h"
 
 using namespace std;
 
 int main()
 {
-    try
+    while (true)
     {
-        Request my_request = RequestReciever().recieve_request();
-        my_request.print_request();
-        return 0;
+        try
+        {
+            Request my_request = RequestReciever().recieve_request();
+            my_request.print_request();
+            ControllerManager controller_manager;
+            cout << "main line 19" << endl;
+            controller_manager.run_controller(&my_request);
+            cout << "main line 21" << endl;    
+            cout << controller_manager.get_response() << endl;
+        }
+        catch(Exception& er)
+        {
+            #ifdef DEBUG
+                cout<< er.error() << endl;            
+            #endif
+            
+            #ifndef DEBUG 
+                cout << er.what() << endl;
+            #endif
+
+        }
     }
-    catch(std::exception* er)
-    {
-        cout<< er->what() << endl;
-    }
+
+    return 0;
 }   /* MD5
  converted to C++ class by Frank Thilo (thilo@unix-ag.org)
  for bzflag (http://www.bzflag.org)
@@ -1262,11 +1799,22 @@ std::string md5(const std::string str)
     MD5 md5 = MD5(str);
  
     return md5.hexdigest();
-}#include "Publisher.h"
+}#include "Notification.h"
+
+
+Notification::Notification(std::string _content)
+    :content(_content), read(false)
+{}
+
+bool Notification::is_read()
+{
+    return read;
+}
+#include "Publisher.h"
 
 #include "Film.h"
-
 #include "Exceptions.h"
+#include "DataBase.h"
 
 using namespace std;
 
@@ -1274,13 +1822,6 @@ Publisher::Publisher(string email, string username, string password, int age)
     :Client(email, username, password, age)
 {}
 
-bool Publisher::valid_login_data(string _username, string _password)
-{
-    if (username == _username && password == _password)
-        return true;
-    else   
-        return false;
-}
 
 void Publisher::add_film(Film* new_film)
 {   
@@ -1295,7 +1836,7 @@ void Publisher:: delete_film(int film_id)
         published.erase(film_id);
 }
 
-bool Publisher::film_is_published_by_user(int film_id)
+bool Publisher::film_is_published_by_user(int film_id) const
 {
     if (published.find(film_id) == published.end())
         return false;
@@ -1304,7 +1845,7 @@ bool Publisher::film_is_published_by_user(int film_id)
 }
 
 
-std::vector <std::string> Publisher::get_followers()
+std::vector <int> Publisher::get_followers() const
 {
     return followers;
 }
@@ -1312,7 +1853,9 @@ std::vector <std::string> Publisher::get_followers()
 
 void Publisher:: reply_comment(int film_id, int comment_id)
 {
-
+    Film* film = DataBase::get_instance()->search_film(film_id);
+    if (film_is_published_by_user(film_id));
+        // if comment do exist or something
 }
 
 #include <iostream>
@@ -1338,9 +1881,9 @@ Request::Request(vector <string> raw_request)
 
     if (raw_request.size() >= COMPLEX_REQ_SIZE)
     {
-        cout << "number of tokens : " << raw_request.size() << endl;
+        // cout << "number of tokens : " << raw_request.size() << endl;
         if ((raw_request.size() - 3 )% 2 == 1)
-            throw new BadRequest("key and values are not pair");
+            throw BadRequest("key and values are not pair");
         for (int i = COMPLEX_REQ_SIZE - 1; i < raw_request.size(); i+=2)
         {
             parameters.insert(pair<string, string>(raw_request[i - 1], raw_request[i]));
@@ -1362,7 +1905,7 @@ string Request::get_request_param(string key)
     if (parameters.find(key) != parameters.end())
         return parameters[key];
     else
-        throw new NotFound("param doesn't exist");
+        throw    NotFound("param doesn't exist");
 }
 
 int Request::get_method()
@@ -1436,16 +1979,16 @@ void RequestReciever::control_format(vector <string> tokens)
 {
 
     vector <string> standard_methods = {GET_, PUT_, POST_, DELETE_};
-    vector <string> standard_urls = {SIGN_UP/*, FILMS, PUBLISHED, REPLIES, 
+    vector <string> standard_urls = {SIGN_UP, LOGIN , FILMS/*, PUBLISHED, REPLIES, 
             COMMENTS, FOLLOWERS, MONEY, BUY, RATE, PURCHASED, NOTIFICATION*/};
 
 
     if (!valid_token(tokens[0], standard_methods))
-        throw new BadRequest("method is not standard");
+        throw  BadRequest("method is not standard");
 
     
     if (!valid_token(tokens[1], standard_urls))
-        throw new NotFound("url is not standard");
+        throw  NotFound("url is not standard");
 
     
 }
@@ -1467,6 +2010,10 @@ Response::Response(int _type, string _content)
     :type(_type), content(_content)
 {}
 
+Response::Response()
+    :type(EMPTY)
+{}
+
 
 
 ostream& operator<<(ostream& out, const Response& responese)
@@ -1479,8 +2026,9 @@ ostream& operator<<(ostream& out, const Response& responese)
 
 #include "DataBase.h"
 #include "User.h"
-#include "Client.h";
+#include "Client.h"
 #include "Publisher.h"
+#include "Request.h"
 #include "Response.h"
 #include "UserService.h"
 #include "Utils.h"
@@ -1488,40 +2036,51 @@ ostream& operator<<(ostream& out, const Response& responese)
 #include "md5.h"
 
 #define TRUE "true"
-#define FALSE "fasle"
+#define FALSE "false"
 
 using namespace std;
 
 Response SignupController::post(Request* req)
 {
+    current_request = req;
+    publisher_flag = false;
+    
     try
     {
         User* new_user;
         post_required_params();
         post_required_params();
-        return UserService().signup(email, username, password, age, is_publisher);
+        publisher_flag = is_publisher();
+        UserService().signup(email, username, password, age, publisher_flag);
+        return Response(SUCCESSFUL, OK);
     }
     catch (Exception& er)
     {
-        return Response(ERROR, er.what());
+        return Response(ERROR, er.error());
     }
 }
 
 void SignupController::post_required_params()
 {
-    email = current_request->get_request_param(EMAIL);
-    if (! Utils::is_valid_email(email))
-        throw BadRequest("email is not valid");
+    try
+    {
+        username = current_request->get_request_param(USERNAME);
+        password = md5(current_request->get_request_param(PASSWORD));
 
-    username = current_request->get_request_param(USERNAME);
+        email = current_request->get_request_param(EMAIL);
+        if (! Utils::is_valid_email(email))
+            throw BadRequest("email is not valid");
 
-    password = md5(current_request->get_request_param(PASSWORD));
-
-    if (!Utils::is_valid_number(current_request->get_request_param(AGE))
-            && stoi(current_request->get_request_param(AGE)) <= 0)
-        throw BadRequest("age is not valid");
-    else 
-        age = stoi (current_request->get_request_param(AGE));
+        if (!Utils::is_valid_number(current_request->get_request_param(AGE))
+                && stoi(current_request->get_request_param(AGE)) <= 0)
+            throw BadRequest("age is not valid");
+        else 
+            age = stoi (current_request->get_request_param(AGE));
+    }
+    catch(NotFound& er)
+    {
+        throw BadRequest("required params are not complete");
+    }
 }
 
 
@@ -1529,21 +2088,23 @@ void SignupController::post_required_params()
 
 bool SignupController::is_publisher()
 {
-    constexpr char* NOT_ASSIGNED = "not assigned";
+    const string NOT_ASSIGNED = "not assigned";
     string publisher_flag = NOT_ASSIGNED;
     try
     {
-        publisher_flag = current_request->get_request_param(PUBLISHER);
+        publisher_flag = current_request->get_request_param(PUBLISHER_PARAM);
     }
     catch(Exception& er)
     {
-        return;
+        return false;
     }
-    if (publisher_flag != TRUE || publisher_flag != FALSE || publisher_flag != NOT_ASSIGNED)
+    if (publisher_flag != TRUE && publisher_flag != FALSE && publisher_flag != NOT_ASSIGNED)
             throw BadRequest("value of publisher flag is not valid");
 
     return publisher_flag == TRUE? true : false;
-}#include "User.h"
+}
+
+#include "User.h"
 
 using namespace std;
 
@@ -1573,6 +2134,8 @@ int User::get_type()
 }
 #include "UserService.h"
 
+#include <sstream>
+
 #include "Response.h"
 #include "Request.h"
 #include "DataBase.h"
@@ -1589,58 +2152,64 @@ UserService::UserService()
     database = DataBase::get_instance();
 }
 
-Response UserService::signup(std::string email, std::string username, std::string password, int age, bool publisher)
+void UserService::signup(std::string email, std::string username, std::string password, int age, bool publisher)
 {
-    try
-    {
-        if(database->valid_username(username))
-        {
-            User* new_client;
-            if (publisher)
-                new_client = new Publisher(email,username, password, age);
-            else
-                new_client = new Client(email,username, password, age);
+    Client* new_client;
+    if (publisher)
+        new_client = new Publisher(email,username, password, age);
+    else
+        new_client = new Client(email,username, password, age);
 
-            database->add_client(new_client);
-            login(username, password);
-            return Response(SUCCESSFUL, OK);
-        }
-        else 
-            throw new BadRequest("username already exists");
-    }
-    catch(Exception& er)
+    database->add_client(new_client);
+    login(username, password);
+}
+
+void UserService::login(string username, string password)
+{
+    if (database->search_client(username)->valid_login(username, password))
+        UserSessionManagement::get_instance()->set_logged_user(database->search_client(username));
+    else 
+        throw new BadRequest("wrong password");
+}
+
+void  UserService::follow(int following_id)
+{
+    Client* logged_client = UserSessionManagement::get_instance()->get_logged_client();
+
+    Publisher* publisher = dynamic_cast <Publisher*> (database->search_client(following_id));
+    if (publisher != nullptr)
     {
-        Response res(ERROR, er.what());
-        return res;
+        logged_client->follow(publisher);
+        publisher->new_notif(follow_notification(*logged_client));
     }
+    else 
+        throw BadRequest("following id doesnt belong to a publisher");
+}
+
+
+vector <const Client*> UserService::get_followers()
+{
+    Publisher* publisher = UserSessionManagement::get_instance()->get_logged_publisher();
+
+    vector <int> follower_ids;
+    follower_ids = publisher->get_followers();
+
+    vector <const Client*> followers;
+    for (int i = 0; i < follower_ids.size(); i++)
+        followers.push_back(database->search_client(follower_ids[i]));
     
+    return followers;
 }
 
-Response UserService::login(string username, string password)
+Notification UserService::follow_notification(Client client)
 {
-    try
-    {
-        if (database->search_client(username)->valid_login(username, password))
-        {    
-            UserSessionManagement::get_instance()->set_logged_user(database->search_client(username));
-            return Response(SUCCESSFUL, OK);
-        }
-        else 
-            throw new BadRequest("wrong password");
-    }
-    catch(Exception& er)
-    {
-        Response res(ERROR, er.what());
-    }
+    stringstream notif;
+    notif << "User " << client.get_username() << "with id" << client.get_id() << "follow you.";
+    return notif.str();
 }
-
-Response UserService::follow(std::string following)
-{}
-
-Response UserService::get_followers()
-{}
 #include "UserSessionManagement.h"
 
+#include "Exceptions.h"
 #include "User.h"
 
 UserSessionManagement* UserSessionManagement::instance = nullptr;
@@ -1661,6 +2230,25 @@ void UserSessionManagement::set_logged_user(User* _logged_user)
     logged_user = _logged_user;
 }
 
+User* UserSessionManagement::get_logged_user()
+{
+    return logged_user;
+}
+
+Publisher* UserSessionManagement::get_logged_publisher()
+{
+    Publisher* publisher = dynamic_cast <Publisher*> (logged_user);
+    if (publisher == NULL)
+        throw PermissionDenied("this is not publisher type");
+}
+
+Client* UserSessionManagement::get_logged_client()
+{
+    Client* client = dynamic_cast <Client*> (logged_user);
+    if (client == NULL)
+        throw PermissionDenied("this is not client type");
+}
+
 bool UserSessionManagement::is_publisher()
 {
     if (logged_user->get_type())
@@ -1673,6 +2261,8 @@ bool UserSessionManagement::is_publisher()
 
 #include <iostream>
 #include <regex>
+
+#include "Exceptions.h"
 
 
 using namespace std;
@@ -1745,7 +2335,7 @@ vector <string> Utils::merge_tokens(int from, int to, vector <string> words)
 
 bool Utils::is_valid_email(string email)
 {
-    auto pattern = R"(^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$)"s;
+    auto pattern = R"(^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$)";
     auto rx = std::regex{pattern, std::regex_constants::icase};
     return std::regex_match(email, rx);
 }
@@ -1760,3 +2350,11 @@ bool Utils::is_valid_number(string number)
     return true;
 }
 
+
+int Utils::string_integer_value(string number)
+{
+    if (is_valid_number(number))
+        return stoi(number);
+    else
+        throw BadRequest("value is not a number");
+}

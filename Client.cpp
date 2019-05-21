@@ -47,12 +47,17 @@ void Client::new_notif(Notification new_notif)
     notifications.push_back(new_notif);
 }
 
-int Client::get_type()
+int Client::get_type() const
 {
     return CLIENT;
 }
 
 
+
+std::string Client::get_email() const
+{
+    return email;
+}
 
 
 vector <Notification> Client::get_notification()

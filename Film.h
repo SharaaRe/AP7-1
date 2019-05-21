@@ -8,7 +8,7 @@
 #define NOT_CHANGED "not changed"
 #define VALUE_NOT_CHANGED  -1
 
-class Comment;
+#include "Comment.h"
 
 class Film
 {
@@ -16,7 +16,7 @@ public:
     Film(std::string name, int year, int length, int price, std::string summery, std::string director);
     void delete_();
     bool is_available();
-    void add_comment(Comment* new_comment);
+    void add_comment(std::string comment_content);
     void reply_comment(int comment_id, std::string reply_content);
     void delete_comment(int comment_id);
 
@@ -44,7 +44,7 @@ private:
     std::string director;
     bool available;
 
-    std::map <int, Comment*> comments;
+    std::map <int, Comment> comments;
     int last_comment_id;
     
 

@@ -3,6 +3,7 @@ ifdef DEBUG
 else
 	CC = g++ -g -std=c++11
 endif
+
 OBJECTS = \
 		main.o \
 		Utils.o \
@@ -134,7 +135,8 @@ FilmControllerSensivityList = \
 		Film.h \
 		UserSessionManagement.h \
 		Request.h \
-		Response.h \		
+		Response.h \
+				
 
 UserServiceSensivityList = \
 		UserService.cpp \
@@ -229,6 +231,9 @@ SignupController.o: $(SignupControllerSensivityList)
 
 LoginController.o: $(LoginControllerSensivityList)
 	$(CC) -c  LoginController.cpp
+
+FilmController.o: $(FilmControllerSensivityList)
+	$(CC) -c FilmController.cpp
 
 UserService.o: $(UserServiceSensivityList)
 	$(CC) -c  UserService.cpp
