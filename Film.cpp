@@ -7,12 +7,22 @@ using namespace std;
 int Film::last_id_created = 0;
 
 Film::Film(string _name, int _year, int _length, int _price, string _summery, string _director)
-    : name(name), year(_year), length(_length), summery(_summery), director(_director)
+    : name(name), year(_year), length(_length), summery(_summery), director(_director), available(true)
 {
     last_id_created++;
     id = last_id_created;
     last_comment_id = 0;
     rate = 0;
+}
+
+void Film::delete_()
+{
+    available = false;
+}
+
+bool Film::is_available()
+{
+    return available;
 }
 
 void Film::add_comment(Comment* new_comment)
@@ -58,6 +68,17 @@ void Film::set_year(int _year)
 int Film::get_year()
 {
     return year;
+}
+
+void Film::set_length(int _length)
+{
+    year = _length;
+}
+
+
+int Film::get_length()
+{
+    return length;
 }
 
 void Film::set_summery(string _summery)

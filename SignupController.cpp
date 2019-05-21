@@ -81,3 +81,4 @@ bool SignupController::is_publisher()
 
     return publisher_flag == TRUE? true : false;
 }
+

@@ -233,6 +233,9 @@ LoginController.o: $(LoginControllerSensivityList)
 UserService.o: $(UserServiceSensivityList)
 	$(CC) -c  UserService.cpp
 
+FilmService.o: $(FilmServiceSensivityList)
+	$(CC) -c FilmService.cpp
+
 User.o: $(UserSensivityList)
 	$(CC) -c  User.cpp
 

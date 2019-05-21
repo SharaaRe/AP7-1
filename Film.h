@@ -14,6 +14,8 @@ class Film
 {
 public:
     Film(std::string name, int year, int length, int price, std::string summery, std::string director);
+    void delete_();
+    bool is_available();
     void add_comment(Comment* new_comment);
     void reply_comment(int comment_id, std::string reply_content);
     void delete_comment(int comment_id);
@@ -29,7 +31,6 @@ public:
     void set_director(std::string director);
     std::string get_director();
     int get_price();
-
     int get_id();
 
 private:
@@ -41,6 +42,7 @@ private:
     int price;
     std::string summery;
     std::string director;
+    bool available;
 
     std::map <int, Comment*> comments;
     int last_comment_id;
