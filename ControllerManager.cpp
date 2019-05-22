@@ -4,6 +4,12 @@
 
 #include "SignupController.h"
 #include "LoginController.h"
+#include "FilmController.h"
+#include "FollowerController.h"
+#include "MoneyController.h"
+#include "BuyController.h"
+#include "Exceptions.h"
+#include "Response.h"
 
 using namespace std;
 
@@ -11,6 +17,10 @@ ControllerManager::ControllerManager()
 {
     controllers.insert(pair <std::string, Controller*> (SIGN_UP, new SignupController()));
     controllers.insert(pair <std::string, Controller*> (LOGIN, new LoginController()));
+    controllers.insert(pair <std::string, Controller*> (FILMS, new FilmController()));
+    controllers.insert(pair <std::string, Controller*> (FOLLOWERS, new FollowerController()));
+    controllers.insert(pair <std::string, Controller*> (MONEY, new MoneyController()));
+    controllers.insert(pair <std::string, Controller*> (BUY, new BuyController()));
 }
 
 ControllerManager::~ControllerManager()

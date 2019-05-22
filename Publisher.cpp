@@ -8,7 +8,9 @@ using namespace std;
 
 Publisher::Publisher(string email, string username, string password, int age)
     :Client(email, username, password, age)
-{}
+{
+    debt = 0;
+}
 
 
 void Publisher::add_film(Film* new_film)
@@ -49,5 +51,21 @@ void Publisher:: reply_comment(int film_id, int comment_id)
     Film* film = DataBase::get_instance()->search_film(film_id);
     if (film_is_published_by_user(film_id));
         // if comment do exist or something
+}
+
+void Publisher::sell_film(int publisher_part)
+{
+    debt += publisher_part;
+}
+
+int Publisher::get_debt()
+{
+    return debt;
+}
+
+void Publisher::pay_debt()
+{
+    credit += debt;
+    debt = 0;
 }
 

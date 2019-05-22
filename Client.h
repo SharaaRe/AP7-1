@@ -24,13 +24,14 @@ public:
     void follow(Publisher* follwing);
     void increase_credit(int amount);
     void purchase_film(Film* film);
-    void new_notif(Notification new_notif);
+    void send_notif(Notification new_notif);
 
     bool is_purchased(int film_id) const;
     virtual int get_type() const;
     std::string get_email() const;
     std::vector <Notification> get_notification();
     std::vector <Notification> get_read_notification();
+    std::vector <int> get_purchased();
 
 protected:
     static int last_id_created;

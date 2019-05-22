@@ -2,6 +2,8 @@
 #define CONTROLLER_H
 
 #include "Request.h"
+#include "Response.h"
+
 class Response;
 
 class Controller 
@@ -14,6 +16,7 @@ class Controller
         virtual Response delete_(Request* request);
     protected:
         Request* current_request;
+        
 
 };
 

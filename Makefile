@@ -19,12 +19,17 @@ OBJECTS = \
 		SignupController.o \
 		LoginController.o \
 		FilmController.o \
+		FollowerController.o \
+		MoneyController.o \
+		BuyController.o \
 		UserService.o \
 		FilmService.o \
 		User.o \
 		Client.o \
 		Publisher.o \
 		Film.o \
+		Comment.o \
+		UTflix.o \
 
 mainSensitivityList = \
 		main.cpp \
@@ -136,7 +141,34 @@ FilmControllerSensivityList = \
 		UserSessionManagement.h \
 		Request.h \
 		Response.h \
-				
+
+FollowerControllerSensivityList = \
+		FollowerController.cpp \
+		FollowerController.h \
+		Controller.h \
+		UserService.h \
+		Film.h \
+		User.h \
+		Publisher.h \
+		Client.h \
+
+MoneyControllerSensivityList = \
+		MoneyController.cpp \
+		MoneyController.h \
+		Controller.h \
+		UserSessionManagement.h \
+		Client.h \
+		Publisher.h \
+
+BuyControllerSensivityList = \
+		BuyController.cpp \
+		BuyController.h \
+		Controller.h \
+		UserSessionManagement.h \
+		Client.h \
+		UTflix.h \
+		Publisher. h \
+		
 
 UserServiceSensivityList = \
 		UserService.cpp \
@@ -157,6 +189,7 @@ FilmServiceSensivityList = \
 		UserSessionManagement.h \
 		Client.h \
 		Publisher.h \
+		Comment.h \
 
 
 UserSensivityList = \
@@ -187,6 +220,16 @@ FilmSensivityList = \
 		Film.h \
 		Exceptions.h \
 		Utils.h \
+
+CommentSensivitiyList = \
+		Comment.cpp \
+		Comment.h \
+
+UTflixSensivityList = \
+		UTflix.cpp \
+		UTflix.h \
+		Publisher.h \
+		
 
 all: UTflix.out 
 
@@ -235,6 +278,12 @@ LoginController.o: $(LoginControllerSensivityList)
 FilmController.o: $(FilmControllerSensivityList)
 	$(CC) -c FilmController.cpp
 
+FollowerController.o: $(FollowerController)
+	$(CC) -c FollowerController.cpp
+
+MoneyController.o: $(MoneyControllerSensivityList)
+	$(CC) -c MoneyController.cpp
+
 UserService.o: $(UserServiceSensivityList)
 	$(CC) -c  UserService.cpp
 
@@ -252,6 +301,12 @@ Publisher.o: $(PublisherSensivityList)
 
 Film.o: $(FilmSensivityList)
 	$(CC) -c  Film.cpp
+
+Comment.o: $(CommentSensivitiyList)
+	$(CC) -c  Comment.cpp
+
+UTflix.o: $(UTflixSensivityList)
+	$(CC) -c UTflix.cpp
 
 UTflix.out: $(OBJECTS)
 	$(CC) -o UTflix.out $(OBJECTS)

@@ -9,7 +9,7 @@ public:
     Comment() = default;
     Comment(int id, std::string content);
     void add_reply(std::string reply);
-    int get_id() const ;
+    int get_id() const;
     std::string get_content() const;
     std::string get_reply() const;
 private:

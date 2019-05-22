@@ -34,15 +34,15 @@ void Client::increase_credit(int amount)
 void Client::purchase_film(Film* film)
 {
     if (credit < film->get_price());
-        // throw some exception
+        throw PermissionDenied("not enough money");
     if (purchased.find(film->get_id()) != purchased.end())
         throw BadRequest("film is already purchased");
+
     credit -= film->get_price();
     purchased.insert(pair <int, Film*> (film->get_id(), film));
-
 }
 
-void Client::new_notif(Notification new_notif)
+void Client::send_notif(Notification new_notif)
 {
     notifications.push_back(new_notif);
 }
@@ -76,5 +76,10 @@ vector <Notification> Client::get_read_notification()
 {
     return read_notification;
 }
+
+// vector <const Film*> Client::get_purchased()
+// {
+//     return purchase_film
+// }
 
 

@@ -20,6 +20,7 @@ std::string Comment::get_reply() const
 std::string Comment::get_content() const
 {
     return content;
+}
 
 int Comment::get_id() const
 {

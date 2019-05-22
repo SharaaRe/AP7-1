@@ -16,6 +16,7 @@ public:
     static bool is_in_string(char character, std::string checkString);
     static bool is_valid_email(std::string email);
     static bool is_valid_number(std::string number);
+    static int string_integer_value(std::string number);
 // private:
     // int something_alaki;
 

@@ -18,9 +18,9 @@ Response FollowerController::post(Request* request)
 
         user_service.follow(id);
     }
-    catch(Exception& er)
+    catch(NotFound& er)
     {
-        return Response(ERROR, er.error());
+        throw BadRequest("no id parameter");
     }
 
 }
@@ -28,14 +28,9 @@ Response FollowerController::post(Request* request)
 
 Response FollowerController::get(Request* request)
 {
-    try{
-        current_request = request;
-        return get_follower_response(user_service.get_followers());
-    }
-    catch(Exception& er)
-    {
-        return Response(ERROR, er.error());
-    }
+
+    current_request = request;
+    return get_follower_response(user_service.get_followers());
     
 }
 

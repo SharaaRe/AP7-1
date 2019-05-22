@@ -1,4 +1,19 @@
-#ifndef CLIENT_H
+#ifndef BUY_CONTROLLER_H
+#define BUY_CONTROLLER_H
+
+#include "Controller.h"
+
+class BuyController : public Controller
+{
+public:
+    virtual Response post(Request* request);
+private:
+    int calculate_publisher_debt(int price, float rate);
+
+};
+
+
+#endif#ifndef CLIENT_H
 #define CLIENT_H
 
 
@@ -24,12 +39,14 @@ public:
     void follow(Publisher* follwing);
     void increase_credit(int amount);
     void purchase_film(Film* film);
-    void new_notif(Notification new_notif);
-    
-    bool is_purchased(int film_id);
-    virtual int get_type();
+    void send_notif(Notification new_notif);
+
+    bool is_purchased(int film_id) const;
+    virtual int get_type() const;
+    std::string get_email() const;
     std::vector <Notification> get_notification();
     std::vector <Notification> get_read_notification();
+    std::vector <int> get_purchased();
 
 protected:
     static int last_id_created;
@@ -56,7 +73,7 @@ public:
     Comment() = default;
     Comment(int id, std::string content);
     void add_reply(std::string reply);
-    int get_id() const ;
+    int get_id() const;
     std::string get_content() const;
     std::string get_reply() const;
 private:
@@ -69,6 +86,8 @@ private:
 #define CONTROLLER_H
 
 #include "Request.h"
+#include "Response.h"
+
 class Response;
 
 class Controller 
@@ -81,6 +100,7 @@ class Controller
         virtual Response delete_(Request* request);
     protected:
         Request* current_request;
+        
 
 };
 
@@ -234,12 +254,14 @@ class FilmController :public Controller
 class Film
 {
 public:
-    Film(std::string name, int year, int length, int price, std::string summery, std::string director);
+    Film(std::string name, int year, int length, int price, std::string summery, std::string director, int publisher_id);
     void delete_();
     bool is_available();
     void add_comment(std::string comment_content);
     void reply_comment(int comment_id, std::string reply_content);
     void delete_comment(int comment_id);
+    void add_score(int score);
+
 
     void set_name(std::string name);
     std::string get_name();
@@ -253,6 +275,8 @@ public:
     std::string get_director();
     int get_price();
     int get_id();
+    float get_rate();
+    int get_publisher_id();
 
 private:
     static int last_id_created;
@@ -265,9 +289,11 @@ private:
     std::string director;
     bool available;
 
+    int publisher_id;
+
     std::map <int, Comment> comments;
     int last_comment_id;
-    
+    std::vector <int> scores;
 
     float rate;
 };
@@ -276,6 +302,7 @@ private:
 #define FILM_SERVICE_H
 
 #include <string>
+#include <vector>
 
 #define NOT_CHANGED "not changed"
 #define VALUE_NOT_CHANGED -1
@@ -289,9 +316,19 @@ public:
     void edit_film(int id, std::string name = NOT_CHANGED, int year = VALUE_NOT_CHANGED,int length = VALUE_NOT_CHANGED,
              std::string summery = NOT_CHANGED, std::string director = NOT_CHANGED);
     void delete_(int id);
+    void rate(int id, int score);
+    std::vector <const Film*> get_purchased();
+
 private:
-    Publisher* publisher_user();
     void check_edit_access(int id);
+    void send_film_add_notif(std::vector <int> followers_id);
+    void buy_film(int film_id);
+    int calculate_publisher_part(float rate, int price);
+    Notification new_film_notification(Publisher publisher);
+    Notification rate_notification(Client client, Film film);
+    Notification buy_notification(Client client, Film film);
+    Notification comment_notification(Client client, Film film);
+
 };
 
 #endif#ifndef FOLLOWER_CONTROLLER_H
@@ -419,7 +456,18 @@ private:
 std::string md5(const std::string str);
  
 #endif
-#ifndef NOTIFICATION_H
+#ifndef MONEY_CONTROLLER_H
+#define MONEY_CONTROLLER_H
+
+#include "Controller.h"
+
+class MoneyController :public Controller
+{
+public:
+    virtual Response post(Request* request);
+};
+
+#endif#ifndef NOTIFICATION_H
 #define NOTIFICATION_H
 
 #include <string>
@@ -447,14 +495,19 @@ class Publisher: public Client
 {
 public:
     Publisher(std::string email, std::string username, std::string password, int age);
-    virtual void add_film(Film* film);
-    virtual void delete_film(int film_id);
-    virtual bool film_is_published_by_user(int film_id) const;
-    virtual std::vector <int> get_followers() const;
-    virtual void reply_comment(int film_id, int comment_id);
+    void add_film(Film* film);
+    void delete_film(int film_id);
+    bool film_is_published_by_user(int film_id) const;
+    void add_follower(int id);
+    std::vector <int> get_followers() const;
+    void reply_comment(int film_id, int comment_id);
+    void sell_film(int publisher_part);
+    int get_debt();
+    void pay_debt();
 protected:
+    int debt;
     std::map <int, Film*> published;
-    std::vector <int> followers; //keep users ids;
+    std::vector <int> followers;
 };
 
 #endif#ifndef REQUEST_H
@@ -492,6 +545,7 @@ public:
     std::string get_request_param(std::string);
     int get_method();
     std::string get_url();
+    int number_of_params();
 private:
     int method;
     std::string url;
@@ -581,9 +635,9 @@ public:
     User(std::string username, std::string password);
     bool valid_login(std::string username, std::string password);
 
-    std::string get_username();
-    int get_id();
-    virtual int get_type();
+    std::string get_username() const;
+    int get_id() const;
+    virtual int get_type() const;
 
 protected:
     // static int type;
@@ -657,22 +711,24 @@ private:
 
 #include <string>
 
+#include "Publisher.h"
+
 class DataBase;
 class Controller;
 class RequestReciever;
 
-class UtFlix 
+
+class UTflix 
 {
 public:
-    UtFlix* get_instance();
-    ~UtFlix();
+    static UTflix* get_instance();
+    void pay_publisher_debt(Publisher* publisher);
+    void add_credit(int amount);
+    ~UTflix();
 private:
-    UtFlix();
-    static UtFlix* instance;
-    DataBase* database;
-    RequsetReciever* interface;
-    Controller* controler;
-    std::string logged_in_username;
+    UTflix();
+    static UTflix* instance;
+    int credit;
 
 };
 
@@ -695,12 +751,38 @@ public:
     static bool is_in_string(char character, std::string checkString);
     static bool is_valid_email(std::string email);
     static bool is_valid_number(std::string number);
+    static int string_integer_value(std::string number);
 // private:
     // int something_alaki;
 
 };
 
-#endif#include "Client.h"
+#endif#include "BuyController.h"
+
+#include "UserSessionManagement.h"
+#include "DataBase.h"
+#include "Utils.h"
+#include "Client.h"
+#include "Film.h"
+#include "Exceptions.h"
+#include "Publisher.h"
+
+#define FILM_ID "film_id"
+
+Response BuyController::post(Request* request)
+{
+    Client* client = UserSessionManagement::get_instance()->get_logged_client();
+    Film* film = DataBase::get_instance()->search_film(Utils::string_integer_value(request->get_request_param(FILM_ID)));
+    Publisher* publisher = dynamic_cast <Publisher*> (DataBase::get_instance()->search_client(film->get_publisher_id()));
+    if (film->is_available())
+    {
+        client->purchase_film(film);
+        publisher->sell_film(film->calculate_publisher_part());
+        Response(SUCCESSFUL, OK);
+    }
+    else
+        throw NotFound("film is not available");
+}#include "Client.h"
 #include <iostream>
 
 #include "Exceptions.h"
@@ -736,25 +818,30 @@ void Client::increase_credit(int amount)
 void Client::purchase_film(Film* film)
 {
     if (credit < film->get_price());
-        // throw some exception
+        throw PermissionDenied("not enough money");
     if (purchased.find(film->get_id()) != purchased.end())
         throw BadRequest("film is already purchased");
+
     credit -= film->get_price();
     purchased.insert(pair <int, Film*> (film->get_id(), film));
-
 }
 
-void Client::new_notif(Notification new_notif)
+void Client::send_notif(Notification new_notif)
 {
     notifications.push_back(new_notif);
 }
 
-int Client::get_type()
+int Client::get_type() const
 {
     return CLIENT;
 }
 
 
+
+std::string Client::get_email() const
+{
+    return email;
+}
 
 
 vector <Notification> Client::get_notification()
@@ -773,6 +860,11 @@ vector <Notification> Client::get_read_notification()
 {
     return read_notification;
 }
+
+// vector <const Film*> Client::get_purchased()
+// {
+//     return purchase_film
+// }
 
 
 #include "Comment.h"
@@ -797,6 +889,7 @@ std::string Comment::get_reply() const
 std::string Comment::get_content() const
 {
     return content;
+}
 
 int Comment::get_id() const
 {
@@ -838,6 +931,12 @@ Response Controller::delete_(Request* request)
 
 #include "SignupController.h"
 #include "LoginController.h"
+#include "FilmController.h"
+#include "FollowerController.h"
+#include "MoneyController.h"
+#include "BuyController.h"
+#include "Exceptions.h"
+#include "Response.h"
 
 using namespace std;
 
@@ -845,6 +944,10 @@ ControllerManager::ControllerManager()
 {
     controllers.insert(pair <std::string, Controller*> (SIGN_UP, new SignupController()));
     controllers.insert(pair <std::string, Controller*> (LOGIN, new LoginController()));
+    controllers.insert(pair <std::string, Controller*> (FILMS, new FilmController()));
+    controllers.insert(pair <std::string, Controller*> (FOLLOWERS, new FollowerController()));
+    controllers.insert(pair <std::string, Controller*> (MONEY, new MoneyController()));
+    controllers.insert(pair <std::string, Controller*> (BUY, new BuyController()));
 }
 
 ControllerManager::~ControllerManager()
@@ -1169,12 +1272,14 @@ void FilmController::set_id_param()
 #include "Exceptions.h"
 #include "Comment.h"
 
+enum {MIN_SCORE = 0, MAX_SCORE = 10};
+
 using namespace std;
 
 int Film::last_id_created = 0;
 
-Film::Film(string _name, int _year, int _length, int _price, string _summery, string _director)
-    : name(name), year(_year), length(_length), summery(_summery), director(_director), available(true)
+Film::Film(string _name, int _year, int _length, int _price, string _summery, string _director, int _publisher_id)
+    : name(name), year(_year), length(_length), summery(_summery), director(_director), available(true), publisher_id(_publisher_id)
 {
     last_id_created++;
     id = last_id_created;
@@ -1213,6 +1318,14 @@ void Film::delete_comment(int comment_id)
         throw new NotFound("comment id not found");
     else
         comments.erase(comment_id); 
+}
+
+void Film::add_score(int score)
+{
+    if (score >= MIN_SCORE && score <= MAX_SCORE)
+        scores.push_back(score);
+    else
+        throw BadRequest("rate range is not right");
 }
 
 
@@ -1278,6 +1391,25 @@ int Film::get_id()
     return id;
 }
 
+float Film::get_rate()
+{
+    float _rate = 0;
+    int sum;
+    for (int i = 0; i < scores.size(); i++)
+        sum += scores[i];
+    
+    rate = ((float) sum ) / scores.size();
+    return rate;
+}
+
+int Film::get_publisher_id()
+{
+    return publisher_id;
+}
+
+
+
+
 
 
 
@@ -1288,21 +1420,33 @@ int Film::get_id()
 #include "FilmService.h"
 
 #include <string>
+#include <sstream>
 
 #include "DataBase.h"
 #include "UserSessionManagement.h"
 #include "Publisher.h"
 #include "Film.h"
 #include "Exceptions.h"
+#include "UTflix.h"
+
+enum {WEAK = 80, MEDIUM = 90, HIGH = 95};
+
+#define WEAK_BORDER 5.0
+#define HIGH_BORDER 8.0
+
+#define USER_ST "User "
+#define PUBLISHER_ST "Publisher "
+#define WITH_ID " with id "
 
 using namespace std;
 
 void FilmService::add_film(string name, int year, int length, int price, string summery, string director)
 {
-    Publisher* publisher = publisher_user();
-    Film* new_film = new Film(name, year, length, price, summery, director);
+    Publisher* publisher = UserSessionManagement::get_instance()->get_logged_publisher();
+    Film* new_film = new Film(name, year, length, price, summery, director, publisher->get_id());
     DataBase::get_instance()->add_film(new_film);
     publisher->add_film(new_film);
+    send_film_add_notif(publisher->get_followers());
 }
 
 void FilmService::edit_film(int id, string _name, int _year,int _length, string _summery, string _director)
@@ -1330,35 +1474,169 @@ void FilmService::delete_(int id)
     check_edit_access(id);
     film->delete_();
 }
-// void FilmService::
 
-Publisher* FilmService::publisher_user()
+void FilmService::rate(int id, int score)
 {
-    Publisher* publisher = dynamic_cast <Publisher*> (UserSessionManagement::get_instance()->get_logged_user());
-    if (publisher == NULL)
-        throw PermissionDenied("this user doesnt access to edit films");
-    return publisher;
+    Film* film = DataBase::get_instance()->search_film(id);
+    Client* client = UserSessionManagement::get_instance()->get_logged_client();
+    if (client->is_purchased(id))
+    {
+        film->add_score(score);
+        // make notif
+    }
+    else
+        throw PermissionDenied("this client didn't buy this film");
+
 }
+
+// vector <const Film*> get_purchased()
+// {
+//     Client* client = UserSessionManagement::get_instance()->get_logged_client();
+//     client->get
+// }
+
+
 
 
 
 void FilmService::check_edit_access(int id)
 {
-    Publisher* publisher = publisher_user();
+    Publisher* publisher = UserSessionManagement::get_instance()->get_logged_publisher();
     if (!publisher->film_is_published_by_user(id))
         throw PermissionDenied("this film doesn't belong to this user");
     
-}#include "FollowerController.h"
+}
+
+void FilmService::send_film_add_notif(vector <int> followers_id)
+{
+    string notif;
+    Publisher* publisher_user = UserSessionManagement::get_instance()->get_logged_publisher();
+    notif = new_film_notification(*publisher_user);
+    for (int i = 0; i < followers_id.size(); i++)
+    {
+        Client* follower = DataBase::get_instance()->search_client(followers_id[i]);
+        follower->send_notif(notif);
+    }
+
+}
+
+void FilmService::buy_film(int film_id)
+{
+    Client* client = UserSessionManagement::get_instance()->get_logged_client();
+    Film* film = DataBase::get_instance()->search_film(film_id);
+    int publisher_id = film->get_publisher_id();
+    Publisher* publisher = dynamic_cast <Publisher*> (DataBase::get_instance()->search_client(publisher_id));
+
+    if (film->is_available())
+    {
+        client->purchase_film(film);
+        int publisher_share = calculate_publisher_part(film->get_rate(), film->get_price());
+        publisher->sell_film(publisher_share);
+        publisher->send_notif(buy_notification(*client, *film));
+    }
+    else
+        throw NotFound("film is not available");
+}
+
+
+
+int FilmService::calculate_publisher_part(float rate, int price)
+{
+    if (rate < WEAK_BORDER)
+        return price * WEAK / 100;
+    
+    if (rate >= WEAK_BORDER && rate < HIGH_BORDER)
+        return price * MEDIUM / 100;
+
+    if (rate >= HIGH_BORDER)
+        return price * HIGH / 100;
+
+}
+
+Notification FilmService::new_film_notification(Publisher publisher)
+{
+    stringstream notif;
+    notif << PUBLISHER << publisher.get_username() << WITH_ID << publisher.get_id() << "register new film.";
+    return notif.str();
+}
+
+Notification FilmService::rate_notification(Client client, Film film)
+{
+    stringstream notif;
+    notif << USER_ST << client.get_username() << WITH_ID << client.get_id() 
+            << " rate on your film " << WITH_ID << film.get_id() << ".";
+    return notif.str();
+}
+
+Notification FilmService::comment_notification(Client client, Film film)
+{
+    stringstream notif;
+    notif << USER_ST << client.get_username() << WITH_ID << client.get_id() 
+            << " comment on your film " << WITH_ID << film.get_id() << ".";
+    return notif.str();
+}
+
+Notification FilmService::buy_notification(Client client, Film film)
+{
+    stringstream notif;
+    notif << USER_ST << client.get_username() << WITH_ID << client.get_id() 
+            << " buy your film " << WITH_ID << film.get_id() << ".";
+    return notif.str();
+}
+
+#include "FollowerController.h"
+
+#include <sstream>
 
 #include "Utils.h"
+#include "Exceptions.h"
+#include "Response.h"
+#include "Client.h"
 
+using namespace std;
 
 Response FollowerController::post(Request* request)
 {
-    current_request = request;
-    int id = Utils::string_integer_value(request->get_request_param(USER_ID));
+    try 
+    {
+        current_request = request;
+        int id = Utils::string_integer_value(request->get_request_param(USER_ID));
 
-    user_service.follow(id);
+        user_service.follow(id);
+    }
+    catch(Exception& er)
+    {
+        return Response(ERROR, er.error());
+    }
+
+}
+
+
+Response FollowerController::get(Request* request)
+{
+    try{
+        current_request = request;
+        return get_follower_response(user_service.get_followers());
+    }
+    catch(Exception& er)
+    {
+        return Response(ERROR, er.error());
+    }
+    
+}
+
+
+Response FollowerController::get_follower_response (vector <const Client*> clients)
+{
+    stringstream res;
+    res << "#. User Id | User Username | User Email" << endl;
+    for (int i = 0; i < clients.size(); i++)
+    {
+        res << i + 1 << ". " << clients[i]->get_id() << " | "
+                 << clients[i]->get_username() << " | " << clients[i]->get_email() << endl;
+    }
+
+    return Response(SUCCESSFUL,  res.str());
 }#include "LoginController.h"
 
 #include "Response.h"
@@ -1799,6 +2077,40 @@ std::string md5(const std::string str)
     MD5 md5 = MD5(str);
  
     return md5.hexdigest();
+}#include "MoneyController.h"
+
+#include "UserService.h"
+#include "UserSessionManagement.h"
+#include "Client.h"
+#include "Utils.h"
+#include "Exceptions.h"
+#include "UTflix.h"
+
+#define AMOUNT "amount"
+
+Response MoneyController::post(Request* request)
+{
+    try
+    {
+        if(request->number_of_params() > 0)
+        {
+            current_request = request;
+            Client* client = UserSessionManagement::get_instance()->get_logged_client();
+            client->increase_credit(Utils::string_integer_value(request->get_request_param(AMOUNT)));
+        }
+        else
+        {
+            Publisher* publisher = UserSessionManagement::get_instance()->get_logged_publisher();
+            UTflix::get_instance()->pay_publisher_debt(publisher);
+        }
+
+        return Response(SUCCESSFUL, OK);
+    }
+    catch(Exception& er)
+    {
+        return Response(ERROR, er.error());
+    }
+
 }#include "Notification.h"
 
 
@@ -1820,7 +2132,9 @@ using namespace std;
 
 Publisher::Publisher(string email, string username, string password, int age)
     :Client(email, username, password, age)
-{}
+{
+    debt = 0;
+}
 
 
 void Publisher::add_film(Film* new_film)
@@ -1844,6 +2158,11 @@ bool Publisher::film_is_published_by_user(int film_id) const
         return true;
 }
 
+void Publisher::add_follower(int id)
+{
+    followers.push_back(id);
+}
+
 
 std::vector <int> Publisher::get_followers() const
 {
@@ -1856,6 +2175,22 @@ void Publisher:: reply_comment(int film_id, int comment_id)
     Film* film = DataBase::get_instance()->search_film(film_id);
     if (film_is_published_by_user(film_id));
         // if comment do exist or something
+}
+
+void Publisher::sell_film(int publisher_part)
+{
+    debt += publisher_part;
+}
+
+int Publisher::get_debt()
+{
+    return debt;
+}
+
+void Publisher::pay_debt()
+{
+    credit += debt;
+    debt = 0;
 }
 
 #include <iostream>
@@ -1905,7 +2240,7 @@ string Request::get_request_param(string key)
     if (parameters.find(key) != parameters.end())
         return parameters[key];
     else
-        throw    NotFound("param doesn't exist");
+        throw  NotFound("param doesn't exist");
 }
 
 int Request::get_method()
@@ -1916,6 +2251,11 @@ int Request::get_method()
 std::string Request::get_url()
 {
     return url;
+}
+
+int Request::number_of_params()
+{
+    return parameters.size();
 }#include <iostream>
 
 #include "Request.h"
@@ -2118,17 +2458,17 @@ bool User::valid_login(string _username, string _password)
     return (username == _username && password == _password);
 }
 
-int User::get_id()
+int User::get_id() const
 {
     return id;
 }
 
-std::string User::get_username()
+std::string User::get_username() const
 {
     return username;
 }
 
-int User::get_type()
+int User::get_type() const
 {
     return ADMIN;
 }
@@ -2180,6 +2520,7 @@ void  UserService::follow(int following_id)
     if (publisher != nullptr)
     {
         logged_client->follow(publisher);
+        publisher->add_follower(logged_client->get_id());
         publisher->new_notif(follow_notification(*logged_client));
     }
     else 
@@ -2211,6 +2552,8 @@ Notification UserService::follow_notification(Client client)
 
 #include "Exceptions.h"
 #include "User.h"
+#include "Publisher.h"
+#include "Client.h"
 
 UserSessionManagement* UserSessionManagement::instance = nullptr;
 
@@ -2257,6 +2600,28 @@ bool UserSessionManagement::is_publisher()
         return false;
 }
 
+#include "UTflix.h"
+
+
+UTflix* UTflix::instance = NULL;
+
+UTflix* UTflix::get_instance()
+{
+    if (instance == NULL)
+        instance = new UTflix();
+    return instance;
+}
+
+void UTflix::pay_publisher_debt(Publisher* publisher)
+{
+    credit -= publisher->get_debt();
+    publisher->pay_debt();
+}
+
+void UTflix::add_credit(int amount)
+{
+    credit += amount;
+}
 #include "Utils.h"
 
 #include <iostream>

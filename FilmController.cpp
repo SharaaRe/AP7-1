@@ -59,35 +59,19 @@ void FilmController::post_required_params()
 
 Response FilmController::put(Request* request)
 {
-    try
-    {
-        current_request = request;
-        put_params();
-        film_service.edit_film(id, name, year, length, summery, director);
-        return Response(SUCCESSFUL, OK);
-    }
-    catch(Exception& er)
-    {
-        return Response(ERROR, er.error());
-    }
-
+    current_request = request;
+    put_params();
+    film_service.edit_film(id, name, year, length, summery, director);
+    return Response(SUCCESSFUL, OK);
 }
 
 Response FilmController::delete_(Request* request)
 {
-    try
-    {
-        re_initialize();
-        current_request = request;
-        set_id_param();
-        film_service.delete_(id);
-        Response(SUCCESSFUL, OK);
-    }
-    catch(Exception& er)
-    {
-        return Response(ERROR, er.error());
-    }
-
+    re_initialize();
+    current_request = request;
+    set_id_param();
+    film_service.delete_(id);
+    Response(SUCCESSFUL, OK);
 }
 
 void FilmController::put_params()
@@ -100,24 +84,22 @@ void FilmController::put_params()
     try{name = current_request->get_request_param(NAME);}
     catch(NotFound) {}
 
-    try{summery = current_request->get_request_param(NAME);}
+    try{summery = current_request->get_request_param(SUMMERY);}
     catch(NotFound) {}
 
-    try{director = current_request->get_request_param(NAME);}
+    try{director = current_request->get_request_param(DIRECTOR);}
     catch(NotFound) {}    
 
     try{
-        year_string = current_request->get_request_param(NAME);
-        if (Utils::is_valid_number(year_string))
-            year = stoi(year_string);
+        year_string = current_request->get_request_param(YEAR);
+        year = Utils::string_integer_value(year_string);
     }
     catch(NotFound) {}
 
     try{
-        length_string = current_request->get_request_param(NAME);
-        if (Utils::is_valid_number(length_string))
-        year = stoi(length_string);
-        }
+        length_string = current_request->get_request_param(LENGTH);
+        length = Utils::string_integer_value(length_string);
+    }
     catch(NotFound) {}
 }
 

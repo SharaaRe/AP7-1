@@ -33,6 +33,7 @@ public:
     std::string get_request_param(std::string);
     int get_method();
     std::string get_url();
+    int number_of_params();
 private:
     int method;
     std::string url;

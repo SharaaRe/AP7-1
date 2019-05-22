@@ -45,7 +45,7 @@ string Request::get_request_param(string key)
     if (parameters.find(key) != parameters.end())
         return parameters[key];
     else
-        throw    NotFound("param doesn't exist");
+        throw  NotFound("param doesn't exist");
 }
 
 int Request::get_method()
@@ -56,4 +56,9 @@ int Request::get_method()
 std::string Request::get_url()
 {
     return url;
+}
+
+int Request::number_of_params()
+{
+    return parameters.size();
 }

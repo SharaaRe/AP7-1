@@ -17,7 +17,11 @@ public:
     void add_follower(int id);
     std::vector <int> get_followers() const;
     void reply_comment(int film_id, int comment_id);
+    void sell_film(int publisher_part);
+    int get_debt();
+    void pay_debt();
 protected:
+    int debt;
     std::map <int, Film*> published;
     std::vector <int> followers;
 };

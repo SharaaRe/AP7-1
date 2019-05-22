@@ -13,12 +13,14 @@
 class Film
 {
 public:
-    Film(std::string name, int year, int length, int price, std::string summery, std::string director);
+    Film(std::string name, int year, int length, int price, std::string summery, std::string director, int publisher_id);
     void delete_();
     bool is_available();
     void add_comment(std::string comment_content);
     void reply_comment(int comment_id, std::string reply_content);
     void delete_comment(int comment_id);
+    void add_score(int score);
+
 
     void set_name(std::string name);
     std::string get_name();
@@ -32,6 +34,8 @@ public:
     std::string get_director();
     int get_price();
     int get_id();
+    float get_rate();
+    int get_publisher_id();
 
 private:
     static int last_id_created;
@@ -44,9 +48,11 @@ private:
     std::string director;
     bool available;
 
+    int publisher_id;
+
     std::map <int, Comment> comments;
     int last_comment_id;
-    
+    std::vector <int> scores;
 
     float rate;
 };

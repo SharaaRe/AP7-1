@@ -14,6 +14,7 @@
 
 class Response;
 class DataBase;
+class UserSessionManagement;
 class Client;
 
 typedef std::string Notification;
@@ -28,6 +29,7 @@ public:
     std::vector <const Client*> get_followers();
 private:
     DataBase* database;
+    UserSessionManagement* user_manager;
     Notification follow_notification(Client follower);
     
 

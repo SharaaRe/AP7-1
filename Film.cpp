@@ -3,12 +3,14 @@
 #include "Exceptions.h"
 #include "Comment.h"
 
+enum {MIN_SCORE = 0, MAX_SCORE = 10};
+
 using namespace std;
 
 int Film::last_id_created = 0;
 
-Film::Film(string _name, int _year, int _length, int _price, string _summery, string _director)
-    : name(name), year(_year), length(_length), summery(_summery), director(_director), available(true)
+Film::Film(string _name, int _year, int _length, int _price, string _summery, string _director, int _publisher_id)
+    : name(name), year(_year), length(_length), summery(_summery), director(_director), available(true), publisher_id(_publisher_id)
 {
     last_id_created++;
     id = last_id_created;
@@ -47,6 +49,14 @@ void Film::delete_comment(int comment_id)
         throw new NotFound("comment id not found");
     else
         comments.erase(comment_id); 
+}
+
+void Film::add_score(int score)
+{
+    if (score >= MIN_SCORE && score <= MAX_SCORE)
+        scores.push_back(score);
+    else
+        throw BadRequest("rate range is not right");
 }
 
 
@@ -111,6 +121,25 @@ int Film::get_id()
 {
     return id;
 }
+
+float Film::get_rate()
+{
+    float _rate = 0;
+    int sum;
+    for (int i = 0; i < scores.size(); i++)
+        sum += scores[i];
+    
+    rate = ((float) sum ) / scores.size();
+    return rate;
+}
+
+int Film::get_publisher_id()
+{
+    return publisher_id;
+}
+
+
+
 
 
 
