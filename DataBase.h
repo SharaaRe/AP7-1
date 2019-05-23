@@ -2,6 +2,7 @@
 #define DATABASE_H
 
 #include <map>
+#include <vector>
 #include <string>
 
 class Film;
@@ -19,6 +20,8 @@ public:
     Client* search_client(int id);
     Client* search_client(std::string username);
     Film* search_film(int id);
+
+    std::vector <Film> get_all_films();
 
     bool film_exist(int id);
     bool publisher_exist(int id);

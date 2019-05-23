@@ -14,8 +14,13 @@ class FilmFilterService
 {
 public:
     FilmFilterService(std::vector <Film> films);
+    FilmFilterService() = default;
     std::vector <Film> filter(std::string name = NOT_FILTERED_ST, int max_year = NOT_FILTERED, int min_year = NOT_FILTERED,
              int price = NOT_FILTERED, float min_rate = NOT_FILTERED, std::string director = NOT_FILTERED_ST);
+    void stable_sort_by_rate();
+    void filter_purchased(std::vector <int> purchased);
+    void filter_not_available();
+    std::vector <Film> get_filtered();
 protected:
     std::vector <Film> films;
     void filter_by_name(std::string name);
@@ -24,9 +29,6 @@ protected:
     void filter_by_price(int price);
     void filter_by_min_rate(float rate);
     void filter_by_director(std::string director);
-    void stable_sort_by_rate();
-    void filter_purchased(std::vector <int> purchased);
-    void filter_not_available();
     static bool compare_by_rate(Film first, Film second);
 };
 

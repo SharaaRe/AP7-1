@@ -4,7 +4,11 @@
 #include <string>
 #include <vector>
 
+#include "Client.h"
+#include "Publisher.h"
+#include "Film.h"
 
+#define NAME "name"
 #define FILM_ID "film_id"
 #define COMMENT_ID "comment_id"
 #define CONTENT "content"
@@ -12,10 +16,10 @@
 #define NOT_CHANGED "not changed"
 #define VALUE_NOT_CHANGED -1
 
-class Publisher;
 class DataBase;
 class UserSessionManagement;
-class Film;
+
+typedef std::string Notification;
 
 class FilmService
 {
@@ -30,7 +34,10 @@ public:
     void comment(int id, std::string content);
     void delete_comment(int film_id, int comment_id);
     void reply(int film_id, int comment_id, std::string content);
-    std::vector <const Film*> get_purchased();
+    std::vector <Film> get_purchased();
+    std::vector <Film> get_published();
+    std::vector <Film> get_all_films();
+    std::vector <Film> get_recomandation_list();
 
 private:
     DataBase* database;

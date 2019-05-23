@@ -20,6 +20,7 @@ public:
     void sell_film(int publisher_part);
     int get_debt();
     void pay_debt();
+    std::vector <Film> get_published();
 protected:
     int debt;
     std::map <int, Film*> published;

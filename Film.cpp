@@ -144,6 +144,18 @@ int Film::get_commenter_id(int comment_id)
         return comments[comment_id].get_writer_id();
 }
 
+vector <Comment> Film::get_comments()
+{
+    vector <Comment> res;
+    for (map <int, Comment>:: iterator it = comments.begin(); it != comments.end(); it++)
+    {
+        res.push_back(it->second);
+    }
+
+    return res;
+}
+
+
 
 
 

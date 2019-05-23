@@ -47,6 +47,16 @@ void Client::send_notif(Notification new_notif)
     notifications.push_back(new_notif);
 }
 
+bool Client::is_purchased(int film_id) const
+{
+    if (purchased.find(film_id) == purchased.end())
+        return false;
+    else
+        return true;
+    
+}
+
+
 int Client::get_type() const
 {
     return CLIENT;

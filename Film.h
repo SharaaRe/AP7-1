@@ -37,6 +37,8 @@ public:
     float get_rate();
     int get_publisher_id();
     int get_commenter_id(int comment_id);
+    std::vector <Comment> get_comments();
+
 
 private:
     static int last_id_created;

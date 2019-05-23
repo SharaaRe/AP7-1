@@ -1,9 +1,15 @@
 #include "FilmController.h"
 
+#include <string>
+#include <sstream>
+
 #include "FilmService.h"
+#include "FilmFilterController.h"
 #include "Utils.h"
 #include "Response.h"
 #include "Exceptions.h"
+#include "Comment.h"
+#include "DataBase.h"
 
 #define FILM_ID "film_id"
 #define NAME "name"
@@ -17,6 +23,34 @@ using namespace std;
 
 FilmController::FilmController()
 {}
+
+Response FilmController::get(Request* request)
+{
+    re_initialize();
+    current_request = request;
+    if (get_id_param_exist())
+    {
+        return Response(SUCCESSFUL, make_film_info_string(*DataBase::get_instance()->search_film(id)));
+    }
+    else
+    {   
+        FilmFilterController film_filter_controller;
+        return film_filter_controller.get(request); 
+    }
+
+}
+
+bool FilmController::get_id_param_exist()
+{
+    try{
+        id = Utils::string_integer_value(current_request->get_request_param(FILM_ID));
+        return true;
+    }
+    catch(NotFound& er)
+    {
+        return false;
+    }
+}
 
 Response FilmController::post(Request* request)
 {
@@ -124,4 +158,29 @@ void FilmController::set_id_param()
     {
         throw BadRequest("film id parameter not found");
     }
+}
+
+string FilmController::make_film_info_string(Film film)
+{
+    stringstream film_info;
+    stringstream comment_info;
+    vector <Comment> comments = film.get_comments();
+    film_info << "Details of Film " << film.get_name() << endl
+            << "Id = " << film.get_id() << endl
+            << "Director = " << film.get_director() << endl
+            << "Length = " << film.get_length() << endl
+            << "Year = " << film.get_year() << endl
+            << "Rate = " << film.get_rate() << endl
+            << "Price = " << film.get_price() << endl;
+
+    comment_info << "Comments" << endl;
+    for (int i = 0; i < comments.size(); i++)
+    {
+        comment_info << comments[i].get_id() << ". " << comments[i].get_content() << endl;
+        vector <string> replies = comments[i].get_reply();
+        for (int j = 0; j < replies.size(); j++)
+            comment_info << comments[i].get_id() << j + 1 << replies[j] << endl;
+    }
+    
+    return film_info.str() + comment_info.str();
 }

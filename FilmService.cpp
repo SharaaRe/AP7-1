@@ -9,6 +9,7 @@
 #include "Film.h"
 #include "Exceptions.h"
 #include "UTflix.h"
+#include "FilmFilterService.h"
 
 enum {WEAK = 80, MEDIUM = 90, HIGH = 95};
 
@@ -117,6 +118,38 @@ void FilmService::reply(int film_id, int comment_id, std::string content)
     Client* commenter = database->search_client(film->get_commenter_id(comment_id));
     commenter->send_notif(reply_notification(*publisher));
 }
+
+std::vector <Film> FilmService::get_purchased()
+{
+    Client* client = user_manager->get_logged_client();
+    vector <Film> res;
+    vector <int> film_id = client->get_purchased();
+    for (int i = 0; i < film_id.size(); i++)
+        res.push_back(*(database->search_film(film_id[i])));
+    
+    return res;
+}
+
+std::vector <Film> FilmService::get_published()
+{
+    Publisher* pub = user_manager->get_logged_publisher();
+    return pub->get_published();
+}
+
+vector <Film> FilmService::get_recomandation_list()
+{
+    const int RECOME_SIZE = 4;
+    FilmFilterService film_filter(database->get_all_films());
+    film_filter.stable_sort_by_rate();
+    vector <Film> films = film_filter.get_filtered();
+    vector <Film> recoms;
+    int size = films.size();
+    for (int i = size - 1; i >= 0 && i > size - RECOME_SIZE; i--)
+        recoms.push_back(films[i]);
+
+    return recoms;
+}
+
 
 
 void FilmService::check_edit_access(int id)

@@ -25,10 +25,14 @@ OBJECTS = \
 		RateController.o \
 		RepliesController.o \
 		CommentsController.o \
+		PurchasedController.o \
+		PublishedController.o \
+		FilmFilterController.o\
 		NotificationsController.o \
 		NotificationsReadController.o \
 		UserService.o \
 		FilmService.o \
+		FilmFilterService.o \
 		User.o \
 		Client.o \
 		Publisher.o \
@@ -146,6 +150,9 @@ FilmControllerSensivityList = \
 		UserSessionManagement.h \
 		Request.h \
 		Response.h \
+		DataBase.h \
+		Comment.h \
+
 
 FollowerControllerSensivityList = \
 		FollowerController.cpp \
@@ -172,10 +179,7 @@ BuyControllerSensivityList = \
 		UserSessionManagement.h \
 		Client.h \
 		UTflix.h \
-		Publisher. h \
-
-
-
+		Publisher.h \
 
 
 RateControllerSensivityList = \
@@ -205,6 +209,21 @@ CommentsControllerSensivityList = \
 		Utils.h \
 		Exceptions.h \
 
+PurchasedControllerSensivityList = \
+		PurchasedController.cpp \
+		FilmFilterController.h \
+		FilmFilterService.h \
+
+PublishedControllerSensivityList = \
+		FilmFilterController.h \
+		FilmFilterService.h \
+
+FilmFilterControllerSensivityList = \
+		FilmFilterController.h \
+		FilmFilterService.h \
+
+
+
 
 NotificationsControllerSensivityList = \
 		NotificationsController.cpp \
@@ -216,13 +235,13 @@ NotificationsControllerSensivityList = \
 
 
 NotificationsReadControllerSensivityList = \
+		NotificationsReadController.cpp \
+		NotificationsReadController.h \
 		Controller.h \
 		UserService.h \
 		Utils.h \
 		Exceptions.h \
 
-
-		
 
 UserServiceSensivityList = \
 		UserService.cpp \
@@ -249,6 +268,12 @@ FilmServiceSensivityList = \
 UserSensivityList = \
 		User.cpp \
 		User.h \
+
+FilmFilterServiceSensivityList = \
+		FilmFilterService.cpp \
+		FilmFilterService.h \
+		FilmService.h \
+		Film.h \
 
 
 ClientSensivityList = \
@@ -338,11 +363,40 @@ FollowerController.o: $(FollowerController)
 MoneyController.o: $(MoneyControllerSensivityList)
 	$(CC) -c MoneyController.cpp
 
+BuyController.o: $(BuyControllerSensivityList)
+	$(CC) -c BuyController.cpp
+
+RateController.o: $(RateControllerSensivityList)
+	$(CC) -c RateController.cpp
+
+RepliesController.o: $(RepliesControllerSensivityList)
+	$(CC) -c RepliesController.cpp
+
+CommentsController.o: $(CommentsControllerSensivityList)
+	$(CC) -c CommentsController.cpp
+
+PublishedController.o: $(PublisherControllerSensivityList)
+	$(CC) -c PublisherController.cpp
+FilmFilterController.o: $(FilmFilterControllerSensivityList)
+	$(CC) -c FilmFilterController.cpp
+PurchasedController.o: $(PurchasedControllerSensivityList)
+	$(CC) -c PurchasedController.cpp
+
+NotificationsController.o: $(NotificationsSensivityList)
+	$(CC) -c NotificationsController.cpp
+
+NotificationsReadController.o: $(NotificationsReadControllerSensivityList)
+	$(CC) -c NotificationsReadController.cpp
+
+
 UserService.o: $(UserServiceSensivityList)
 	$(CC) -c  UserService.cpp
 
 FilmService.o: $(FilmServiceSensivityList)
 	$(CC) -c FilmService.cpp
+
+FilmFilterService.o: $(FilmFilterServiceSensivityList)
+	$(CC) -c FilmFilterService.cpp
 
 User.o: $(UserSensivityList)
 	$(CC) -c  User.cpp

@@ -108,6 +108,11 @@ void FilmFilterService::filter_not_available()
     films = filtered;
 }
 
+vector <Film> FilmFilterService::get_filtered()
+{
+    return films;
+}
+
 bool FilmFilterService::compare_by_rate(Film first, Film second)
 {
     return (first.get_rate() < second.get_rate());

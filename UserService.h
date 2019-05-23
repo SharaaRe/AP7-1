@@ -3,6 +3,9 @@
 
 #include <vector>
 
+#include "Request.h"
+
+
 #define USER_ID "user_id"
 #define USERNAME "username"
 #define PASSWORD "password"
@@ -10,7 +13,7 @@
 #define AGE "age"
 #define PUBLISHER_PARAM "publisher"
 
-#include "Request.h"
+
 
 class Response;
 class DataBase;
@@ -27,7 +30,7 @@ public:
     void login(std::string username, std::string password);
     void follow(int publisher_id);
     std::vector <const Client*> get_followers();
-    std::vector <Notification> get_notifications();
+    std::vector <Notification> get_notifications(bool read = false);
 private:
     DataBase* database;
     UserSessionManagement* user_manager;

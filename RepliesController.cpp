@@ -21,7 +21,7 @@ void RepliesController::check_post_params()
     {
         film_id = Utils::string_integer_value(current_request->get_request_param(FILM_ID));
         comment_id = Utils::string_integer_value(current_request->get_request_param(COMMENT_ID));
-        content = current_request->get_request_param(CONTENT)
+        content = current_request->get_request_param(CONTENT);
     }
     catch(NotFound& er)
     {

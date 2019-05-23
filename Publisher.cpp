@@ -69,3 +69,14 @@ void Publisher::pay_debt()
     debt = 0;
 }
 
+vector <Film> Publisher::get_published()
+{
+    vector <Film> res;
+    for (map <int, Film*>::iterator it = published.begin(); it != published.end(); it++)
+    {
+        res.push_back(*(it->second));
+    }
+
+    return res;
+}
+

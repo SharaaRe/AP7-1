@@ -5,11 +5,13 @@
 
 #include "Controller.h"
 #include "FilmService.h"
+#include "Film.h"
 
 class FilmController :public Controller
 {
     public:
         FilmController();
+        virtual Response get(Request* request);
         virtual Response post(Request* request);
         virtual Response put(Request* request);
         virtual Response delete_(Request* request);
@@ -22,10 +24,12 @@ class FilmController :public Controller
         int price;
         std::string summery;
         std::string director;
+        bool get_id_param_exist();
         void post_required_params();
         void put_params();
         void re_initialize();
         void set_id_param();
+        std::string make_film_info_string(Film);
 };
 
 #endif

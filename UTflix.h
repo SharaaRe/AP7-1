@@ -18,7 +18,7 @@ public:
     void add_credit(int amount);
     ~UTflix();
 private:
-    UTflix();
+    UTflix() = default;
     static UTflix* instance;
     int credit;
 

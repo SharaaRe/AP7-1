@@ -68,6 +68,20 @@ Film* DataBase::search_film(int film_id)
         throw new NotFound("film not found in data base");
 }
 
+
+
+vector <Film> DataBase::get_all_films()
+{
+    vector <Film> res;
+    for (map <int, Film*>:: iterator it = films.begin(); it != films.end(); it++)
+    {
+        if (it->second->is_available())
+            res.push_back(*(it->second));
+    }
+
+    return res;
+}
+
 bool DataBase::film_exist(int id)
 {
     return films.find(id) != films.end();

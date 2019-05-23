@@ -69,12 +69,12 @@ vector <const Client*> UserService::get_followers()
     return followers;
 }
 
-vector <Notification> UserService::get_notifications(int read)
+vector <Notification> UserService::get_notifications(bool read)
 {
     Publisher* publisehr = user_manager->get_logged_publisher();
     if (read)
         return publisehr->get_read_notification();
-        
+
     return publisehr->get_notification();
 }
 

@@ -32,9 +32,6 @@ std::string Comment::get_content() const
     return content;
 }
 
-int Comment::get_id() const
-{
-    return id;
-}
+
 
 
