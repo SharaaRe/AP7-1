@@ -16,7 +16,7 @@ public:
     Film(std::string name, int year, int length, int price, std::string summery, std::string director, int publisher_id);
     void delete_();
     bool is_available();
-    void add_comment(std::string comment_content);
+    void add_comment(std::string comment_content, int writer_id);
     void reply_comment(int comment_id, std::string reply_content);
     void delete_comment(int comment_id);
     void add_score(int score);
@@ -36,6 +36,7 @@ public:
     int get_id();
     float get_rate();
     int get_publisher_id();
+    int get_commenter_id(int comment_id);
 
 private:
     static int last_id_created;

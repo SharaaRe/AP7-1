@@ -27,6 +27,7 @@ public:
     void login(std::string username, std::string password);
     void follow(int publisher_id);
     std::vector <const Client*> get_followers();
+    std::vector <Notification> get_notifications();
 private:
     DataBase* database;
     UserSessionManagement* user_manager;

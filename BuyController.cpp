@@ -1,26 +1,31 @@
 #include "BuyController.h"
 
-#include "UserSessionManagement.h"
-#include "DataBase.h"
-#include "Utils.h"
-#include "Client.h"
+#include "FilmService.h"
 #include "Film.h"
 #include "Exceptions.h"
 #include "Publisher.h"
+#include "Utils.h"
 
 #define FILM_ID "film_id"
 
 Response BuyController::post(Request* request)
 {
-    Client* client = UserSessionManagement::get_instance()->get_logged_client();
-    Film* film = DataBase::get_instance()->search_film(Utils::string_integer_value(request->get_request_param(FILM_ID)));
-    Publisher* publisher = dynamic_cast <Publisher*> (DataBase::get_instance()->search_client(film->get_publisher_id()));
-    if (film->is_available())
+    current_request = request;
+    check_post_params();
+    FilmService film_service;
+    film_service.buy(film_id);
+
+    return Response(SUCCESSFUL, OK);
+}
+
+void BuyController::check_post_params()
+{
+    try
     {
-        client->purchase_film(film);
-        publisher->sell_film(film->calculate_publisher_part());
-        Response(SUCCESSFUL, OK);
+        film_id = Utils::string_integer_value(current_request->get_request_param(FILM_ID));
     }
-    else
-        throw NotFound("film is not available");
+    catch(NotFound& er)
+    {
+        throw BadRequest("required params do not exist");
+    }
 }

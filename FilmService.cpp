@@ -28,6 +28,20 @@ FilmService::FilmService()
     database = DataBase::get_instance();
 }
 
+void FilmService::buy(int film_id)
+{
+    Client* client = UserSessionManagement::get_instance()->get_logged_client();
+    Film* film = DataBase::get_instance()->search_film(film_id);
+    Publisher* publisher = dynamic_cast <Publisher*> (DataBase::get_instance()->search_client(film->get_publisher_id()));
+    if (film->is_available())
+    {
+        client->purchase_film(film);
+        publisher->sell_film(calculate_publisher_part(film->get_rate(), film->get_price()));
+    }
+    else
+        throw NotFound("film is not available");
+}
+
 void FilmService::add_film(string name, int year, int length, int price, string summery, string director)
 {
     Publisher* publisher = user_manager->get_logged_publisher();
@@ -67,14 +81,11 @@ void FilmService::rate(int id, int score)
 {
     Film* film = database->search_film(id);
     Client* client = user_manager->get_logged_client();
-    if (client->is_purchased(id))
-    {
-        film->add_score(score);
-        Client*  publisher = database->search_client(film->get_publisher_id());
-        publisher->send_notif(rate_notification(*client, *film));
-    }
-    else
-        throw PermissionDenied("this client didn't buy this film");
+    check_client_access(id);
+    
+    film->add_score(score);
+    Client*  publisher = database->search_client(film->get_publisher_id());
+    publisher->send_notif(rate_notification(*client, *film));
 
 }
 
@@ -82,21 +93,29 @@ void FilmService::comment(int id, std::string content)
 {
     Film* film = database->search_film(id);
     Client* client = user_manager->get_logged_client();
-    if (client->is_purchased(id))
-    {
-        film->add_comment(content);
-        Client*  publisher = database->search_client(film->get_publisher_id());
-        publisher->send_notif(comment_notification(*client, *film));
-    }
-    else
-        throw PermissionDenied("this client didn't buy this film");
+    check_client_access(id);
+
+    film->add_comment(content, client->get_id());
+    Client*  publisher = database->search_client(film->get_publisher_id());
+    publisher->send_notif(comment_notification(*client, *film));
+}
+
+void FilmService::delete_comment(int film_id, int comment_id)
+{
+    Film* film = database->search_film(film_id);
+    check_edit_access(film_id);
+    film->delete_comment(comment_id);
 }
 
 void FilmService::reply(int film_id, int comment_id, std::string content)
 {
     Film* film = database->search_film(film_id);
+    Publisher* publisher = dynamic_cast <Publisher*> (database->search_client(film->get_publisher_id()));
     check_edit_access(film_id);
-////////////////////////////////////////////////////// nesfast
+    film->reply_comment(comment_id, content);
+
+    Client* commenter = database->search_client(film->get_commenter_id(comment_id));
+    commenter->send_notif(reply_notification(*publisher));
 }
 
 
@@ -106,6 +125,13 @@ void FilmService::check_edit_access(int id)
     if (!publisher->film_is_published_by_user(id))
         throw PermissionDenied("this film doesn't belong to this user");
     
+}
+
+void FilmService::check_client_access(int film_id)
+{
+    Client* client = user_manager->get_logged_client();
+    if (!client->is_purchased(film_id))
+        throw PermissionDenied("this client didn't buy this film");
 }
 
 void FilmService::send_film_add_notif(vector <int> followers_id)
@@ -186,3 +212,12 @@ Notification FilmService::buy_notification(Client client, Film film)
     return notif.str();
 }
 
+
+Notification FilmService::reply_notification(Publisher publisher)
+{
+    stringstream notif;
+    notif << PUBLISHER_ST << publisher.get_username() << WITH_ID << publisher.get_id()
+            << "reply to you comment.";
+
+    return notif.str();
+}

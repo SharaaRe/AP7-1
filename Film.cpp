@@ -28,10 +28,10 @@ bool Film::is_available()
     return available;
 }
 
-void Film::add_comment(std::string content)
+void Film::add_comment(std::string content, int writer_id)
 {
     last_comment_id++;
-    comments[last_comment_id] = Comment(last_comment_id, content);
+    comments[last_comment_id] = Comment(last_comment_id, writer_id,  content);
 }
 
 
@@ -138,8 +138,11 @@ int Film::get_publisher_id()
     return publisher_id;
 }
 
-
-
+int Film::get_commenter_id(int comment_id)
+{
+    if (comments.find(comment_id) != comments.end())
+        return comments[comment_id].get_writer_id();
+}
 
 
 

@@ -8,6 +8,10 @@
 #include "FollowerController.h"
 #include "MoneyController.h"
 #include "BuyController.h"
+#include "CommentsController.h"
+#include "RepliesController.h"
+#include "RateController.h"
+#include "NotificationsController.h"
 #include "Exceptions.h"
 #include "Response.h"
 
@@ -20,7 +24,12 @@ ControllerManager::ControllerManager()
     controllers.insert(pair <std::string, Controller*> (FILMS, new FilmController()));
     controllers.insert(pair <std::string, Controller*> (FOLLOWERS, new FollowerController()));
     controllers.insert(pair <std::string, Controller*> (MONEY, new MoneyController()));
+    controllers.insert(pair <std::string, Controller*> (COMMENTS, new CommentsController()));
+    controllers.insert(pair <std::string, Controller*> (REPLIES, new RepliesController()));
     controllers.insert(pair <std::string, Controller*> (BUY, new BuyController()));
+    controllers.insert(pair <std::string, Controller*> (RATE, new RateController()));
+
+    
 }
 
 ControllerManager::~ControllerManager()
