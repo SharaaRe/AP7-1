@@ -136,16 +136,18 @@ std::vector <Film> FilmService::get_published()
     return pub->get_published();
 }
 
-vector <Film> FilmService::get_recomandation_list()
+vector <Film> FilmService::get_recomandation_list(Film reffering_film)
 {
-    const int RECOME_SIZE = 4;
     FilmFilterService film_filter(database->get_all_films());
     film_filter.stable_sort_by_rate();
     vector <Film> films = film_filter.get_filtered();
     vector <Film> recoms;
     int size = films.size();
-    for (int i = size - 1; i >= 0 && i > size - RECOME_SIZE; i--)
-        recoms.push_back(films[i]);
+    for (int i = size - 1; i >= 0 && i >= 0; i--)
+    {   
+        if (reffering_film.get_id() != films[i].get_id())
+            recoms.push_back(films[i]);
+    }
 
     return recoms;
 }

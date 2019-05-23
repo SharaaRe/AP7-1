@@ -10,6 +10,7 @@
 #include "Exceptions.h"
 #include "Comment.h"
 #include "DataBase.h"
+#include "UserSessionManagement.h"
 
 #define FILM_ID "film_id"
 #define NAME "name"
@@ -30,7 +31,12 @@ Response FilmController::get(Request* request)
     current_request = request;
     if (get_id_param_exist())
     {
-        return Response(SUCCESSFUL, make_film_info_string(*DataBase::get_instance()->search_film(id)));
+        Film film = *DataBase::get_instance()->search_film(id);
+        string film_info = make_film_info_string(film);
+        string comments_info = make_comments_string(film);
+        string recoms_info = make_recommendation_string(film);
+
+        return Response(SUCCESSFUL, film_info + comments_info + recoms_info);
     }
     else
     {   
@@ -162,9 +168,8 @@ void FilmController::set_id_param()
 
 string FilmController::make_film_info_string(Film film)
 {
+
     stringstream film_info;
-    stringstream comment_info;
-    vector <Comment> comments = film.get_comments();
     film_info << "Details of Film " << film.get_name() << endl
             << "Id = " << film.get_id() << endl
             << "Director = " << film.get_director() << endl
@@ -173,6 +178,32 @@ string FilmController::make_film_info_string(Film film)
             << "Rate = " << film.get_rate() << endl
             << "Price = " << film.get_price() << endl;
 
+    return film_info.str();
+}
+
+string FilmController::make_recommendation_string(Film film)
+{
+    const int RECOM_SIZE = 4;
+    const string spacer = " | ";
+    vector <Film> recoms = film_service.get_recomandation_list(film);
+    FilmFilterService recom_filter(recoms);
+    recom_filter.filter_purchased(UserSessionManagement::get_instance()->
+            get_logged_client()->get_purchased());
+    recoms = recom_filter.get_filtered();
+    stringstream recom;
+    recom << "Recommendation Film" << endl;
+    recom << "#. Film Id" << spacer << "Film Name" << spacer << "Film Length" << spacer << "Film Director" << endl;
+    for (int i = 0; i < RECOM_SIZE; i++)
+        recom << recoms[i].get_id() << spacer << recoms[i].get_name() << spacer 
+                << recoms[i].get_length() << spacer << recoms[i].get_director() << endl;
+    
+    return recom.str();
+}
+
+string FilmController::make_comments_string(Film film)
+{
+    stringstream comment_info;
+    vector <Comment> comments = film.get_comments();
     comment_info << "Comments" << endl;
     for (int i = 0; i < comments.size(); i++)
     {
@@ -181,6 +212,6 @@ string FilmController::make_film_info_string(Film film)
         for (int j = 0; j < replies.size(); j++)
             comment_info << comments[i].get_id() << j + 1 << replies[j] << endl;
     }
-    
-    return film_info.str() + comment_info.str();
+
+    return comment_info.str();
 }

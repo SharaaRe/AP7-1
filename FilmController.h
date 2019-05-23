@@ -29,7 +29,9 @@ class FilmController :public Controller
         void put_params();
         void re_initialize();
         void set_id_param();
-        std::string make_film_info_string(Film);
+        std::string make_film_info_string(Film film);
+        std::string make_recommendation_string(Film film);
+        std::string make_comments_string(Film film);
 };
 
 #endif

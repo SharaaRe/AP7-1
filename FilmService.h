@@ -37,7 +37,7 @@ public:
     std::vector <Film> get_purchased();
     std::vector <Film> get_published();
     std::vector <Film> get_all_films();
-    std::vector <Film> get_recomandation_list();
+    std::vector <Film> get_recomandation_list(Film refferin_film);
 
 private:
     DataBase* database;
