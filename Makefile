@@ -22,6 +22,11 @@ OBJECTS = \
 		FollowerController.o \
 		MoneyController.o \
 		BuyController.o \
+		RateController.o \
+		RepliesController.o \
+		CommentsController.o \
+		NotificationsController.o \
+		NotificationsReadController.o \
 		UserService.o \
 		FilmService.o \
 		User.o \
@@ -168,6 +173,55 @@ BuyControllerSensivityList = \
 		Client.h \
 		UTflix.h \
 		Publisher. h \
+
+
+
+
+
+RateControllerSensivityList = \
+		RateController.cpp \
+		RateController.h \
+		Controller.h \
+		FilmService.h \
+		Utils.h \
+		Exceptions.h \
+
+
+
+RepliesControllerSensivityList = \
+		RepliesController.cpp \
+		RepliesController.h \
+		Controller.h \
+		FilmService.h \
+		Utils.h \
+		Exceptions.h \
+
+
+CommentsControllerSensivityList = \
+		CommentsController.cpp \
+		CommentsController.h \
+		Controller.h \
+		FilmService.h \
+		Utils.h \
+		Exceptions.h \
+
+
+NotificationsControllerSensivityList = \
+		NotificationsController.cpp \
+		NotificationsController.h \
+		Controller.h \
+		UserService.h \
+		Utils.h \
+		Exceptions.h \
+
+
+NotificationsReadControllerSensivityList = \
+		Controller.h \
+		UserService.h \
+		Utils.h \
+		Exceptions.h \
+
+
 		
 
 UserServiceSensivityList = \
