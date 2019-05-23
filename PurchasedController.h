@@ -2,8 +2,7 @@
 #define PURCHASED_CONTROLLER_H
 
 #include "FilmFilterController.h"
-#include "Response.h"
-#include "Request.h"
+
 
 class PurchasedController :public FilmFilterController
 {
