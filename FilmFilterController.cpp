@@ -1,5 +1,6 @@
 #include "FilmFilterController.h"
 
+#include <string>
 #include <sstream>
 
 #include "Request.h"
@@ -17,6 +18,8 @@
 #define PRICE "price"
 #define DIRECTOR "director"
 
+using namespace std;
+
 Response FilmFilterController::get(Request* request)
 {
     current_request = request;
@@ -24,15 +27,17 @@ Response FilmFilterController::get(Request* request)
     FilmFilterService film_filter(DataBase::get_instance()->get_all_films);
     film_filter.filter(name , max_year, min_year, price, rate, director);
     films = film_filter.get_filtered();
-    return make_get_film_respnse();
+    return make_get_film_response();
 }
 
 
 Response FilmFilterController::make_get_film_response()
 {
-    const string film_header = "#. Film Id | Film Name | Film Length | Film price | Rate | Production Year | Film Director";
+    const string FILM_HEADER = "#. Film Id | Film Name | Film Length | Film price | Rate | Production Year | Film Director";
     const string spacer = " | ";
     stringstream res;
+
+    res <<FILM_HEADER << endl;
 
     for (int i = 0; i < films.size(); i++)
     {
@@ -41,7 +46,7 @@ Response FilmFilterController::make_get_film_response()
                  << spacer << films[i].get_director() << endl;
     }
     
-    return Respnse(SUCCESSFUL, res.str());
+    return Response(SUCCESSFUL, res.str());
 }
 
 
