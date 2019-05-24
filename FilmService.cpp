@@ -41,7 +41,6 @@ void FilmService::buy(int film_id)
         client->purchase_film(film);
         publisher->sell_film(calculate_publisher_part(film->get_rate(), film->get_price()));
         publisher->send_notif(buy_notification(*client, *film));
-
     }
     else
         throw NotFound("film is not available");
@@ -140,17 +139,31 @@ std::vector <Film> FilmService::get_published()
 
 vector <Film> FilmService::get_recommendation_list(Film reffering_film)
 {
+    // cout << "get_recommendation_lis"<< endl;
     FilmFilterService film_filter(database->get_all_films());
+    cout << "size of all" << database->get_all_films().size() << endl;
     film_filter.stable_sort_by_rate();
-    film_filter.filter_purchased(get_purchased());
+    cout << "size of all" << film_filter.get_filtered().size() << endl;
+    // film_filter.filter_purchased(get_purchased());
+    cout << "size of all" << film_filter.get_filtered().size() << endl;
     film_filter.filter_not_available();
+    cout << "size of all" << film_filter.get_filtered().size() << endl;
+
     vector <Film> films = film_filter.get_filtered();
     int size = films.size();
-    for (int i = 0 ; i < films.size() ; i++)
+    for (int i = 0 ; i < films.size() ; )
     {   
         if (reffering_film.get_id() == films[i].get_id())
             films.erase(films.begin() + i);
+        else 
+            i++;
     }
+
+    // for (int i = 0; i < films.size(); i++)
+    //     cout << films[i].get_name() << endl;
+
+    
+    // cout << "size" << films.size() << endl;
     return films;
 }
 
