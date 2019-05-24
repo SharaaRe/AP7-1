@@ -36,7 +36,7 @@ void UserService::login(string username, string password)
     if (database->search_client(username)->valid_login(username, password))
         user_manager->set_logged_user(database->search_client(username));
     else 
-        throw new BadRequest("wrong password");
+        throw BadRequest("wrong password");
 }
 
 void  UserService::follow(int following_id)
