@@ -14,13 +14,12 @@ using namespace std;
 Request RequestReciever::recieve_request()
 {
     getline(cin, request_line);
-
+    // cout << "line 17" << endl;
     vector <string> tokens = parse_request();
-
+    // cout << "line 19" << endl;
     control_format(tokens);
-    
+    // cout << "line 21" << endl;
     return Request(tokens);
-    
 }
 
 
@@ -28,6 +27,8 @@ vector <string> RequestReciever::parse_request()
 {
     string delimiters = "   ";
     vector <string> tokens = Utils::split_line(request_line, delimiters);
+    if (tokens.size() == 0)
+        throw EmptyLine();
     int operator_index = Utils::find("?", tokens);
 
     int to;
@@ -50,6 +51,8 @@ void RequestReciever::control_format(vector <string> tokens)
     vector <string> standard_urls = {SIGN_UP, LOGIN , FILMS, PUBLISHED, REPLIES, 
             COMMENTS, FOLLOWERS, MONEY, BUY, RATE, PURCHASED, NOTIFICATION, NOTIFICATION_READ};
 
+    if (tokens.size() == 0)
+        throw EmptyLine();
 
     if (!valid_token(tokens[0], standard_methods))
         throw  BadRequest("method is not standard");

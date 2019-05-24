@@ -34,8 +34,8 @@ Response FilmController::get(Request* request)
         Film film = *DataBase::get_instance()->search_film(id);
         string film_info = make_film_info_string(film);
         string comments_info = make_comments_string(film);
-        string recoms_info = make_recommendation_string(film);
-        return Response(SUCCESSFUL, film_info + comments_info + recoms_info);
+        // string recoms_info = make_recommendation_string(film);
+        return Response(SUCCESSFUL, film_info + comments_info /*+ recoms_info*/);
     }
     else
     {   

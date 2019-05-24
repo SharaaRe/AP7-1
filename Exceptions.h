@@ -8,8 +8,8 @@ class Exception :public std::exception
 {
 public:
     Exception(std::string description);
-    Exception();
-    virtual const std::string error() const throw() = 0;
+    Exception() = default;
+    virtual const std::string error() const throw() {return "";};
 protected:
     std::string description;
 };
@@ -37,4 +37,9 @@ public:
     PermissionDenied(std::string detail) : Exception(detail) {}
     virtual const std::string error() const throw();
     virtual const char* what() const throw();    
+};
+
+class EmptyLine: public Exception 
+{
+
 };
