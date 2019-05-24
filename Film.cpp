@@ -13,7 +13,8 @@ int Film::last_id_created = 0;
 
 
 Film::Film(string _name, int _year, int _length, int _price, string _summary, string _director, int _publisher_id)
-    : name(_name), year(_year), length(_length), summary(_summary), director(_director), available(true), publisher_id(_publisher_id)
+    : name(_name), year(_year), length(_length), price(_price), summary(_summary), 
+            director(_director), available(true), publisher_id(_publisher_id)
 {
     // id = NOT_ASSIGNED;
     id = ++last_id_created;
@@ -134,8 +135,10 @@ int Film::get_id()
 
 float Film::get_rate()
 {
-    float _rate = 0;
-    int sum;
+    // float _rate = 0;
+    int sum = 0;
+    if (scores.size() == 0)
+        return sum;
     for (int i = 0; i < scores.size(); i++)
         sum += scores[i];
     

@@ -21,7 +21,7 @@ public:
     static bool is_valid_email(std::string email);
     static bool is_valid_number(std::string number);
     static int string_integer_value(std::string number);
-    vector <Film> filter(int filter_key);
+    // std::vector <Film> filter(int filter_key);
 // private:
     // int something_alaki;
 

@@ -185,9 +185,6 @@ string FilmController::make_recommendation_string(Film film)
 {
     const int RECOM_SIZE = 4;
     const string spacer = " | ";
-    // vector <Film> recoms = film_service.get_recommendation_list(film);
-    // FilmFilterService recom_filter(film_service.get_recommendation_list(film));
-    // recom_filter.filter_purchased(film_service.get_purchased());
     vector <Film> films = film_service.get_recommendation_list(film);
     stringstream recom;
     recom << "Recommendation Film" << endl;
