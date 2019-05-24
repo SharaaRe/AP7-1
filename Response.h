@@ -4,7 +4,7 @@
 #include <string>
 
 enum res_type{SUCCESSFUL, ERROR, EMPTY};
-#define OK "OK"
+#define OK "OK\n"
 
 class Response
 {

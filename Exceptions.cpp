@@ -2,6 +2,11 @@
 
 #include "Exceptions.h"
 
+#define NOT_FOUND_EX "Not Found\n"
+#define BAD_REQUEST_EX "Bad Request\n"
+#define PERMISSION_DENIED "Permission Denied\n"
+
+
 
 using namespace std;
 
@@ -12,16 +17,16 @@ Exception::Exception(std::string _description)
 
 const string BadRequest::error() const throw()
 {
-    string response = "Bad Request";
-    response += "  details:  " + description;
+    string response = BAD_REQUEST_EX;
+    response += "  details:  " + description + "\n";
     return response;
 
 }
 
 const string NotFound::error() const throw()
 {
-    string response = "Not Found";
-    response += "  details:  " + description;
+    string response = NOT_FOUND_EX;
+    response += "  details:  " + description + "\n";
     return response.c_str();
 }
 
@@ -29,27 +34,27 @@ const string NotFound::error() const throw()
 
 const string PermissionDenied::error() const throw()
 {
-    string response = "Permission Denied";
-    response += "  details:  " + description;
+    string response = PERMISSION_DENIED;
+    response += "  details:  " + description + "\n";
     return response.c_str();
 }
 
 const char* BadRequest::what() const throw()
 {
-    return "Bad Request";
+    return BAD_REQUEST_EX;
 
 }
 
 const char* NotFound::what() const throw()
 
 {
-    return "Not Found";
+    return NOT_FOUND_EX;
 }
 
 
 
 const char* PermissionDenied::what() const throw()
 {
-    return "Permissoin Denied";
+    return PERMISSION_DENIED;
 }
 

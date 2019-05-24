@@ -23,6 +23,7 @@ Response NotificationsController::make_notification_response(vector <string> not
     if (limit == NO_LIMIT || limit > notifs.size())
         limit = notifs.size();
     stringstream res;
+    res << "#. Notification Message" << endl;
     int size = notifs.size();
     for (int i = size - 1; i >= size - limit; i--)
     {

@@ -71,7 +71,7 @@ vector <const Client*> UserService::get_followers()
 
 vector <Notification> UserService::get_notifications(bool read)
 {
-    Publisher* publisehr = user_manager->get_logged_publisher();
+    Client* publisehr = user_manager->get_logged_client();
     if (read)
         return publisehr->get_read_notification();
 

@@ -40,6 +40,7 @@ public:
 };
 
 class EmptyLine: public Exception 
-{
+{};
 
-};
+class EndOfFile: public Exception
+{};

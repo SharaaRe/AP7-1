@@ -45,7 +45,6 @@ private:
     void check_edit_access(int id);
     void check_client_access(int film_id);
     void send_film_add_notif(std::vector <int> followers_id);
-    void buy_film(int film_id);
     int calculate_publisher_part(float rate, int price);
     Notification new_film_notification(Publisher publisher);
     Notification rate_notification(Client client, Film film);

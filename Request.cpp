@@ -14,7 +14,7 @@ Request::Request(vector <string> raw_request)
     map <string, int> methods = {{"GET",GET}, {"PUT", PUT}, {"POST",POST}, {"DELETE",DELETE}};
     string _operator = "?";
     const int COMPLEX_REQ_SIZE = 5;
-
+    
     method = methods[raw_request[0]];
     url = raw_request[1];
 

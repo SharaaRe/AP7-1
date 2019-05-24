@@ -13,7 +13,8 @@ using namespace std;
 
 Request RequestReciever::recieve_request()
 {
-    getline(cin, request_line);
+    if (!getline(cin, request_line))
+        throw EndOfFile();
     // cout << "line 17" << endl;
     vector <string> tokens = parse_request();
     // cout << "line 19" << endl;

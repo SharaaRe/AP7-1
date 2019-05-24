@@ -32,6 +32,8 @@ Response FilmController::get(Request* request)
     if (get_id_param_exist())
     {
         Film film = *DataBase::get_instance()->search_film(id);
+        if (!film.is_available())
+            throw NotFound("film is deleted");
         string film_info = make_film_info_string(film);
         string comments_info = make_comments_string(film);
         // string recoms_info = make_recommendation_string(film);
@@ -75,25 +77,34 @@ Response FilmController::delete_(Request* request)
 
 void FilmController::post_required_params()
 {
-    name = current_request->get_request_param(NAME);
-    string year_string = current_request->get_request_param(YEAR);
-    string length_string = current_request->get_request_param(LENGTH);
-    string price_string = current_request->get_request_param(PRICE);
-    summary = current_request->get_request_param(SUMMERY);
-    director = current_request->get_request_param(DIRECTOR);
-
-    if (Utils::is_valid_number(year_string) && Utils::is_valid_number(length_string)
-             && Utils::is_valid_number(price_string))
-        
+    try
     {
-        year = stoi(year_string);
-        length = stoi(length_string);
-        price = stoi(price_string);
-        if (year < 0 && length < 0 && price < 0)
-            throw BadRequest("numbers are not valid");
+        name = current_request->get_request_param(NAME);
+        string year_string = current_request->get_request_param(YEAR);
+        string length_string = current_request->get_request_param(LENGTH);
+        string price_string = current_request->get_request_param(PRICE);
+        summary = current_request->get_request_param(SUMMERY);
+        director = current_request->get_request_param(DIRECTOR);
+
+        if (Utils::is_valid_number(year_string) && Utils::is_valid_number(length_string)
+                && Utils::is_valid_number(price_string))
+            
+        {
+            year = stoi(year_string);
+            length = stoi(length_string);
+            price = stoi(price_string);
+            if (year < 0 && length < 0 && price < 0)
+                throw BadRequest("numbers are not valid");
+        }
+        else 
+            throw BadRequest("numbers are not a number");   
     }
-    else 
-        throw BadRequest("numbers are not a number");   
+    catch(NotFound& e)
+    {
+        throw BadRequest("params doesn't exist");
+    }
+    
+
 }
 
 
@@ -178,6 +189,7 @@ string FilmController::make_film_info_string(Film film)
             << "Rate = " << film.get_rate() << endl
             << "Price = " << film.get_price() << endl;
 
+    film_info << endl;
     return film_info.str();
 }
 
@@ -208,6 +220,7 @@ string FilmController::make_comments_string(Film film)
         for (int j = 0; j < replies.size(); j++)
             comment_info << comments[i].get_id() << j + 1 << replies[j] << endl;
     }
+    comment_info << endl;
 
     return comment_info.str();
 }

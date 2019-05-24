@@ -33,6 +33,7 @@ Response FollowerController::get(Request* request)
 Response FollowerController::get_follower_response (vector <const Client*> clients)
 {
     stringstream res;
+    res << "List of Followers" << endl;
     res << "#. User Id | User Username | User Email" << endl;
     for (int i = 0; i < clients.size(); i++)
     {
