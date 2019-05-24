@@ -118,7 +118,6 @@ void FilmFilterService::stable_sort_by_rate()
 void FilmFilterService::filter_purchased(vector <Film> purchased)
 {
     vector <Film> filtered;
-    // cout << "purchased_size()" <<purchased.size() << endl;
     for (int j = 0; j < purchased.size(); j++)
     {
         for (int i = 0; i < films.size(); )
@@ -130,7 +129,7 @@ void FilmFilterService::filter_purchased(vector <Film> purchased)
         }
     }
 
-    films = filtered;  
+    films;  
 }
 
 void FilmFilterService::filter_not_available()

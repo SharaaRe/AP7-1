@@ -141,7 +141,7 @@ vector <Film> FilmService::get_recommendation_list(Film reffering_film)
 {
     FilmFilterService film_filter(database->get_all_films());
     film_filter.stable_sort_by_rate();
-    // film_filter.filter_purchased(get_purchased());
+    film_filter.filter_purchased(get_purchased());
     film_filter.filter_not_available();
 
     vector <Film> films = film_filter.get_filtered();
