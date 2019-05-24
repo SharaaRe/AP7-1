@@ -20,7 +20,7 @@ public:
     void add_comment(std::string comment_content, int writer_id);
     void reply_comment(int comment_id, std::string reply_content);
     void delete_comment(int comment_id);
-    void add_score(int score);
+    void add_score(int id, int score);
 
     void set_id(int id);
     void set_name(std::string name);
@@ -56,7 +56,7 @@ private:
 
     std::map <int, Comment> comments;
     int last_comment_id;
-    std::vector <int> scores;
+    std::map <int, int> scores;
 
     float rate;
 };

@@ -62,10 +62,10 @@ void Film::delete_comment(int comment_id)
         comments.erase(comment_id); 
 }
 
-void Film::add_score(int score)
+void Film::add_score(int id,int score)
 {
     if (score >= MIN_SCORE && score <= MAX_SCORE)
-        scores.push_back(score);
+        scores[id] = score;
     else
         throw BadRequest("rate range is not right");
 }
@@ -139,8 +139,8 @@ float Film::get_rate()
     int sum = 0;
     if (scores.size() == 0)
         return sum;
-    for (int i = 0; i < scores.size(); i++)
-        sum += scores[i];
+    for (map<int, int>::iterator it = scores.begin(); it != scores.end(); it++)
+        sum += it->second;
     
     rate = ((float) sum ) / scores.size();
     return rate;

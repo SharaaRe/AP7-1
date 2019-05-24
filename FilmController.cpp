@@ -180,6 +180,7 @@ string FilmController::make_film_info_string(Film film)
 {
 
     stringstream film_info;
+    film_info.precision(2); 
     film_info << "Details of Film " << film.get_name() << endl
             << "Id = " << film.get_id() << endl
             << "Director = " << film.get_director() << endl
@@ -199,10 +200,11 @@ string FilmController::make_recommendation_string(Film film)
     const string spacer = " | ";
     vector <Film> films = film_service.get_recommendation_list(film);
     stringstream recom;
+    recom.precision(2); 
     recom << "Recommendation Film" << endl;
     recom << "#. Film Id" << spacer << "Film Name" << spacer << "Film Length" << spacer << "Film Director" << endl;
-    for (int i = 0; i < RECOM_SIZE; i++)
-        recom << films[i].get_id() << spacer << films[i].get_name() << spacer 
+    for (int i = 0; i < RECOM_SIZE && i < films.size(); i++)
+        recom << i + 1 << ". " <<  films[i].get_id() << spacer << films[i].get_name() << spacer 
                 << films[i].get_length() << spacer << films[i].get_director() << endl;
     
     return recom.str();

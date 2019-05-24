@@ -85,7 +85,7 @@ void FilmService::rate(int id, int score)
     Client* client = user_manager->get_logged_client();
     check_client_access(id);
     
-    film->add_score(score);
+    film->add_score(client->get_id(), score);
     Client*  publisher = database->search_client(film->get_publisher_id());
     publisher->send_notif(rate_notification(*client, *film));
 
@@ -139,15 +139,10 @@ std::vector <Film> FilmService::get_published()
 
 vector <Film> FilmService::get_recommendation_list(Film reffering_film)
 {
-    // cout << "get_recommendation_lis"<< endl;
     FilmFilterService film_filter(database->get_all_films());
-    cout << "size of all" << database->get_all_films().size() << endl;
     film_filter.stable_sort_by_rate();
-    cout << "size of all" << film_filter.get_filtered().size() << endl;
     // film_filter.filter_purchased(get_purchased());
-    cout << "size of all" << film_filter.get_filtered().size() << endl;
     film_filter.filter_not_available();
-    cout << "size of all" << film_filter.get_filtered().size() << endl;
 
     vector <Film> films = film_filter.get_filtered();
     int size = films.size();
@@ -158,12 +153,6 @@ vector <Film> FilmService::get_recommendation_list(Film reffering_film)
         else 
             i++;
     }
-
-    // for (int i = 0; i < films.size(); i++)
-    //     cout << films[i].get_name() << endl;
-
-    
-    // cout << "size" << films.size() << endl;
     return films;
 }
 

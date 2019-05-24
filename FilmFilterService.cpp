@@ -1,6 +1,7 @@
 #include "FilmFilterService.h"
 
 #include <algorithm>
+#include <iostream>
 
 using namespace std;
 
@@ -114,15 +115,18 @@ void FilmFilterService::stable_sort_by_rate()
     stable_sort(films.begin(), films.end(), compare_by_rate);
 }
 
-void FilmFilterService::filter_purchased(vector <Film> purchased_ids)
+void FilmFilterService::filter_purchased(vector <Film> purchased)
 {
     vector <Film> filtered;
-    for (int j = 0; j < purchased_ids.size(); j++)
+    // cout << "purchased_size()" <<purchased.size() << endl;
+    for (int j = 0; j < purchased.size(); j++)
     {
-        for (int i = 0; i < films.size(); i++)
+        for (int i = 0; i < films.size(); )
         {
-            if (films[i].get_id() != purchased_ids[j].get_id())
-                filtered.push_back(films[i]);
+            if (films[i].get_id() == purchased[j].get_id())
+                films.erase(films.begin() + i);
+            else 
+                i++;
         }
     }
 
