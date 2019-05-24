@@ -3,6 +3,8 @@
 #include <string>
 #include <sstream>
 
+#include <iostream>
+
 #include "DataBase.h"
 #include "UserSessionManagement.h"
 #include "Publisher.h"
@@ -32,8 +34,8 @@ FilmService::FilmService()
 void FilmService::buy(int film_id)
 {
     Client* client = UserSessionManagement::get_instance()->get_logged_client();
-    Film* film = DataBase::get_instance()->search_film(film_id);
-    Publisher* publisher = dynamic_cast <Publisher*> (DataBase::get_instance()->search_client(film->get_publisher_id()));
+    Film* film = database->search_film(film_id);
+    Publisher* publisher = dynamic_cast <Publisher*> (database->search_client(film->get_publisher_id()));
     if (film->is_available())
     {
         client->purchase_film(film);
@@ -43,26 +45,26 @@ void FilmService::buy(int film_id)
         throw NotFound("film is not available");
 }
 
-void FilmService::add_film(string name, int year, int length, int price, string summery, string director)
+void FilmService::add_film(string name, int year, int length, int price, string summary, string director)
 {
     Publisher* publisher = user_manager->get_logged_publisher();
-    Film* new_film = new Film(name, year, length, price, summery, director, publisher->get_id());
+    Film* new_film = new Film(name, year, length, price, summary, director, publisher->get_id());
     database->add_film(new_film);
     publisher->add_film(new_film);
     send_film_add_notif(publisher->get_followers());
 }
 
-void FilmService::edit_film(int id, string _name, int _year,int _length, string _summery, string _director)
+void FilmService::edit_film(int id, string _name, int _year,int _length, string _summary, string _director)
 {
-    string name, summery, director;
+    string name, summary, director;
     int  length, year;
     Film* film = database->search_film(id);
     check_edit_access(id);
 
     if (name != NOT_CHANGED)
         film->set_name(name);
-    if (summery != NOT_CHANGED)
-        film->set_summery(summery);
+    if (summary != NOT_CHANGED)
+        film->set_summary(summary);
     if (director != NOT_CHANGED)
         film->set_director(director);
     if (year != VALUE_NOT_CHANGED)
@@ -136,20 +138,19 @@ std::vector <Film> FilmService::get_published()
     return pub->get_published();
 }
 
-vector <Film> FilmService::get_recomandation_list(Film reffering_film)
+vector <Film> FilmService::get_recommendation_list(Film reffering_film)
 {
     FilmFilterService film_filter(database->get_all_films());
     film_filter.stable_sort_by_rate();
+    film_filter.filter_purchased(get_purchased());
     vector <Film> films = film_filter.get_filtered();
-    vector <Film> recoms;
     int size = films.size();
-    for (int i = size - 1; i >= 0 && i >= 0; i--)
+    for (int i = 0 ; i < films.size() ; i++)
     {   
-        if (reffering_film.get_id() != films[i].get_id())
-            recoms.push_back(films[i]);
+        if (reffering_film.get_id() == films[i].get_id())
+            films.erase(films.begin() + i);
     }
-
-    return recoms;
+    return films;
 }
 
 
@@ -234,16 +235,16 @@ Notification FilmService::rate_notification(Client client, Film film)
 Notification FilmService::comment_notification(Client client, Film film)
 {
     stringstream notif;
-    notif << USER_ST << client.get_username() << SPACER << WITH_ID << SPACER << client.get_id() 
-            << " comment on your film " << SPACER << WITH_ID << SPACER << film.get_id() << ".";
+    notif << USER_ST << client.get_username() << SPACER << WITH_ID << SPACER << client.get_id() << SPACER
+            << "comment on your film" << SPACER << WITH_ID << SPACER << film.get_id() << ".";
     return notif.str();
 }
 
 Notification FilmService::buy_notification(Client client, Film film)
 {
     stringstream notif;
-    notif << USER_ST << client.get_username() << WITH_ID << client.get_id() 
-            << " buy your film " << SPACER << WITH_ID << SPACER << film.get_id() << ".";
+    notif << USER_ST << client.get_username() << WITH_ID << client.get_id() << SPACER 
+            << "buy your film" << SPACER << WITH_ID << SPACER << film.get_id() << ".";
     return notif.str();
 }
 

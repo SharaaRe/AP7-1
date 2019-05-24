@@ -148,5 +148,5 @@ vector <Film> FilmFilterService::get_filtered()
 
 bool FilmFilterService::compare_by_rate(Film first, Film second)
 {
-    return (first.get_rate() < second.get_rate());
+    return (first.get_rate() > second.get_rate());
 }

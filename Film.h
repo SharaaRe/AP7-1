@@ -13,7 +13,7 @@
 class Film
 {
 public:
-    Film(std::string name, int year, int length, int price, std::string summery, std::string director, int publisher_id);
+    Film(std::string name, int year, int length, int price, std::string summary, std::string director, int publisher_id);
     Film() = default;
     void delete_();
     bool is_available();
@@ -29,8 +29,8 @@ public:
     int get_year();
     void set_length(int length);
     int get_length();
-    void set_summery(std::string summery);
-    std::string get_summemry();
+    void set_summary(std::string summary);
+    std::string get_summary();
     void set_director(std::string director);
     std::string get_director();
     int get_price();
@@ -48,7 +48,7 @@ private:
     int year;
     int length; //minutes
     int price;
-    std::string summery;
+    std::string summary;
     std::string director;
     bool available;
 

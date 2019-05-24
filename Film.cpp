@@ -12,8 +12,8 @@ using namespace std;
 int Film::last_id_created = 0;
 
 
-Film::Film(string _name, int _year, int _length, int _price, string _summery, string _director, int _publisher_id)
-    : name(name), year(_year), length(_length), summery(_summery), director(_director), available(true), publisher_id(_publisher_id)
+Film::Film(string _name, int _year, int _length, int _price, string _summary, string _director, int _publisher_id)
+    : name(_name), year(_year), length(_length), summary(_summary), director(_director), available(true), publisher_id(_publisher_id)
 {
     // id = NOT_ASSIGNED;
     id = ++last_id_created;
@@ -102,14 +102,14 @@ int Film::get_length()
     return length;
 }
 
-void Film::set_summery(string _summery)
+void Film::set_summary(string _summary)
 {
-    summery = _summery;
+    summary = _summary;
 }
 
-string Film::get_summemry()
+string Film::get_summary()
 {
-    return summery;
+    return summary;
 }
 
 void Film::set_director(string _director)

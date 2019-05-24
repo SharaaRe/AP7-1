@@ -38,6 +38,7 @@ OBJECTS = \
 		Publisher.o \
 		Film.o \
 		Comment.o \
+		UTflixService.o \
 		UTflix.o \
 
 mainSensitivityList = \
@@ -304,6 +305,13 @@ CommentSensivitiyList = \
 		Comment.cpp \
 		Comment.h \
 
+UTflixServiceSernsivityList = \
+		RequestReciever.h \
+		Request.h \
+		Response.h \
+		ControllerManager.h \
+		Controller.h \
+
 UTflixSensivityList = \
 		UTflix.cpp \
 		UTflix.h \
@@ -414,6 +422,9 @@ Film.o: $(FilmSensivityList)
 
 Comment.o: $(CommentSensivitiyList)
 	$(CC) -c  Comment.cpp
+
+UTflixService.o: $(UTflixServiceSernsivityList)
+	$(CC) -c UTflixService.cpp
 
 UTflix.o: $(UTflixSensivityList)
 	$(CC) -c UTflix.cpp

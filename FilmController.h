@@ -22,7 +22,7 @@ class FilmController :public Controller
         int year;
         int length;
         int price;
-        std::string summery;
+        std::string summary;
         std::string director;
         bool get_id_param_exist();
         void post_required_params();

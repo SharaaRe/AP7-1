@@ -19,7 +19,7 @@
 #define YEAR "year"
 #define LENGTH "length"
 #define PRICE "price"
-#define SUMMERY "summery"
+#define SUMMERY "summary"
 #define DIRECTOR "director"
 
 using namespace std;
@@ -31,20 +31,10 @@ Response FilmController::get(Request* request)
     current_request = request;
     if (get_id_param_exist())
     {
-        cout << "line 34" << endl;
         Film film = *DataBase::get_instance()->search_film(id);
-        cout << "line 36" << endl;
-
         string film_info = make_film_info_string(film);
-        cout << "line 39" << endl;
-
         string comments_info = make_comments_string(film);
-        cout << "line 42" << endl;
-
         string recoms_info = make_recommendation_string(film);
-        cout << "line 45" << endl;
-
-
         return Response(SUCCESSFUL, film_info + comments_info + recoms_info);
     }
     else
@@ -55,27 +45,32 @@ Response FilmController::get(Request* request)
 
 }
 
-bool FilmController::get_id_param_exist()
-{
-    try{
-        id = Utils::string_integer_value(current_request->get_request_param(FILM_ID));
-        return true;
-    }
-    catch(NotFound& er)
-    {
-        return false;
-    }
-}
-
 Response FilmController::post(Request* request)
 {
     re_initialize();
     current_request = request;
-
-    film_service.add_film(name, year, length, price, summery, director);
+    post_required_params();
+    film_service.add_film(name, year, length, price, summary, director);
 
     return Response(SUCCESSFUL, OK);
 
+}
+
+Response FilmController::put(Request* request)
+{
+    current_request = request;
+    put_params();
+    film_service.edit_film(id, name, year, length, summary, director);
+    return Response(SUCCESSFUL, OK);
+}
+
+Response FilmController::delete_(Request* request)
+{
+    re_initialize();
+    current_request = request;
+    set_id_param();
+    film_service.delete_(id);
+    return Response(SUCCESSFUL, OK);
 }
 
 void FilmController::post_required_params()
@@ -84,7 +79,7 @@ void FilmController::post_required_params()
     string year_string = current_request->get_request_param(YEAR);
     string length_string = current_request->get_request_param(LENGTH);
     string price_string = current_request->get_request_param(PRICE);
-    summery = current_request->get_request_param(SUMMERY);
+    summary = current_request->get_request_param(SUMMERY);
     director = current_request->get_request_param(DIRECTOR);
 
     if (Utils::is_valid_number(year_string) && Utils::is_valid_number(length_string)
@@ -102,22 +97,21 @@ void FilmController::post_required_params()
 }
 
 
-Response FilmController::put(Request* request)
+
+
+
+bool FilmController::get_id_param_exist()
 {
-    current_request = request;
-    put_params();
-    film_service.edit_film(id, name, year, length, summery, director);
-    return Response(SUCCESSFUL, OK);
+    try{
+        id = Utils::string_integer_value(current_request->get_request_param(FILM_ID));
+        return true;
+    }
+    catch(NotFound& er)
+    {
+        return false;
+    }
 }
 
-Response FilmController::delete_(Request* request)
-{
-    re_initialize();
-    current_request = request;
-    set_id_param();
-    film_service.delete_(id);
-    Response(SUCCESSFUL, OK);
-}
 
 void FilmController::put_params()
 {
@@ -129,7 +123,7 @@ void FilmController::put_params()
     try{name = current_request->get_request_param(NAME);}
     catch(NotFound) {}
 
-    try{summery = current_request->get_request_param(SUMMERY);}
+    try{summary = current_request->get_request_param(SUMMERY);}
     catch(NotFound) {}
 
     try{director = current_request->get_request_param(DIRECTOR);}
@@ -154,7 +148,7 @@ void FilmController::re_initialize()
     year = VALUE_NOT_CHANGED;
     length = VALUE_NOT_CHANGED;
     price = VALUE_NOT_CHANGED;
-    summery = NOT_CHANGED;
+    summary = NOT_CHANGED;
     director = NOT_CHANGED;
 }
 
@@ -180,6 +174,7 @@ string FilmController::make_film_info_string(Film film)
             << "Director = " << film.get_director() << endl
             << "Length = " << film.get_length() << endl
             << "Year = " << film.get_year() << endl
+            << "Summary = " << film.get_summary() << endl
             << "Rate = " << film.get_rate() << endl
             << "Price = " << film.get_price() << endl;
 
@@ -190,16 +185,16 @@ string FilmController::make_recommendation_string(Film film)
 {
     const int RECOM_SIZE = 4;
     const string spacer = " | ";
-    vector <Film> recoms = film_service.get_recomandation_list(film);
-    FilmFilterService recom_filter(recoms);
-    recom_filter.filter_purchased(film_service.get_purchased());
-    recoms = recom_filter.get_filtered();
+    // vector <Film> recoms = film_service.get_recommendation_list(film);
+    // FilmFilterService recom_filter(film_service.get_recommendation_list(film));
+    // recom_filter.filter_purchased(film_service.get_purchased());
+    vector <Film> films = film_service.get_recommendation_list(film);
     stringstream recom;
     recom << "Recommendation Film" << endl;
     recom << "#. Film Id" << spacer << "Film Name" << spacer << "Film Length" << spacer << "Film Director" << endl;
     for (int i = 0; i < RECOM_SIZE; i++)
-        recom << recoms[i].get_id() << spacer << recoms[i].get_name() << spacer 
-                << recoms[i].get_length() << spacer << recoms[i].get_director() << endl;
+        recom << films[i].get_id() << spacer << films[i].get_name() << spacer 
+                << films[i].get_length() << spacer << films[i].get_director() << endl;
     
     return recom.str();
 }

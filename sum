@@ -256,7 +256,7 @@ class FilmController :public Controller
         int year;
         int length;
         int price;
-        std::string summery;
+        std::string summary;
         std::string director;
         bool get_id_param_exist();
         void post_required_params();
@@ -345,7 +345,7 @@ protected:
 class Film
 {
 public:
-    Film(std::string name, int year, int length, int price, std::string summery, std::string director, int publisher_id);
+    Film(std::string name, int year, int length, int price, std::string summary, std::string director, int publisher_id);
     void delete_();
     bool is_available();
     void add_comment(std::string comment_content, int writer_id);
@@ -360,8 +360,8 @@ public:
     int get_year();
     void set_length(int length);
     int get_length();
-    void set_summery(std::string summery);
-    std::string get_summemry();
+    void set_summary(std::string summary);
+    std::string get_summary();
     void set_director(std::string director);
     std::string get_director();
     int get_price();
@@ -379,7 +379,7 @@ private:
     int year;
     int length; //minutes
     int price;
-    std::string summery;
+    std::string summary;
     std::string director;
     bool available;
 
@@ -420,9 +420,9 @@ class FilmService
 public:
     FilmService();
     void buy(int film_id);
-    void add_film(std::string name, int year, int length, int price, std::string summery, std::string director);
+    void add_film(std::string name, int year, int length, int price, std::string summary, std::string director);
     void edit_film(int id, std::string name = NOT_CHANGED, int year = VALUE_NOT_CHANGED,int length = VALUE_NOT_CHANGED,
-             std::string summery = NOT_CHANGED, std::string director = NOT_CHANGED);
+             std::string summary = NOT_CHANGED, std::string director = NOT_CHANGED);
     void delete_(int id);
     void rate(int id, int score);
     void comment(int id, std::string content);
@@ -431,7 +431,7 @@ public:
     std::vector <Film> get_purchased();
     std::vector <Film> get_published();
     std::vector <Film> get_all_films();
-    std::vector <Film> get_recomandation_list(Film refferin_film);
+    std::vector <Film> get_recommendation_list(Film refferin_film);
 
 private:
     DataBase* database;
@@ -1462,7 +1462,7 @@ const char* PermissionDenied::what() const throw()
 #define YEAR "year"
 #define LENGTH "length"
 #define PRICE "price"
-#define SUMMERY "summery"
+#define SUMMERY "summary"
 #define DIRECTOR "director"
 
 using namespace std;
@@ -1509,7 +1509,7 @@ Response FilmController::post(Request* request)
     current_request = request;
     try
     {
-        film_service.add_film(name, year, length, price, summery, director);
+        film_service.add_film(name, year, length, price, summary, director);
         return Response(SUCCESSFUL, OK);
     }
     catch(Exception& er)
@@ -1524,7 +1524,7 @@ void FilmController::post_required_params()
     string year_string = current_request->get_request_param(YEAR);
     string length_string = current_request->get_request_param(LENGTH);
     string price_string = current_request->get_request_param(PRICE);
-    summery = current_request->get_request_param(SUMMERY);
+    summary = current_request->get_request_param(SUMMERY);
     director = current_request->get_request_param(DIRECTOR);
 
     if (Utils::is_valid_number(year_string) && Utils::is_valid_number(length_string)
@@ -1546,7 +1546,7 @@ Response FilmController::put(Request* request)
 {
     current_request = request;
     put_params();
-    film_service.edit_film(id, name, year, length, summery, director);
+    film_service.edit_film(id, name, year, length, summary, director);
     return Response(SUCCESSFUL, OK);
 }
 
@@ -1569,7 +1569,7 @@ void FilmController::put_params()
     try{name = current_request->get_request_param(NAME);}
     catch(NotFound) {}
 
-    try{summery = current_request->get_request_param(SUMMERY);}
+    try{summary = current_request->get_request_param(SUMMERY);}
     catch(NotFound) {}
 
     try{director = current_request->get_request_param(DIRECTOR);}
@@ -1594,7 +1594,7 @@ void FilmController::re_initialize()
     year = VALUE_NOT_CHANGED;
     length = VALUE_NOT_CHANGED;
     price = VALUE_NOT_CHANGED;
-    summery = NOT_CHANGED;
+    summary = NOT_CHANGED;
     director = NOT_CHANGED;
 }
 
@@ -1630,7 +1630,7 @@ string FilmController::make_recommendation_string(Film film)
 {
     const int RECOM_SIZE = 4;
     const string spacer = " | ";
-    vector <Film> recoms = film_service.get_recomandation_list(film);
+    vector <Film> recoms = film_service.get_recommendation_list(film);
     FilmFilterService recom_filter(recoms);
     recom_filter.filter_purchased(film_service.get_purchased());
     recoms = recom_filter.get_filtered();
@@ -1669,8 +1669,8 @@ using namespace std;
 
 int Film::last_id_created = 0;
 
-Film::Film(string _name, int _year, int _length, int _price, string _summery, string _director, int _publisher_id)
-    : name(name), year(_year), length(_length), summery(_summery), director(_director), available(true), publisher_id(_publisher_id)
+Film::Film(string _name, int _year, int _length, int _price, string _summary, string _director, int _publisher_id)
+    : name(name), year(_year), length(_length), summary(_summary), director(_director), available(true), publisher_id(_publisher_id)
 {
     last_id_created++;
     id = last_id_created;
@@ -1752,14 +1752,14 @@ int Film::get_length()
     return length;
 }
 
-void Film::set_summery(string _summery)
+void Film::set_summary(string _summary)
 {
-    summery = _summery;
+    summary = _summary;
 }
 
-string Film::get_summemry()
+string Film::get_summary()
 {
-    return summery;
+    return summary;
 }
 
 void Film::set_director(string _director)
@@ -2071,26 +2071,26 @@ void FilmService::buy(int film_id)
         throw NotFound("film is not available");
 }
 
-void FilmService::add_film(string name, int year, int length, int price, string summery, string director)
+void FilmService::add_film(string name, int year, int length, int price, string summary, string director)
 {
     Publisher* publisher = user_manager->get_logged_publisher();
-    Film* new_film = new Film(name, year, length, price, summery, director, publisher->get_id());
+    Film* new_film = new Film(name, year, length, price, summary, director, publisher->get_id());
     database->add_film(new_film);
     publisher->add_film(new_film);
     send_film_add_notif(publisher->get_followers());
 }
 
-void FilmService::edit_film(int id, string _name, int _year,int _length, string _summery, string _director)
+void FilmService::edit_film(int id, string _name, int _year,int _length, string _summary, string _director)
 {
-    string name, summery, director;
+    string name, summary, director;
     int  length, year;
     Film* film = database->search_film(id);
     check_edit_access(id);
 
     if (name != NOT_CHANGED)
         film->set_name(name);
-    if (summery != NOT_CHANGED)
-        film->set_summery(summery);
+    if (summary != NOT_CHANGED)
+        film->set_summary(summary);
     if (director != NOT_CHANGED)
         film->set_director(director);
     if (year != VALUE_NOT_CHANGED)
@@ -2164,7 +2164,7 @@ std::vector <Film> FilmService::get_published()
     return pub->get_published();
 }
 
-vector <Film> FilmService::get_recomandation_list(Film reffering_film)
+vector <Film> FilmService::get_recommendation_list(Film reffering_film)
 {
     FilmFilterService film_filter(database->get_all_films());
     film_filter.stable_sort_by_rate();

@@ -26,9 +26,9 @@ class FilmService
 public:
     FilmService();
     void buy(int film_id);
-    void add_film(std::string name, int year, int length, int price, std::string summery, std::string director);
+    void add_film(std::string name, int year, int length, int price, std::string summary, std::string director);
     void edit_film(int id, std::string name = NOT_CHANGED, int year = VALUE_NOT_CHANGED,int length = VALUE_NOT_CHANGED,
-             std::string summery = NOT_CHANGED, std::string director = NOT_CHANGED);
+             std::string summary = NOT_CHANGED, std::string director = NOT_CHANGED);
     void delete_(int id);
     void rate(int id, int score);
     void comment(int id, std::string content);
@@ -37,7 +37,7 @@ public:
     std::vector <Film> get_purchased();
     std::vector <Film> get_published();
     std::vector <Film> get_all_films();
-    std::vector <Film> get_recomandation_list(Film refferin_film);
+    std::vector <Film> get_recommendation_list(Film refferin_film);
 
 private:
     DataBase* database;

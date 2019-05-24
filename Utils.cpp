@@ -60,7 +60,6 @@ vector <string> Utils::merge_tokens(int from, int to, vector <string> words)
     {
         merged += "/";
         merged += words[i];
-        // cout << merged << endl;
     }
 
     words[from] = merged;
@@ -68,9 +67,6 @@ vector <string> Utils::merge_tokens(int from, int to, vector <string> words)
     {
         words.erase(words.begin() + i);
     }
-
-    // for (int i = 0; i< words.size(); i++)
-    //     cout << words[i] << endl;
 
     return words;
 }

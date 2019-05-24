@@ -20,7 +20,7 @@ Response MoneyController::post(Request* request)
         Client* client = UserSessionManagement::get_instance()->get_logged_client();
         client->increase_credit(Utils::string_integer_value(request->get_request_param(AMOUNT)));
 
-        std::cout << client->get_credit() << std::endl;
+        // std::cout << client->get_credit() << std::endl;
     }
     else
     {

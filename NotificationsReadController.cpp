@@ -17,7 +17,6 @@ Response NotificationsReadController ::get(Request* request)
     try
     {
         limit = Utils::string_integer_value(current_request->get_request_param(LIMIT));
-        std::cout << limit << std::endl;
     }
     catch(NotFound er)
     {

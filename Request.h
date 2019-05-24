@@ -30,6 +30,7 @@ class Request
 {
 public:
     Request(std::vector<std::string>);
+    Request() = default;
     void print_request(); //this should be deleted
     std::string get_request_param(std::string);
     int get_method();

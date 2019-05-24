@@ -38,7 +38,6 @@ private:
     std::map <int, Client*> clients;
     std::map <std::string, User*> admins;
     std::map <std::string, int> id;
-
 };
 
 #endif

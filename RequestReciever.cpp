@@ -54,7 +54,6 @@ void RequestReciever::control_format(vector <string> tokens)
     if (!valid_token(tokens[0], standard_methods))
         throw  BadRequest("method is not standard");
 
-    cout << tokens [1] << endl;
     if (!valid_token(tokens[1], standard_urls))
         throw  NotFound("url is not standard");
 

@@ -1,9 +1,13 @@
 #include "DataBase.h"
 
+#include <iostream>
+
 #include "Client.h"
 #include "User.h"
 #include "Film.h"
 #include "Exceptions.h"
+
+
 
 using namespace std;
 
@@ -26,6 +30,11 @@ DataBase::~DataBase()
 {
     for (map <int, Client*> ::iterator it = clients.begin() ; it != clients.end(); it++)
         delete it->second;
+
+    for (map <int, Film*> ::iterator it = films.begin() ; it != films.end(); it++)
+        delete it->second;
+    
+    delete this;
 }
 
 
@@ -73,7 +82,9 @@ Film* DataBase::search_film(int film_id)
     if (films.find(film_id) != films.end())
         return films[film_id];
     else 
+    {
         throw NotFound("film not found in data base");
+    }
 }
 
 
@@ -104,7 +115,7 @@ bool DataBase::valid_username(string username)
 {
     return id.find(username) == id.end();
 }
-//entities must add toghether or one by one
+
 
 
 
