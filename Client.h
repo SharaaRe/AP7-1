@@ -20,6 +20,7 @@ class Client :public User
 {
 public:
     Client(std::string email, std::string username, std::string password, int age);
+    Client() = default;
     void set_id(int id);
     void follow(Publisher* follwing);
     void increase_credit(int amount);
@@ -38,6 +39,7 @@ public:
     int get_credit() {return credit;}
 
 protected:
+    static int last_id_created;
     std::string email;
     int age;
     int credit;

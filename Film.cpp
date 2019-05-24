@@ -9,11 +9,14 @@ constexpr int NOT_ASSIGNED = -1;
 
 using namespace std;
 
+int Film::last_id_created = 0;
+
 
 Film::Film(string _name, int _year, int _length, int _price, string _summery, string _director, int _publisher_id)
     : name(name), year(_year), length(_length), summery(_summery), director(_director), available(true), publisher_id(_publisher_id)
 {
-    id = NOT_ASSIGNED;
+    // id = NOT_ASSIGNED;
+    id = ++last_id_created;
     last_comment_id = 0;
     rate = 0;
 }

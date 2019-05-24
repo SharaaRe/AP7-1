@@ -34,7 +34,7 @@ void DataBase::add_client(Client* new_user)
     if (valid_username(new_user->get_username())
             && clients.find(new_user->get_id()) == clients.end())
     {
-        new_user->set_id(++last_user_id);
+        // new_user->set_id(++last_user_id);
         clients.insert(pair <int, Client*> (new_user->get_id(), new_user));
         id.insert(pair<string, int> (new_user->get_username(), new_user->get_id()));
     }
@@ -47,7 +47,7 @@ void DataBase::add_client(Client* new_user)
 
 void DataBase::add_film(Film* new_film)
 {
-    new_film->set_id(++last_film_id);
+    // new_film->set_id(++last_film_id);
     if (films.find(new_film->get_id()) == films.end())
         films.insert(pair <int, Film*> (new_film->get_id(), new_film));
 }

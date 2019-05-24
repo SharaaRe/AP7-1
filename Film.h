@@ -14,6 +14,7 @@ class Film
 {
 public:
     Film(std::string name, int year, int length, int price, std::string summery, std::string director, int publisher_id);
+    Film() = default;
     void delete_();
     bool is_available();
     void add_comment(std::string comment_content, int writer_id);
@@ -41,6 +42,7 @@ public:
 
 
 private:
+    static int last_id_created;
     int id;
     std::string name;
     int year;

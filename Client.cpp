@@ -10,12 +10,14 @@
 
 using namespace std;
 
+int Client::last_id_created = 0;
 
 Client::Client(string _email, string _username, string _password, int _age)
     :User(_username, _password), email(_email), age(_age)
 {   
     credit = 0;
-    id = NOT_ASSIGNED;
+    id = ++last_id_created;
+    // id = NOT_ASSIGNED;
 }
 
 void Client::set_id(int _id)
