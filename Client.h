@@ -20,7 +20,7 @@ class Client :public User
 {
 public:
     Client(std::string email, std::string username, std::string password, int age);
-
+    void set_id(int id);
     void follow(Publisher* follwing);
     void increase_credit(int amount);
     void purchase_film(Film* film);
@@ -33,8 +33,11 @@ public:
     std::vector <Notification> get_read_notification();
     std::vector <int> get_purchased();
 
+
+    ///debug
+    int get_credit() {return credit;}
+
 protected:
-    static int last_id_created;
     std::string email;
     int age;
     int credit;

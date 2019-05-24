@@ -375,10 +375,12 @@ RepliesController.o: $(RepliesControllerSensivityList)
 CommentsController.o: $(CommentsControllerSensivityList)
 	$(CC) -c CommentsController.cpp
 
-PublishedController.o: $(PublisherControllerSensivityList)
-	$(CC) -c PublisherController.cpp
+PublishedController.o: $(PublishedControllerSensivityList)
+	$(CC) -c PublishedController.cpp
+
 FilmFilterController.o: $(FilmFilterControllerSensivityList)
 	$(CC) -c FilmFilterController.cpp
+
 PurchasedController.o: $(PurchasedControllerSensivityList)
 	$(CC) -c PurchasedController.cpp
 

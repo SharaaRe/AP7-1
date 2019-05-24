@@ -30,7 +30,10 @@ public:
 
     ~DataBase();
 private:
-    static DataBase* instance;
+    DataBase();
+    int last_user_id;
+    int last_film_id
+;    static DataBase* instance;
     std::map <int, Film*> films;
     std::map <int, Client*> clients;
     std::map <std::string, User*> admins;

@@ -18,7 +18,7 @@ int main()
         try
         {
             Request my_request = RequestReciever().recieve_request();
-            my_request.print_request();
+            // my_request.print_request();
             ControllerManager controller_manager;
             cout << "main line 19" << endl;
             controller_manager.run_controller(&my_request);
@@ -32,7 +32,7 @@ int main()
             #endif
             
             #ifndef DEBUG 
-                cout << er.what() << endl;
+                cout << er.error() << endl;
             #endif
 
         }

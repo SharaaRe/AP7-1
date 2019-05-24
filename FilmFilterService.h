@@ -15,10 +15,10 @@ class FilmFilterService
 public:
     FilmFilterService(std::vector <Film> films);
     FilmFilterService() = default;
-    std::vector <Film> filter(std::string name = NOT_FILTERED_ST, int max_year = NOT_FILTERED, int min_year = NOT_FILTERED,
+    void filter(std::string name = NOT_FILTERED_ST, int max_year = NOT_FILTERED, int min_year = NOT_FILTERED,
              int price = NOT_FILTERED, float min_rate = NOT_FILTERED, std::string director = NOT_FILTERED_ST);
     void stable_sort_by_rate();
-    void filter_purchased(std::vector <int> purchased);
+    void filter_purchased(std::vector <Film> purchased);
     void filter_not_available();
     std::vector <Film> get_filtered();
 protected:

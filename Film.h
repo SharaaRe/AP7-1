@@ -21,7 +21,7 @@ public:
     void delete_comment(int comment_id);
     void add_score(int score);
 
-
+    void set_id(int id);
     void set_name(std::string name);
     std::string get_name();
     void set_year(int year);
@@ -41,7 +41,6 @@ public:
 
 
 private:
-    static int last_id_created;
     int id;
     std::string name;
     int year;

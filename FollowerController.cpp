@@ -11,18 +11,13 @@ using namespace std;
 
 Response FollowerController::post(Request* request)
 {
-    try 
-    {
-        current_request = request;
-        int id = Utils::string_integer_value(request->get_request_param(USER_ID));
 
-        user_service.follow(id);
-    }
-    catch(NotFound& er)
-    {
-        throw BadRequest("no id parameter");
-    }
+    current_request = request;
+    int id = Utils::string_integer_value(request->get_request_param(USER_ID));
 
+    user_service.follow(id);
+
+    return Response(SUCCESSFUL, OK);
 }
 
 

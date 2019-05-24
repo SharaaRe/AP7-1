@@ -12,16 +12,12 @@
 Response LoginController::post(Request* req)
 {
     current_request = req;
-    try
-    {
-        post_required_params();
-        UserService().login(req->get_request_param(USERNAME),
-                md5(req->get_request_param(PASSWORD)));
-    }
-    catch(Exception* er)
-    {
-        return Response(ERROR, er->error());
-    }
+
+    post_required_params();
+    UserService().login(req->get_request_param(USERNAME),
+            md5(req->get_request_param(PASSWORD)));
+    
+    return Response(SUCCESSFUL, OK);
 }
 
 void LoginController::post_required_params()
@@ -30,7 +26,6 @@ void LoginController::post_required_params()
     {
         current_request->get_request_param(USERNAME);
         current_request->get_request_param(PASSWORD);
-
     }
     catch(NotFound& er)
     {

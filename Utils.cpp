@@ -46,7 +46,8 @@ int Utils::find(string word, vector <string> line)
         else
             length++;
     }
-    tokens.push_back(line.substr(start, length));
+    if (length > 0)
+        tokens.push_back(line.substr(start, length));
 
 
     return tokens;  

@@ -3,6 +3,8 @@
 #include <string>
 #include <sstream>
 
+#include <iostream>
+
 #include "FilmService.h"
 #include "FilmFilterController.h"
 #include "Utils.h"
@@ -22,8 +24,6 @@
 
 using namespace std;
 
-FilmController::FilmController()
-{}
 
 Response FilmController::get(Request* request)
 {
@@ -31,10 +31,19 @@ Response FilmController::get(Request* request)
     current_request = request;
     if (get_id_param_exist())
     {
+        cout << "line 34" << endl;
         Film film = *DataBase::get_instance()->search_film(id);
+        cout << "line 36" << endl;
+
         string film_info = make_film_info_string(film);
+        cout << "line 39" << endl;
+
         string comments_info = make_comments_string(film);
+        cout << "line 42" << endl;
+
         string recoms_info = make_recommendation_string(film);
+        cout << "line 45" << endl;
+
 
         return Response(SUCCESSFUL, film_info + comments_info + recoms_info);
     }
@@ -62,15 +71,11 @@ Response FilmController::post(Request* request)
 {
     re_initialize();
     current_request = request;
-    try
-    {
-        film_service.add_film(name, year, length, price, summery, director);
-        return Response(SUCCESSFUL, OK);
-    }
-    catch(Exception& er)
-    {
-        return Response(ERROR, er.error());
-    }
+
+    film_service.add_film(name, year, length, price, summery, director);
+
+    return Response(SUCCESSFUL, OK);
+
 }
 
 void FilmController::post_required_params()
@@ -187,8 +192,7 @@ string FilmController::make_recommendation_string(Film film)
     const string spacer = " | ";
     vector <Film> recoms = film_service.get_recomandation_list(film);
     FilmFilterService recom_filter(recoms);
-    recom_filter.filter_purchased(UserSessionManagement::get_instance()->
-            get_logged_client()->get_purchased());
+    recom_filter.filter_purchased(film_service.get_purchased());
     recoms = recom_filter.get_filtered();
     stringstream recom;
     recom << "Recommendation Film" << endl;

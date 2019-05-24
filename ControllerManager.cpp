@@ -12,6 +12,9 @@
 #include "RepliesController.h"
 #include "RateController.h"
 #include "NotificationsController.h"
+#include "NotificationsReadController.h"
+#include "PurchasedController.h"
+#include "PublishedController.h"
 #include "Exceptions.h"
 #include "Response.h"
 
@@ -28,6 +31,10 @@ ControllerManager::ControllerManager()
     controllers.insert(pair <std::string, Controller*> (REPLIES, new RepliesController()));
     controllers.insert(pair <std::string, Controller*> (BUY, new BuyController()));
     controllers.insert(pair <std::string, Controller*> (RATE, new RateController()));
+    controllers.insert(pair <std::string, Controller*> (NOTIFICATION, new NotificationsController()));
+    controllers.insert(pair <std::string, Controller*> (NOTIFICATION_READ, new NotificationsReadController()));
+    controllers.insert(pair <std::string, Controller*> (PURCHASED, new PurchasedController()));
+    controllers.insert(pair <std::string, Controller*> (PUBLISHED, new PublishedController()));
 
     
 }

@@ -2,6 +2,8 @@
 
 #include <sstream>
 
+#include <iostream>
+
 #include "Request.h"
 #include "UserService.h"
 
@@ -17,8 +19,10 @@ Response NotificationsController::get(Request* request)
 
 Response NotificationsController::make_notification_response(vector <string> notifs, int limit)
 {
-    if (limit = NO_LIMIT || limit > notifs.size())
+
+    if (limit == NO_LIMIT || limit > notifs.size())
         limit = notifs.size();
+        
     stringstream res;
     int size = notifs.size();
     for (int i = size - 1; i >= size - limit; i--)

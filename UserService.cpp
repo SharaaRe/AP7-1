@@ -81,6 +81,6 @@ vector <Notification> UserService::get_notifications(bool read)
 Notification UserService::follow_notification(Client client)
 {
     stringstream notif;
-    notif << "User " << client.get_username() << "with id" << client.get_id() << "follow you.";
+    notif << "User " << client.get_username() << " with id " << client.get_id() << " follow you.";
     return notif.str();
 }

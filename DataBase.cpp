@@ -9,6 +9,12 @@ using namespace std;
 
 DataBase* DataBase::instance = nullptr;
 
+DataBase::DataBase()
+{
+    last_film_id = 0;
+    last_user_id = 0;
+}
+
 DataBase* DataBase::get_instance()
 {
     if (instance == nullptr)
@@ -28,6 +34,7 @@ void DataBase::add_client(Client* new_user)
     if (valid_username(new_user->get_username())
             && clients.find(new_user->get_id()) == clients.end())
     {
+        new_user->set_id(++last_user_id);
         clients.insert(pair <int, Client*> (new_user->get_id(), new_user));
         id.insert(pair<string, int> (new_user->get_username(), new_user->get_id()));
     }
@@ -40,6 +47,7 @@ void DataBase::add_client(Client* new_user)
 
 void DataBase::add_film(Film* new_film)
 {
+    new_film->set_id(++last_film_id);
     if (films.find(new_film->get_id()) == films.end())
         films.insert(pair <int, Film*> (new_film->get_id(), new_film));
 }
@@ -50,7 +58,7 @@ Client* DataBase::search_client(int id)
         return clients[id];
     
     else
-        throw new NotFound("not found in database");
+        throw NotFound("not found in database");
 }
 
 Client* DataBase::search_client(std::string username)
@@ -65,7 +73,7 @@ Film* DataBase::search_film(int film_id)
     if (films.find(film_id) != films.end())
         return films[film_id];
     else 
-        throw new NotFound("film not found in data base");
+        throw NotFound("film not found in data base");
 }
 
 

@@ -18,8 +18,8 @@ enum {WEAK = 80, MEDIUM = 90, HIGH = 95};
 
 #define USER_ST "User "
 #define PUBLISHER_ST "Publisher "
-#define WITH_ID " with id "
-
+#define WITH_ID "with id"
+#define SPACER " "
 using namespace std;
 
 
@@ -218,7 +218,7 @@ int FilmService::calculate_publisher_part(float rate, int price)
 Notification FilmService::new_film_notification(Publisher publisher)
 {
     stringstream notif;
-    notif << PUBLISHER << publisher.get_username() << WITH_ID  
+    notif << PUBLISHER << publisher.get_username() << SPACER << WITH_ID << SPACER  
              << publisher.get_id() << "register new film.";
     return notif.str();
 }
@@ -226,16 +226,16 @@ Notification FilmService::new_film_notification(Publisher publisher)
 Notification FilmService::rate_notification(Client client, Film film)
 {
     stringstream notif;
-    notif << USER_ST << client.get_username() << WITH_ID << client.get_id() 
-            << " rate on your film " << WITH_ID << film.get_id() << ".";
+    notif << USER_ST << client.get_username() << SPACER << WITH_ID << SPACER << client.get_id() 
+            << " rate on your film " << SPACER << WITH_ID << SPACER << film.get_id() << ".";
     return notif.str();
 }
 
 Notification FilmService::comment_notification(Client client, Film film)
 {
     stringstream notif;
-    notif << USER_ST << client.get_username() << WITH_ID << client.get_id() 
-            << " comment on your film " << WITH_ID << film.get_id() << ".";
+    notif << USER_ST << client.get_username() << SPACER << WITH_ID << SPACER << client.get_id() 
+            << " comment on your film " << SPACER << WITH_ID << SPACER << film.get_id() << ".";
     return notif.str();
 }
 
@@ -243,7 +243,7 @@ Notification FilmService::buy_notification(Client client, Film film)
 {
     stringstream notif;
     notif << USER_ST << client.get_username() << WITH_ID << client.get_id() 
-            << " buy your film " << WITH_ID << film.get_id() << ".";
+            << " buy your film " << SPACER << WITH_ID << SPACER << film.get_id() << ".";
     return notif.str();
 }
 
@@ -251,8 +251,8 @@ Notification FilmService::buy_notification(Client client, Film film)
 Notification FilmService::reply_notification(Publisher publisher)
 {
     stringstream notif;
-    notif << PUBLISHER_ST << publisher.get_username() << WITH_ID << publisher.get_id()
-            << "reply to you comment.";
+    notif << PUBLISHER_ST << publisher.get_username() << SPACER << WITH_ID << SPACER
+            << publisher.get_id() << "reply to you comment.";
 
     return notif.str();
 }

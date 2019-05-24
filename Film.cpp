@@ -5,17 +5,24 @@
 
 enum {MIN_SCORE = 0, MAX_SCORE = 10};
 
+constexpr int NOT_ASSIGNED = -1;
+
 using namespace std;
 
-int Film::last_id_created = 0;
 
 Film::Film(string _name, int _year, int _length, int _price, string _summery, string _director, int _publisher_id)
     : name(name), year(_year), length(_length), summery(_summery), director(_director), available(true), publisher_id(_publisher_id)
 {
-    last_id_created++;
-    id = last_id_created;
+    id = NOT_ASSIGNED;
     last_comment_id = 0;
     rate = 0;
+}
+
+
+void Film::set_id(int _id)
+{
+    if (id == NOT_ASSIGNED)
+        id = _id;
 }
 
 void Film::delete_()
@@ -38,7 +45,7 @@ void Film::add_comment(std::string content, int writer_id)
 void Film::reply_comment(int comment_id, string reply_content)
 {
     if(comments.find(comment_id) == comments.end())
-        throw new NotFound("comment id not found");
+        throw NotFound("comment id not found");
     else
         comments[comment_id].add_reply(reply_content);
 }
@@ -46,7 +53,7 @@ void Film::reply_comment(int comment_id, string reply_content)
 void Film::delete_comment(int comment_id)
 {
     if(comments.find(comment_id) == comments.end())
-        throw new NotFound("comment id not found");
+        throw NotFound("comment id not found");
     else
         comments.erase(comment_id); 
 }

@@ -12,7 +12,7 @@ Response PublishedController::get(Request* request)
     film_filter.filter(name , max_year, min_year, price, rate, director);
     film_filter.filter_not_available();
     films = film_filter.get_filtered();
-    return make_get_film_respnse();
+    return make_get_film_response();
 }
 
 void PublishedController::check_params()

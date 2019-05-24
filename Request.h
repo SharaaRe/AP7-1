@@ -24,7 +24,7 @@ enum METHODS {GET, PUT, POST, DELETE};
 #define RATE "rate"
 #define PURCHASED "purchased"
 #define NOTIFICATION "notifications"
-#define NOTIFICATION_READ "notifications read"
+#define NOTIFICATION_READ "notifications/read"
 
 class Request
 {

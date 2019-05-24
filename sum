@@ -157,6 +157,7 @@ private:
 #define DATABASE_H
 
 #include <map>
+#include <vector>
 #include <string>
 
 class Film;
@@ -174,6 +175,8 @@ public:
     Client* search_client(int id);
     Client* search_client(std::string username);
     Film* search_film(int id);
+
+    std::vector <Film> get_all_films();
 
     bool film_exist(int id);
     bool publisher_exist(int id);
@@ -236,11 +239,13 @@ public:
 
 #include "Controller.h"
 #include "FilmService.h"
+#include "Film.h"
 
 class FilmController :public Controller
 {
     public:
         FilmController();
+        virtual Response get(Request* request);
         virtual Response post(Request* request);
         virtual Response put(Request* request);
         virtual Response delete_(Request* request);
@@ -253,15 +258,19 @@ class FilmController :public Controller
         int price;
         std::string summery;
         std::string director;
+        bool get_id_param_exist();
         void post_required_params();
         void put_params();
         void re_initialize();
         void set_id_param();
+        std::string make_film_info_string(Film film);
+        std::string make_recommendation_string(Film film);
+        std::string make_comments_string(Film film);
 };
 
 #endif
-#ifndef PURCHASED_CONTROLLER_H
-#define PURCHASED_CONTROLLER_H
+#ifndef FILM_FILTER_CONTROLLER_H
+#define FILM_FILTER_CONTROLLER_H
 
 #include "Controller.h"
 #include "FilmService.h"
@@ -307,7 +316,7 @@ public:
     std::vector <Film> filter(std::string name = NOT_FILTERED_ST, int max_year = NOT_FILTERED, int min_year = NOT_FILTERED,
              int price = NOT_FILTERED, float min_rate = NOT_FILTERED, std::string director = NOT_FILTERED_ST);
     void stable_sort_by_rate();
-    void filter_purchased(std::vector <int> purchased);
+    void filter_purchased(std::vector <Film> purchased);
     void filter_not_available();
     std::vector <Film> get_filtered();
 protected:
@@ -360,6 +369,8 @@ public:
     float get_rate();
     int get_publisher_id();
     int get_commenter_id(int comment_id);
+    std::vector <Comment> get_comments();
+
 
 private:
     static int last_id_created;
@@ -419,6 +430,8 @@ public:
     void reply(int film_id, int comment_id, std::string content);
     std::vector <Film> get_purchased();
     std::vector <Film> get_published();
+    std::vector <Film> get_all_films();
+    std::vector <Film> get_recomandation_list(Film refferin_film);
 
 private:
     DataBase* database;
@@ -659,6 +672,20 @@ protected:
     int debt;
     std::map <int, Film*> published;
     std::vector <int> followers;
+};
+
+#endif#ifndef PURCHASED_CONTROLLER_H
+#define PURCHASED_CONTROLLER_H
+
+#include "FilmFilterController.h"
+
+
+class PurchasedController :public FilmFilterController
+{
+public:
+    virtual Response get(Request* request);
+private: 
+    int nothing;
 };
 
 #endif#ifndef RATE_CONTROLLER_H
@@ -1329,6 +1356,20 @@ Film* DataBase::search_film(int film_id)
         throw new NotFound("film not found in data base");
 }
 
+
+
+vector <Film> DataBase::get_all_films()
+{
+    vector <Film> res;
+    for (map <int, Film*>:: iterator it = films.begin(); it != films.end(); it++)
+    {
+        if (it->second->is_available())
+            res.push_back(*(it->second));
+    }
+
+    return res;
+}
+
 bool DataBase::film_exist(int id)
 {
     return films.find(id) != films.end();
@@ -1404,10 +1445,17 @@ const char* PermissionDenied::what() const throw()
 
 #include "FilmController.h"
 
+#include <string>
+#include <sstream>
+
 #include "FilmService.h"
+#include "FilmFilterController.h"
 #include "Utils.h"
 #include "Response.h"
 #include "Exceptions.h"
+#include "Comment.h"
+#include "DataBase.h"
+#include "UserSessionManagement.h"
 
 #define FILM_ID "film_id"
 #define NAME "name"
@@ -1421,6 +1469,39 @@ using namespace std;
 
 FilmController::FilmController()
 {}
+
+Response FilmController::get(Request* request)
+{
+    re_initialize();
+    current_request = request;
+    if (get_id_param_exist())
+    {
+        Film film = *DataBase::get_instance()->search_film(id);
+        string film_info = make_film_info_string(film);
+        string comments_info = make_comments_string(film);
+        string recoms_info = make_recommendation_string(film);
+
+        return Response(SUCCESSFUL, film_info + comments_info + recoms_info);
+    }
+    else
+    {   
+        FilmFilterController film_filter_controller;
+        return film_filter_controller.get(request); 
+    }
+
+}
+
+bool FilmController::get_id_param_exist()
+{
+    try{
+        id = Utils::string_integer_value(current_request->get_request_param(FILM_ID));
+        return true;
+    }
+    catch(NotFound& er)
+    {
+        return false;
+    }
+}
 
 Response FilmController::post(Request* request)
 {
@@ -1528,6 +1609,55 @@ void FilmController::set_id_param()
     {
         throw BadRequest("film id parameter not found");
     }
+}
+
+string FilmController::make_film_info_string(Film film)
+{
+
+    stringstream film_info;
+    film_info << "Details of Film " << film.get_name() << endl
+            << "Id = " << film.get_id() << endl
+            << "Director = " << film.get_director() << endl
+            << "Length = " << film.get_length() << endl
+            << "Year = " << film.get_year() << endl
+            << "Rate = " << film.get_rate() << endl
+            << "Price = " << film.get_price() << endl;
+
+    return film_info.str();
+}
+
+string FilmController::make_recommendation_string(Film film)
+{
+    const int RECOM_SIZE = 4;
+    const string spacer = " | ";
+    vector <Film> recoms = film_service.get_recomandation_list(film);
+    FilmFilterService recom_filter(recoms);
+    recom_filter.filter_purchased(film_service.get_purchased());
+    recoms = recom_filter.get_filtered();
+    stringstream recom;
+    recom << "Recommendation Film" << endl;
+    recom << "#. Film Id" << spacer << "Film Name" << spacer << "Film Length" << spacer << "Film Director" << endl;
+    for (int i = 0; i < RECOM_SIZE; i++)
+        recom << recoms[i].get_id() << spacer << recoms[i].get_name() << spacer 
+                << recoms[i].get_length() << spacer << recoms[i].get_director() << endl;
+    
+    return recom.str();
+}
+
+string FilmController::make_comments_string(Film film)
+{
+    stringstream comment_info;
+    vector <Comment> comments = film.get_comments();
+    comment_info << "Comments" << endl;
+    for (int i = 0; i < comments.size(); i++)
+    {
+        comment_info << comments[i].get_id() << ". " << comments[i].get_content() << endl;
+        vector <string> replies = comments[i].get_reply();
+        for (int j = 0; j < replies.size(); j++)
+            comment_info << comments[i].get_id() << j + 1 << replies[j] << endl;
+    }
+
+    return comment_info.str();
 }#include "Film.h"
 
 #include "Exceptions.h"
@@ -1674,6 +1804,18 @@ int Film::get_commenter_id(int comment_id)
         return comments[comment_id].get_writer_id();
 }
 
+vector <Comment> Film::get_comments()
+{
+    vector <Comment> res;
+    for (map <int, Comment>:: iterator it = comments.begin(); it != comments.end(); it++)
+    {
+        res.push_back(it->second);
+    }
+
+    return res;
+}
+
+
 
 
 
@@ -1686,10 +1828,12 @@ int Film::get_commenter_id(int comment_id)
 #include <sstream>
 
 #include "Request.h"
+#include "Response.h"
 #include "Exceptions.h"
 #include "FilmFilterService.h"
 #include "UserSessionManagement.h"
 #include "FilmService.h"
+#include "DataBase.h"
 #include "Utils.h"
 
 
@@ -1702,8 +1846,10 @@ Response FilmFilterController::get(Request* request)
 {
     current_request = request;
     check_params();
-    FilmFilterService film_filter(film_service.get_purchased());
+    FilmFilterService film_filter(DataBase::get_instance()->get_all_films);
     film_filter.filter(name , max_year, min_year, price, rate, director);
+    films = film_filter.get_filtered();
+    return make_get_film_respnse();
 }
 
 
@@ -1719,7 +1865,8 @@ Response FilmFilterController::make_get_film_response()
                  << spacer << films[i].get_price() << spacer << films[i].get_rate() << spacer << films[i].get_year()
                  << spacer << films[i].get_director() << endl;
     }
-
+    
+    return Respnse(SUCCESSFUL, res.str());
 }
 
 
@@ -1843,14 +1990,14 @@ void FilmFilterService::stable_sort_by_rate()
     stable_sort(films.begin(), films.end(), compare_by_rate);
 }
 
-void FilmFilterService::filter_purchased(vector <int> purchased_ids)
+void FilmFilterService::filter_purchased(vector <Film> purchased_ids)
 {
     vector <Film> filtered;
     for (int j = 0; j < purchased_ids.size(); j++)
     {
         for (int i = 0; i < films.size(); i++)
         {
-            if (films[i].get_id() != purchased_ids[j])
+            if (films[i].get_id() != purchased_ids[j].get_id())
                 filtered.push_back(films[i]);
         }
     }
@@ -1890,6 +2037,7 @@ bool FilmFilterService::compare_by_rate(Film first, Film second)
 #include "Film.h"
 #include "Exceptions.h"
 #include "UTflix.h"
+#include "FilmFilterService.h"
 
 enum {WEAK = 80, MEDIUM = 90, HIGH = 95};
 
@@ -2014,7 +2162,22 @@ std::vector <Film> FilmService::get_published()
 {
     Publisher* pub = user_manager->get_logged_publisher();
     return pub->get_published();
-    
+}
+
+vector <Film> FilmService::get_recomandation_list(Film reffering_film)
+{
+    FilmFilterService film_filter(database->get_all_films());
+    film_filter.stable_sort_by_rate();
+    vector <Film> films = film_filter.get_filtered();
+    vector <Film> recoms;
+    int size = films.size();
+    for (int i = size - 1; i >= 0 && i >= 0; i--)
+    {   
+        if (reffering_film.get_id() != films[i].get_id())
+            recoms.push_back(films[i]);
+    }
+
+    return recoms;
 }
 
 
@@ -2811,7 +2974,19 @@ vector <Film> Publisher::get_published()
     return res;
 }
 
-#include "RateController.h"
+#include "PurchasedController.h"
+
+#include "UserSessionManagement.h"
+
+Response PurchasedController::get(Request* request)
+{
+    current_request = request;
+    check_params();
+    FilmFilterService film_filter(film_service.get_purchased());
+    film_filter.filter(name , max_year, min_year, price, rate, director);
+    films = film_filter.get_filtered();
+    return make_get_film_respnse();
+}#include "RateController.h"
 
 #include "Utils.h"
 #include "FilmService.h"
@@ -3434,10 +3609,14 @@ OBJECTS = \
 		RateController.o \
 		RepliesController.o \
 		CommentsController.o \
+		PurchasedController.o \
+		PublishedController.o \
+		FilmFilterController.o\
 		NotificationsController.o \
 		NotificationsReadController.o \
 		UserService.o \
 		FilmService.o \
+		FilmFilterService.o \
 		User.o \
 		Client.o \
 		Publisher.o \
@@ -3555,6 +3734,9 @@ FilmControllerSensivityList = \
 		UserSessionManagement.h \
 		Request.h \
 		Response.h \
+		DataBase.h \
+		Comment.h \
+
 
 FollowerControllerSensivityList = \
 		FollowerController.cpp \
@@ -3584,9 +3766,6 @@ BuyControllerSensivityList = \
 		Publisher.h \
 
 
-
-
-
 RateControllerSensivityList = \
 		RateController.cpp \
 		RateController.h \
@@ -3613,6 +3792,21 @@ CommentsControllerSensivityList = \
 		FilmService.h \
 		Utils.h \
 		Exceptions.h \
+
+PurchasedControllerSensivityList = \
+		PurchasedController.cpp \
+		FilmFilterController.h \
+		FilmFilterService.h \
+
+PublishedControllerSensivityList = \
+		FilmFilterController.h \
+		FilmFilterService.h \
+
+FilmFilterControllerSensivityList = \
+		FilmFilterController.h \
+		FilmFilterService.h \
+
+
 
 
 NotificationsControllerSensivityList = \
@@ -3658,6 +3852,12 @@ FilmServiceSensivityList = \
 UserSensivityList = \
 		User.cpp \
 		User.h \
+
+FilmFilterServiceSensivityList = \
+		FilmFilterService.cpp \
+		FilmFilterService.h \
+		FilmService.h \
+		Film.h \
 
 
 ClientSensivityList = \
@@ -3759,6 +3959,15 @@ RepliesController.o: $(RepliesControllerSensivityList)
 CommentsController.o: $(CommentsControllerSensivityList)
 	$(CC) -c CommentsController.cpp
 
+PublishedController.o: $(PublishedControllerSensivityList)
+	$(CC) -c PublishedController.cpp
+
+FilmFilterController.o: $(FilmFilterControllerSensivityList)
+	$(CC) -c FilmFilterController.cpp
+
+PurchasedController.o: $(PurchasedControllerSensivityList)
+	$(CC) -c PurchasedController.cpp
+
 NotificationsController.o: $(NotificationsSensivityList)
 	$(CC) -c NotificationsController.cpp
 
@@ -3771,6 +3980,9 @@ UserService.o: $(UserServiceSensivityList)
 
 FilmService.o: $(FilmServiceSensivityList)
 	$(CC) -c FilmService.cpp
+
+FilmFilterService.o: $(FilmFilterServiceSensivityList)
+	$(CC) -c FilmFilterService.cpp
 
 User.o: $(UserSensivityList)
 	$(CC) -c  User.cpp

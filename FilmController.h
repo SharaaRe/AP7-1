@@ -10,7 +10,7 @@
 class FilmController :public Controller
 {
     public:
-        FilmController();
+        FilmController() = default;
         virtual Response get(Request* request);
         virtual Response post(Request* request);
         virtual Response put(Request* request);

@@ -9,9 +9,6 @@
 #include "Utils.h"
 
 
-
-
-
 using namespace std;
 
 Request RequestReciever::recieve_request()
@@ -25,11 +22,6 @@ Request RequestReciever::recieve_request()
     return Request(tokens);
     
 }
-
-
-//these two must be in utils
-
-
 
 
 vector <string> RequestReciever::parse_request()
@@ -51,23 +43,18 @@ vector <string> RequestReciever::parse_request()
 
 
 
-
-
-
-
-
 void RequestReciever::control_format(vector <string> tokens)
 {
 
     vector <string> standard_methods = {GET_, PUT_, POST_, DELETE_};
-    vector <string> standard_urls = {SIGN_UP, LOGIN , FILMS/*, PUBLISHED*/, REPLIES, 
-            COMMENTS, FOLLOWERS, MONEY, BUY/*, RATE, PURCHASED*/, NOTIFICATION, NOTIFICATION_READ};
+    vector <string> standard_urls = {SIGN_UP, LOGIN , FILMS, PUBLISHED, REPLIES, 
+            COMMENTS, FOLLOWERS, MONEY, BUY, RATE, PURCHASED, NOTIFICATION, NOTIFICATION_READ};
 
 
     if (!valid_token(tokens[0], standard_methods))
         throw  BadRequest("method is not standard");
 
-    
+    cout << tokens [1] << endl;
     if (!valid_token(tokens[1], standard_urls))
         throw  NotFound("url is not standard");
 
