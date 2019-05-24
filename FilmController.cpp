@@ -218,7 +218,7 @@ string FilmController::make_comments_string(Film film)
         comment_info << comments[i].get_id() << ". " << comments[i].get_content() << endl;
         vector <string> replies = comments[i].get_reply();
         for (int j = 0; j < replies.size(); j++)
-            comment_info << comments[i].get_id() << j + 1 << replies[j] << endl;
+            comment_info << comments[i].get_id() << "."<<j + 1 << ". "<< replies[j] << endl;
     }
     comment_info << endl;
 
