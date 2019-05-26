@@ -13,9 +13,7 @@ class FilmController :public Controller
         FilmController() = default;
         virtual Response get(Request* request);
         virtual Response post(Request* request);
-        virtual Response put(Request* request);
-        virtual Response delete_(Request* request);
-    private:
+    protected:
         int id;
         FilmService film_service;
         std::string name;

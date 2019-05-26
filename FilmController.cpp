@@ -58,22 +58,7 @@ Response FilmController::post(Request* request)
 
 }
 
-Response FilmController::put(Request* request)
-{
-    current_request = request;
-    put_params();
-    film_service.edit_film(id, name, year, length, summary, director);
-    return Response(SUCCESSFUL, OK);
-}
 
-Response FilmController::delete_(Request* request)
-{
-    re_initialize();
-    current_request = request;
-    set_id_param();
-    film_service.delete_(id);
-    return Response(SUCCESSFUL, OK);
-}
 
 void FilmController::post_required_params()
 {
@@ -124,34 +109,6 @@ bool FilmController::get_id_param_exist()
 }
 
 
-void FilmController::put_params()
-{
-    re_initialize();
-
-    string year_string, length_string;
-
-    set_id_param();
-    try{name = current_request->get_request_param(NAME);}
-    catch(NotFound) {}
-
-    try{summary = current_request->get_request_param(SUMMERY);}
-    catch(NotFound) {}
-
-    try{director = current_request->get_request_param(DIRECTOR);}
-    catch(NotFound) {}    
-
-    try{
-        year_string = current_request->get_request_param(YEAR);
-        year = Utils::string_integer_value(year_string);
-    }
-    catch(NotFound) {}
-
-    try{
-        length_string = current_request->get_request_param(LENGTH);
-        length = Utils::string_integer_value(length_string);
-    }
-    catch(NotFound) {}
-}
 
 void FilmController::re_initialize()
 {
