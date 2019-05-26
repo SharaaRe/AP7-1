@@ -9,8 +9,7 @@ class CommentsController: public Controller
 {
 public:
     virtual Response post(Request* request);
-    virtual Response delete_(Request* request);
-private:
+protected:
     int film_id;
     int comment_id;
     std::string content;
