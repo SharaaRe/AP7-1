@@ -30,6 +30,7 @@ FilmService::FilmService()
 {
     user_manager = UserSessionManagement::get_instance();
     database = DataBase::get_instance();
+    recom_service = RecommendationService::get_instance();
 }
 
 void FilmService::buy(int film_id)
@@ -42,6 +43,7 @@ void FilmService::buy(int film_id)
         client->purchase_film(film);
         publisher->sell_film(calculate_publisher_part(film->get_rate(), film->get_price()));
         publisher->send_notif(buy_notification(*client, *film));
+        recom_service->add_new_graph(film->get_id(), client->get_purchased());
     }
     else
         throw NotFound("film is not available");
@@ -53,6 +55,7 @@ void FilmService::add_film(string name, int year, int length, int price, string 
     Film* new_film = new Film(name, year, length, price, summary, director, publisher->get_id());
     database->add_film(new_film);
     publisher->add_film(new_film);
+    recom_service->add_film(new_film->get_id());
     send_film_add_notif(publisher->get_followers());
 }
 
@@ -140,7 +143,6 @@ std::vector <Film> FilmService::get_published()
 
 vector <Film> FilmService::get_recommendation_list(Film reffering_film)
 {
-    RecommendationService* recom_service = RecommendationService::get_instance();
     FilmFilterService film_filter(recom_service->recommended_films(reffering_film.get_id()));
     film_filter.filter_purchased(get_purchased());
     film_filter.filter_not_available();

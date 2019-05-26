@@ -20,7 +20,7 @@ public:
     static RecommendationService* get_instance();
     void add_film(int id);
     void delete_film(int id);
-    void add_new_graph(int film_id, std::vector <Film> adjacent_films);
+    void add_new_graph(int film_id, std::vector <int> adjacent_films_ids);
     std::vector <Film> recommended_films(int film_id);
 private:
     RecommendationService();

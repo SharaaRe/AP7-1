@@ -18,7 +18,7 @@
 
 class DataBase;
 class UserSessionManagement;
-
+class RecommendationService;
 typedef std::string Notification;
 
 class FilmService
@@ -42,6 +42,7 @@ public:
 private:
     DataBase* database;
     UserSessionManagement* user_manager;
+    RecommendationService* recom_service;
     void check_edit_access(int id);
     void check_client_access(int film_id);
     void send_film_add_notif(std::vector <int> followers_id);
