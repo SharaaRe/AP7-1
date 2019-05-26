@@ -14,6 +14,7 @@ enum METHODS {GET, PUT, POST, DELETE};
 
 #define SIGN_UP "signup"
 #define LOGIN "login"
+#define LOGOUT ""
 #define FILMS "films"
 #define PUBLISHED "published"
 #define REPLIES "replies"
@@ -25,6 +26,9 @@ enum METHODS {GET, PUT, POST, DELETE};
 #define PURCHASED "purchased"
 #define NOTIFICATION "notifications"
 #define NOTIFICATION_READ "notifications/read"
+#define PUT_FILMS "put_films"
+#define DELETE_FILMS "delete_films"
+#define DELETE_COMMENTS "delete_comments"
 
 class Request
 {

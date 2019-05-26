@@ -11,7 +11,7 @@ using namespace std;
 
 Request::Request(vector <string> raw_request)
 {
-    map <string, int> methods = {{"GET",GET}, {"PUT", PUT}, {"POST",POST}, {"DELETE",DELETE}};
+    map <string, int> methods = {{"GET",GET}, {"PUT", PUT}};
     string _operator = "?";
     const int COMPLEX_REQ_SIZE = 5;
     

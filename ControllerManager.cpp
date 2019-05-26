@@ -4,6 +4,7 @@
 
 #include "SignupController.h"
 #include "LoginController.h"
+#include "LogoutController.h"
 #include "FilmController.h"
 #include "FollowerController.h"
 #include "MoneyController.h"
@@ -15,6 +16,9 @@
 #include "NotificationsReadController.h"
 #include "PurchasedController.h"
 #include "PublishedController.h"
+#include "PutFilmsController.h"
+#include "DeleteFilmsController.h"
+#include "DeleteCommentsController.h"
 #include "Exceptions.h"
 #include "Response.h"
 
@@ -34,7 +38,10 @@ ControllerManager::ControllerManager()
     controllers.insert(pair <std::string, Controller*> (NOTIFICATION, new NotificationsController()));
     controllers.insert(pair <std::string, Controller*> (NOTIFICATION_READ, new NotificationsReadController()));
     controllers.insert(pair <std::string, Controller*> (PURCHASED, new PurchasedController()));
-    controllers.insert(pair <std::string, Controller*> (PUBLISHED, new PublishedController()));
+    controllers.insert(pair <std::string, Controller*> (PUT_FILMS, new PutFilmsController()));
+    controllers.insert(pair <std::string, Controller*> (DELETE_FILMS, new DeleteFilmsController()));
+    controllers.insert(pair <std::string, Controller*> (DELETE_COMMENTS, new Controller()));
+    controllers.insert(pair <std::string, Controller*> (LOGOUT, new LogoutController()));
 
     
 }
@@ -57,12 +64,6 @@ void ControllerManager::run_controller(Request* request)
         case POST:
             response = controller->post(request);
             break;            
-        case PUT:
-            response = controller->put(request);
-            break;
-        case DELETE:
-            response = controller->delete_(request);
-            break;
     }
 }
 
