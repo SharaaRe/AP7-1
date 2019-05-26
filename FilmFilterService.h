@@ -20,6 +20,7 @@ public:
     void stable_sort_by_rate();
     void filter_purchased(std::vector <Film> purchased);
     void filter_not_available();
+    void filter_referring_film(int id);
     std::vector <Film> get_filtered();
 protected:
     std::vector <Film> films;

@@ -144,6 +144,17 @@ void FilmFilterService::filter_not_available()
     films = filtered;
 }
 
+void FilmFilterService::filter_referring_film(int id)
+{
+    for (int i = 0 ; i < films.size() ; )
+    {   
+        if (id == films[i].get_id())
+            films.erase(films.begin() + i);
+        else 
+            i++;
+    }
+}
+
 vector <Film> FilmFilterService::get_filtered()
 {
     return films;

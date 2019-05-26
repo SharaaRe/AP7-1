@@ -12,6 +12,7 @@
 #include "Exceptions.h"
 #include "UTflix.h"
 #include "FilmFilterService.h"
+#include "RecommendationService.h"
 
 enum {WEAK = 80, MEDIUM = 90, HIGH = 95};
 
@@ -139,21 +140,12 @@ std::vector <Film> FilmService::get_published()
 
 vector <Film> FilmService::get_recommendation_list(Film reffering_film)
 {
-    FilmFilterService film_filter(database->get_all_films());
-    film_filter.stable_sort_by_rate();
+    RecommendationService* recom_service = RecommendationService::get_instance();
+    FilmFilterService film_filter(recom_service->recommended_films(reffering_film.get_id()));
     film_filter.filter_purchased(get_purchased());
     film_filter.filter_not_available();
-
-    vector <Film> films = film_filter.get_filtered();
-    int size = films.size();
-    for (int i = 0 ; i < films.size() ; )
-    {   
-        if (reffering_film.get_id() == films[i].get_id())
-            films.erase(films.begin() + i);
-        else 
-            i++;
-    }
-    return films;
+    film_filter.filter_referring_film(reffering_film.get_id());
+    return film_filter.get_filtered();
 }
 
 

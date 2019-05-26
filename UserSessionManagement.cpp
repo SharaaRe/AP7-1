@@ -17,8 +17,8 @@ UserSessionManagement* UserSessionManagement::get_instance()
 
 void UserSessionManagement::set_logged_user(User* _logged_user)
 {
-    // if (logged_user != nullptr)
-    //     throw "some exception in case log out do exist";
+    if (logged_user != nullptr)
+        throw BadRequest("some exception in case log out do exist");
 
     logged_user = _logged_user;
 }

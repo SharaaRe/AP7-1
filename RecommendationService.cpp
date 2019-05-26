@@ -47,12 +47,13 @@ void RecommendationService::add_new_graph(int id, vector <Film> related_films)
       if (films_matrix[index][ZERO] == id)
         break;
 
-    for (int i = 0; i < films_matrix.size(); i++)
+    for (int i = 0; i < related_films.size(); i++)
     {
-        if (i != index)
+        if (i != index && related_films[i].is_available())
         {
-            films_matrix[i][index]++;
-            films_matrix[index][i]++;
+            int relatedd_film_index = related_films[i].get_id();
+            films_matrix[relatedd_film_index][index]++;
+            films_matrix[index][relatedd_film_index]++;
         }
     }
 }
