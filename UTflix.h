@@ -16,6 +16,7 @@ public:
     static UTflix* get_instance();
     void pay_publisher_debt(Publisher* publisher);
     void add_credit(int amount);
+    int get_credit();
     ~UTflix();
 private:
     UTflix() = default;

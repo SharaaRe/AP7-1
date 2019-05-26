@@ -17,7 +17,7 @@ public:
     std::string get_username() const;
     int get_id() const;
     virtual int get_type() const;
-
+    virtual int get_money() const;
 protected:
     // static int type;
     int id;

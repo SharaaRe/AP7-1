@@ -15,11 +15,8 @@ Request RequestReciever::recieve_request()
 {
     if (!getline(cin, request_line))
         throw EndOfFile();
-    // cout << "line 17" << endl;
     vector <string> tokens = parse_request();
-    // cout << "line 19" << endl;
     control_format(tokens);
-    // cout << "line 21" << endl;
     return Request(tokens);
 }
 
@@ -48,9 +45,9 @@ vector <string> RequestReciever::parse_request()
 void RequestReciever::control_format(vector <string> tokens)
 {
 
-    vector <string> standard_methods = {GET_, PUT_};
-    vector <string> standard_urls = {SIGN_UP, LOGIN , FILMS, PUBLISHED, REPLIES, 
-            COMMENTS, FOLLOWERS, MONEY, BUY, RATE, PURCHASED, NOTIFICATION, NOTIFICATION_READ};
+    vector <string> standard_methods = {GET_, POST_};
+    vector <string> standard_urls = {SIGN_UP, LOGIN , LOGOUT, FILMS, PUBLISHED, REPLIES, 
+            COMMENTS, FOLLOWERS, MONEY, BUY, RATE, PURCHASED, NOTIFICATION, NOTIFICATION_READ,PUT_FILMS, DELETE_FILMS, DELETE_COMMENTS };
 
     if (tokens.size() == 0)
         throw EmptyLine();

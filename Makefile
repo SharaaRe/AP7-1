@@ -18,6 +18,7 @@ OBJECTS = \
 		ControllerManager.o \
 		SignupController.o \
 		LoginController.o \
+		LogoutController.o \
 		FilmController.o \
 		FollowerController.o \
 		MoneyController.o \
@@ -30,9 +31,13 @@ OBJECTS = \
 		FilmFilterController.o\
 		NotificationsController.o \
 		NotificationsReadController.o \
+		PutFilmsController.o \
+		DeleteFilmsController.o \
+		DeleteCommentsController.o \
 		UserService.o \
 		FilmService.o \
 		FilmFilterService.o \
+		RecommendationService.o \
 		User.o \
 		Client.o \
 		Publisher.o \
@@ -106,6 +111,22 @@ ControllerManagerSensivityList = \
 		Controller.h \
 		SignupController.h \
 		LoginController.h \
+		LogoutController.h \
+		FilmController.h \
+		FollowerController.h \
+		MoneyController.h \
+		BuyController.h \
+		RateController.h \
+		RepliesController.h \
+		CommentsController.h \
+		PurchasedController.h \
+		PublishedController.h \
+		FilmFilterController.h \
+		NotificationsController.h \
+		NotificationsReadController.h \
+		PutFilmsController.h \
+		DeleteFilmsController.h \
+		DeleteCommentsController.h \
 		Request.h \
 		Response.h \
 		Exceptions.h \
@@ -145,6 +166,7 @@ FilmControllerSensivityList = \
 		FilmController.h \
 		Controller.h \
 		FilmService.h \
+		RecommendationService.h \
 		User.h \
 		Client.h \
 		Film.h \
@@ -243,6 +265,25 @@ NotificationsReadControllerSensivityList = \
 		Utils.h \
 		Exceptions.h \
 
+PutFilmsControllerSensivityList = \
+		PutFilmsController.cpp \
+		PutFilmsController.h \
+		Controller.h \
+		FilmController.h \
+
+DeleteFilmsControllerSensivityList = \
+		DeleteFilmsController.cpp \
+		Controller.h \
+		Controller.h \
+		FilmController.h \
+
+DeleteCommentsControllerSensivityList = \
+		DeleteCommentsController.cpp \
+		DeleteCommentsController.h \
+		Controller.h \
+		Controller.h \
+		CommentsController.h \
+
 
 UserServiceSensivityList = \
 		UserService.cpp \
@@ -265,6 +306,10 @@ FilmServiceSensivityList = \
 		Publisher.h \
 		Comment.h \
 
+RecommendationServiceSensivityList = \
+		RecommendationService.cpp \
+		RecommendationService.h \
+		DataBase.h \
 
 UserSensivityList = \
 		User.cpp \
@@ -362,6 +407,9 @@ SignupController.o: $(SignupControllerSensivityList)
 LoginController.o: $(LoginControllerSensivityList)
 	$(CC) -c  LoginController.cpp
 
+LogoutController.o: $(LogoutControllerSensivityList)
+	$(CC) -c  LogoutController.cpp
+
 FilmController.o: $(FilmControllerSensivityList)
 	$(CC) -c FilmController.cpp
 
@@ -398,6 +446,15 @@ NotificationsController.o: $(NotificationsSensivityList)
 NotificationsReadController.o: $(NotificationsReadControllerSensivityList)
 	$(CC) -c NotificationsReadController.cpp
 
+PutFilmsController.o: $() 
+	$(CC) -c PutFilmsController.cpp
+
+DeleteFilmsController.o: $() 
+	$(CC) -c DeleteFilmsController.cpp
+
+DeleteCommentsController.o: $() 
+	$(CC) -c DeleteCommentsController.cpp
+
 
 UserService.o: $(UserServiceSensivityList)
 	$(CC) -c  UserService.cpp
@@ -407,6 +464,9 @@ FilmService.o: $(FilmServiceSensivityList)
 
 FilmFilterService.o: $(FilmFilterServiceSensivityList)
 	$(CC) -c FilmFilterService.cpp
+
+RecommendationService.o: $(RecommendationServiceSensivityList)
+	$(CC) -c RecommendationService.cpp
 
 User.o: $(UserSensivityList)
 	$(CC) -c  User.cpp

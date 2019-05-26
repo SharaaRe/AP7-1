@@ -1,5 +1,7 @@
 #include "Publisher.h"
 
+#include <iostream>
+
 #include "Film.h"
 #include "Exceptions.h"
 #include "DataBase.h"

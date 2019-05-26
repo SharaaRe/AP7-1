@@ -10,13 +10,13 @@ class UserSessionManagement
 public:
     static UserSessionManagement* get_instance();
     void set_logged_user(User* logged_user);
+    void sign_out();
     User* get_logged_user();
     Publisher* get_logged_publisher();
     Client* get_logged_client();
-    bool is_publisher();
-    bool is_admin();
+    bool is_logged_in();
 private:
-    // UserSessionManagement() = default;
+    UserSessionManagement();
     static UserSessionManagement* instance;
     User* logged_user;
 };

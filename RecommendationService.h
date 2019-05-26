@@ -6,7 +6,7 @@
 
 #include "Film.h"
 
-typedef pair <int, int> RateIdPair;
+typedef std::pair <int, int> RateIdPair;
 
 
 

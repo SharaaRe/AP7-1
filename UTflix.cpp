@@ -20,3 +20,8 @@ void UTflix::add_credit(int amount)
 {
     credit += amount;
 }
+
+int UTflix::get_credit()
+{
+    return credit;
+}

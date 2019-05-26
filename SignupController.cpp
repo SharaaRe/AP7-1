@@ -22,20 +22,14 @@ Response SignupController::post(Request* req)
 {
     current_request = req;
     publisher_flag = false;
-    
-    try
-    {
-        User* new_user;
-        post_required_params();
-        post_required_params();
-        publisher_flag = is_publisher();
-        UserService().signup(email, username, password, age, publisher_flag);
-        return Response(SUCCESSFUL, OK);
-    }
-    catch (Exception& er)
-    {
-        return Response(ERROR, er.error());
-    }
+
+    User* new_user;
+    post_required_params();
+    post_required_params();
+    publisher_flag = is_publisher();
+    UserService().signup(email, username, password, age, publisher_flag);
+
+return Response(SUCCESSFUL, OK);
 }
 
 void SignupController::post_required_params()

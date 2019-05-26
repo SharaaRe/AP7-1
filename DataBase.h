@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 
+#define ADMIN_ST "admin"
+
 class Film;
 class Client;
 class Publisher;
@@ -16,7 +18,8 @@ public:
     static DataBase* get_instance();
     void add_client(Client* new_client);
     void add_film(Film* new_film);
-
+    void add_admin(User* new_admin);
+    User* search_user(std::string user_name);
     Client* search_client(int id);
     Client* search_client(std::string username);
     Film* search_film(int id);

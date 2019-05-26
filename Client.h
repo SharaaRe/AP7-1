@@ -29,6 +29,7 @@ public:
 
     bool is_purchased(int film_id) const;
     virtual int get_type() const;
+    virtual int get_money() const;
     std::string get_email() const;
     std::vector <Notification> get_notification();
     std::vector <Notification> get_read_notification();

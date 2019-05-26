@@ -70,6 +70,11 @@ int Client::get_type() const
     return CLIENT;
 }
 
+int Client::get_money() const
+{
+    return credit;
+}
+
 
 
 std::string Client::get_email() const

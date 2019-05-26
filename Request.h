@@ -5,16 +5,14 @@
 #include <vector>
 #include <map>
 
-enum METHODS {GET, PUT, POST, DELETE};
+enum METHODS {GET, POST};
 
 #define GET_ "GET"
-#define PUT_ "PUT"
-#define DELETE_ "DELETE"
 #define POST_ "POST"
 
 #define SIGN_UP "signup"
 #define LOGIN "login"
-#define LOGOUT ""
+#define LOGOUT "logout"
 #define FILMS "films"
 #define PUBLISHED "published"
 #define REPLIES "replies"

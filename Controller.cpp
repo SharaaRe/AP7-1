@@ -8,10 +8,6 @@ Controller::Controller()
     current_request = NULL;
 }
 
-Response Controller::put(Request* request)
-{
-    return Response(ERROR, BadRequest("not matching method and url").error());
-}
 
 Response Controller::get(Request* request)
 {
@@ -19,11 +15,6 @@ Response Controller::get(Request* request)
 }
 
 Response Controller::post(Request* request)
-{
-    return Response(ERROR, BadRequest("not matching method and url").error());
-}
-
-Response Controller::delete_(Request* request)
 {
     return Response(ERROR, BadRequest("not matching method and url").error());
 }

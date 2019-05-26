@@ -104,8 +104,7 @@ class CommentsController: public Controller
 {
 public:
     virtual Response post(Request* request);
-    virtual Response delete_(Request* request);
-private:
+protected:
     int film_id;
     int comment_id;
     std::string content;
@@ -125,10 +124,8 @@ class Controller
 {
     public:
         Controller();
-        virtual Response put(Request* request);
+        virtual Response post(Request* request);    
         virtual Response get(Request* request);
-        virtual Response post(Request* request);
-        virtual Response delete_(Request* request);
     protected:
         Request* current_request;
         
@@ -201,6 +198,30 @@ private:
     std::map <std::string, int> id;
 };
 
+#endif#ifndef DELETE_COMMENTS_CONTROLLER_H
+#define DELETE_COMMENTS_CONTROLLER_H
+
+#include "CommentsController.h"
+
+class DeleteCommentsController: public CommentsController
+{
+public:
+    Response post(Request*);
+};
+
+#endif#ifndef DELETE_FILMS_CONTROLLER_H
+#define DELETE_FILMS_CONTROLLER_H
+
+#include "FilmController.h"
+
+class DeleteFilmsController :public FilmController
+{
+public:
+    Response post(Request*);
+    Response get(Request*);
+};
+
+
 #endif#include <exception>
 
 #include <string>
@@ -261,9 +282,7 @@ class FilmController :public Controller
         FilmController() = default;
         virtual Response get(Request* request);
         virtual Response post(Request* request);
-        virtual Response put(Request* request);
-        virtual Response delete_(Request* request);
-    private:
+    protected:
         int id;
         FilmService film_service;
         std::string name;
@@ -332,6 +351,7 @@ public:
     void stable_sort_by_rate();
     void filter_purchased(std::vector <Film> purchased);
     void filter_not_available();
+    void filter_referring_film(int id);
     std::vector <Film> get_filtered();
 protected:
     std::vector <Film> films;
@@ -366,7 +386,7 @@ public:
     void add_comment(std::string comment_content, int writer_id);
     void reply_comment(int comment_id, std::string reply_content);
     void delete_comment(int comment_id);
-    void add_score(int score);
+    void add_score(int id, int score);
 
     void set_id(int id);
     void set_name(std::string name);
@@ -402,7 +422,7 @@ private:
 
     std::map <int, Comment> comments;
     int last_comment_id;
-    std::vector <int> scores;
+    std::map <int, int> scores;
 
     float rate;
 };
@@ -427,7 +447,7 @@ private:
 
 class DataBase;
 class UserSessionManagement;
-
+class RecommendationService;
 typedef std::string Notification;
 
 class FilmService
@@ -451,6 +471,7 @@ public:
 private:
     DataBase* database;
     UserSessionManagement* user_manager;
+    RecommendationService* recom_service;
     void check_edit_access(int id);
     void check_client_access(int film_id);
     void send_film_add_notif(std::vector <int> followers_id);
@@ -493,6 +514,22 @@ class LoginController :public Controller
         virtual Response post(Request* request);
     private:
         virtual void post_required_params();
+};
+
+#endif#ifndef LOGOUT_CONTROLLER_H
+#define LOGOUT_CONTROLLER_H
+
+#include "Controller.h"
+#include "UserSessionManagement.h"
+
+class LogoutController: public Controller
+{
+public:
+    LogoutController();
+    Response post(Request*);
+private: 
+    UserSessionManagement* user_manager;
+
 };
 
 #endif/* MD5
@@ -703,6 +740,21 @@ private:
     int nothing;
 };
 
+#endif#ifndef PUT_FILMS_CONTROLLER_H
+#define PUT_FILMS_CONTROLLER_H
+
+#include "FilmController.h"
+
+class PutFilmsController :public FilmController
+{
+public:
+    Response post(Request*);
+    Response get(Request*);
+private:
+    void post_params();
+};
+
+
 #endif#ifndef RATE_CONTROLLER_H
 #define RATE_CONTROLLER_H
 
@@ -716,6 +768,41 @@ private:
     int film_id;
     int score;
     void check_post_params();
+};
+
+#endif#ifndef RECOMMENDATION_SERVICE_H
+#define RECOMMENDATION_SERVICE_H
+
+#include <vector>
+#include <map>
+
+#include "Film.h"
+
+typedef pair <int, int> RateIdPair;
+
+
+
+class DataBase;
+
+typedef std::vector <std::vector <int>> AdjacencyMatrix;
+
+class RecommendationService
+{
+public:
+    static RecommendationService* get_instance();
+    void add_film(int id);
+    void delete_film(int id);
+    void add_new_graph(int film_id, std::vector <int> adjacent_films_ids);
+    std::vector <Film> recommended_films(int film_id);
+private:
+    RecommendationService();
+    static bool rate_compare(RateIdPair left, RateIdPair right);
+    std::vector <RateIdPair> sort_row_by_rate(int id, std::vector <int> row);
+    // int find_index(int film_id);
+    static RecommendationService* instance;
+    DataBase* database;
+    AdjacencyMatrix films_matrix;
+    // std::map <int, int> index_map;
 };
 
 #endif#ifndef REPLIES_CONTROLLER_H
@@ -753,6 +840,7 @@ enum METHODS {GET, PUT, POST, DELETE};
 
 #define SIGN_UP "signup"
 #define LOGIN "login"
+#define LOGOUT ""
 #define FILMS "films"
 #define PUBLISHED "published"
 #define REPLIES "replies"
@@ -764,6 +852,9 @@ enum METHODS {GET, PUT, POST, DELETE};
 #define PURCHASED "purchased"
 #define NOTIFICATION "notifications"
 #define NOTIFICATION_READ "notifications/read"
+#define PUT_FILMS "put_films"
+#define DELETE_FILMS "delete_films"
+#define DELETE_COMMENTS "delete_comments"
 
 class Request
 {
@@ -1216,15 +1307,7 @@ Response CommentsController::post(Request* request)
 }
 
 
-Response CommentsController::delete_(Request* request)
-{
-    current_request = request;
-    FilmService film_service;
-    check_delete_params();
-    film_service.delete_comment(film_id, comment_id);
 
-    return Response(SUCCESSFUL, OK);
-}
 
 void CommentsController::check_post_params()
 {
@@ -1285,6 +1368,7 @@ Response Controller::delete_(Request* request)
 
 #include "SignupController.h"
 #include "LoginController.h"
+#include "LogoutController.h"
 #include "FilmController.h"
 #include "FollowerController.h"
 #include "MoneyController.h"
@@ -1296,6 +1380,9 @@ Response Controller::delete_(Request* request)
 #include "NotificationsReadController.h"
 #include "PurchasedController.h"
 #include "PublishedController.h"
+#include "PutFilmsController.h"
+#include "DeleteFilmsController.h"
+#include "DeleteCommentsController.h"
 #include "Exceptions.h"
 #include "Response.h"
 
@@ -1315,7 +1402,10 @@ ControllerManager::ControllerManager()
     controllers.insert(pair <std::string, Controller*> (NOTIFICATION, new NotificationsController()));
     controllers.insert(pair <std::string, Controller*> (NOTIFICATION_READ, new NotificationsReadController()));
     controllers.insert(pair <std::string, Controller*> (PURCHASED, new PurchasedController()));
-    controllers.insert(pair <std::string, Controller*> (PUBLISHED, new PublishedController()));
+    controllers.insert(pair <std::string, Controller*> (PUT_FILMS, new PutFilmsController()));
+    controllers.insert(pair <std::string, Controller*> (DELETE_FILMS, new DeleteFilmsController()));
+    controllers.insert(pair <std::string, Controller*> (DELETE_COMMENTS, new Controller()));
+    controllers.insert(pair <std::string, Controller*> (LOGOUT, new LogoutController()));
 
     
 }
@@ -1338,12 +1428,6 @@ void ControllerManager::run_controller(Request* request)
         case POST:
             response = controller->post(request);
             break;            
-        case PUT:
-            response = controller->put(request);
-            break;
-        case DELETE:
-            response = controller->delete_(request);
-            break;
     }
 }
 
@@ -1471,7 +1555,34 @@ bool DataBase::valid_username(string username)
 
 
 
-#include <string>
+#include "DeleteCommentsController.h"
+
+#include "FilmService.h"
+
+Response DeleteCommentsController::post(Request* request)
+{
+    current_request = request;
+    FilmService film_service;
+    check_delete_params();
+    film_service.delete_comment(film_id, comment_id);
+
+    return Response(SUCCESSFUL, OK);   
+}#include "DeleteFilmsController.h"
+
+
+Response DeleteFilmsController::post(Request* request)
+{
+    re_initialize();
+    current_request = request;
+    set_id_param();
+    film_service.delete_(id);
+    return Response(SUCCESSFUL, OK);
+}
+
+Response DeleteFilmsController::get(Request* request)
+{
+    return Controller::get(request);
+}#include <string>
 
 #include "Exceptions.h"
 
@@ -1569,8 +1680,8 @@ Response FilmController::get(Request* request)
             throw NotFound("film is deleted");
         string film_info = make_film_info_string(film);
         string comments_info = make_comments_string(film);
-        // string recoms_info = make_recommendation_string(film);
-        return Response(SUCCESSFUL, film_info + comments_info /*+ recoms_info*/);
+        string recoms_info = make_recommendation_string(film);
+        return Response(SUCCESSFUL, film_info + comments_info + recoms_info);
     }
     else
     {   
@@ -1591,22 +1702,7 @@ Response FilmController::post(Request* request)
 
 }
 
-Response FilmController::put(Request* request)
-{
-    current_request = request;
-    put_params();
-    film_service.edit_film(id, name, year, length, summary, director);
-    return Response(SUCCESSFUL, OK);
-}
 
-Response FilmController::delete_(Request* request)
-{
-    re_initialize();
-    current_request = request;
-    set_id_param();
-    film_service.delete_(id);
-    return Response(SUCCESSFUL, OK);
-}
 
 void FilmController::post_required_params()
 {
@@ -1657,34 +1753,6 @@ bool FilmController::get_id_param_exist()
 }
 
 
-void FilmController::put_params()
-{
-    re_initialize();
-
-    string year_string, length_string;
-
-    set_id_param();
-    try{name = current_request->get_request_param(NAME);}
-    catch(NotFound) {}
-
-    try{summary = current_request->get_request_param(SUMMERY);}
-    catch(NotFound) {}
-
-    try{director = current_request->get_request_param(DIRECTOR);}
-    catch(NotFound) {}    
-
-    try{
-        year_string = current_request->get_request_param(YEAR);
-        year = Utils::string_integer_value(year_string);
-    }
-    catch(NotFound) {}
-
-    try{
-        length_string = current_request->get_request_param(LENGTH);
-        length = Utils::string_integer_value(length_string);
-    }
-    catch(NotFound) {}
-}
 
 void FilmController::re_initialize()
 {
@@ -1713,6 +1781,7 @@ string FilmController::make_film_info_string(Film film)
 {
 
     stringstream film_info;
+    film_info.precision(2); 
     film_info << "Details of Film " << film.get_name() << endl
             << "Id = " << film.get_id() << endl
             << "Director = " << film.get_director() << endl
@@ -1732,10 +1801,11 @@ string FilmController::make_recommendation_string(Film film)
     const string spacer = " | ";
     vector <Film> films = film_service.get_recommendation_list(film);
     stringstream recom;
+    recom.precision(2); 
     recom << "Recommendation Film" << endl;
     recom << "#. Film Id" << spacer << "Film Name" << spacer << "Film Length" << spacer << "Film Director" << endl;
-    for (int i = 0; i < RECOM_SIZE; i++)
-        recom << films[i].get_id() << spacer << films[i].get_name() << spacer 
+    for (int i = 0; i < RECOM_SIZE && i < films.size(); i++)
+        recom << i + 1 << ". " <<  films[i].get_id() << spacer << films[i].get_name() << spacer 
                 << films[i].get_length() << spacer << films[i].get_director() << endl;
     
     return recom.str();
@@ -1820,10 +1890,10 @@ void Film::delete_comment(int comment_id)
         comments.erase(comment_id); 
 }
 
-void Film::add_score(int score)
+void Film::add_score(int id,int score)
 {
     if (score >= MIN_SCORE && score <= MAX_SCORE)
-        scores.push_back(score);
+        scores[id] = score;
     else
         throw BadRequest("rate range is not right");
 }
@@ -1897,8 +1967,8 @@ float Film::get_rate()
     int sum = 0;
     if (scores.size() == 0)
         return sum;
-    for (int i = 0; i < scores.size(); i++)
-        sum += scores[i];
+    for (map<int, int>::iterator it = scores.begin(); it != scores.end(); it++)
+        sum += it->second;
     
     rate = ((float) sum ) / scores.size();
     return rate;
@@ -2026,6 +2096,7 @@ void FilmFilterController::re_initialize_params()
 }#include "FilmFilterService.h"
 
 #include <algorithm>
+#include <iostream>
 
 using namespace std;
 
@@ -2139,19 +2210,21 @@ void FilmFilterService::stable_sort_by_rate()
     stable_sort(films.begin(), films.end(), compare_by_rate);
 }
 
-void FilmFilterService::filter_purchased(vector <Film> purchased_ids)
+void FilmFilterService::filter_purchased(vector <Film> purchased)
 {
     vector <Film> filtered;
-    for (int j = 0; j < purchased_ids.size(); j++)
+    for (int j = 0; j < purchased.size(); j++)
     {
-        for (int i = 0; i < films.size(); i++)
+        for (int i = 0; i < films.size(); )
         {
-            if (films[i].get_id() != purchased_ids[j].get_id())
-                filtered.push_back(films[i]);
+            if (films[i].get_id() == purchased[j].get_id())
+                films.erase(films.begin() + i);
+            else 
+                i++;
         }
     }
 
-    films = filtered;  
+    films;  
 }
 
 void FilmFilterService::filter_not_available()
@@ -2164,6 +2237,17 @@ void FilmFilterService::filter_not_available()
     }
 
     films = filtered;
+}
+
+void FilmFilterService::filter_referring_film(int id)
+{
+    for (int i = 0 ; i < films.size() ; )
+    {   
+        if (id == films[i].get_id())
+            films.erase(films.begin() + i);
+        else 
+            i++;
+    }
 }
 
 vector <Film> FilmFilterService::get_filtered()
@@ -2189,6 +2273,7 @@ bool FilmFilterService::compare_by_rate(Film first, Film second)
 #include "Exceptions.h"
 #include "UTflix.h"
 #include "FilmFilterService.h"
+#include "RecommendationService.h"
 
 enum {WEAK = 80, MEDIUM = 90, HIGH = 95};
 
@@ -2206,6 +2291,7 @@ FilmService::FilmService()
 {
     user_manager = UserSessionManagement::get_instance();
     database = DataBase::get_instance();
+    recom_service = RecommendationService::get_instance();
 }
 
 void FilmService::buy(int film_id)
@@ -2218,7 +2304,7 @@ void FilmService::buy(int film_id)
         client->purchase_film(film);
         publisher->sell_film(calculate_publisher_part(film->get_rate(), film->get_price()));
         publisher->send_notif(buy_notification(*client, *film));
-
+        recom_service->add_new_graph(film->get_id(), client->get_purchased());
     }
     else
         throw NotFound("film is not available");
@@ -2230,6 +2316,7 @@ void FilmService::add_film(string name, int year, int length, int price, string 
     Film* new_film = new Film(name, year, length, price, summary, director, publisher->get_id());
     database->add_film(new_film);
     publisher->add_film(new_film);
+    recom_service->add_film(new_film->get_id());
     send_film_add_notif(publisher->get_followers());
 }
 
@@ -2263,7 +2350,7 @@ void FilmService::rate(int id, int score)
     Client* client = user_manager->get_logged_client();
     check_client_access(id);
     
-    film->add_score(score);
+    film->add_score(client->get_id(), score);
     Client*  publisher = database->search_client(film->get_publisher_id());
     publisher->send_notif(rate_notification(*client, *film));
 
@@ -2317,18 +2404,11 @@ std::vector <Film> FilmService::get_published()
 
 vector <Film> FilmService::get_recommendation_list(Film reffering_film)
 {
-    FilmFilterService film_filter(database->get_all_films());
-    film_filter.stable_sort_by_rate();
+    FilmFilterService film_filter(recom_service->recommended_films(reffering_film.get_id()));
     film_filter.filter_purchased(get_purchased());
     film_filter.filter_not_available();
-    vector <Film> films = film_filter.get_filtered();
-    int size = films.size();
-    for (int i = 0 ; i < films.size() ; i++)
-    {   
-        if (reffering_film.get_id() == films[i].get_id())
-            films.erase(films.begin() + i);
-    }
-    return films;
+    film_filter.filter_referring_film(reffering_film.get_id());
+    return film_filter.get_filtered();
 }
 
 
@@ -2494,6 +2574,24 @@ void LoginController::post_required_params()
     {
         throw BadRequest("a required parameter has not found");
     }
+}#include "LogoutController.h"
+
+#include "Exceptions.h"
+
+LogoutController::LogoutController()
+{
+    user_manager = UserSessionManagement::get_instance();
+}
+
+
+Response LogoutController::post(Request* request)
+{
+    current_request = request;
+    if (user_manager->get_logged_user() != nullptr)
+        user_manager->set_logged_user(nullptr);
+    
+    else
+        throw BadRequest("no user is logged in");
 }#include "UTflixService.h"
 
 int main()
@@ -3079,6 +3177,21 @@ Response PurchasedController::get(Request* request)
     film_filter.filter(name , max_year, min_year, price, rate, director);
     films = film_filter.get_filtered();
     return make_get_film_response();
+}#include "PutFilmsController.h"
+
+
+
+Response PutFilmsController::post(Request* request)
+{
+    current_request = request;
+    put_params();
+    film_service.edit_film(id, name, year, length, summary, director);
+    return Response(SUCCESSFUL, OK);
+}
+
+Response PutFilmsController::get(Request* request)
+{
+    return Controller::get(request);
 }#include "RateController.h"
 
 
@@ -3109,6 +3222,105 @@ void RateController::check_post_params()
     {
         throw BadRequest("a required param doesn't exist");
     }
+}#include "RecommendationService.h"
+
+#include <algorithm>
+
+#include "DataBase.h"
+
+#define FILM_ID_INDEX 0
+#define ZERO 0
+
+
+using namespace std;
+
+RecommendationService* RecommendationService::instance = nullptr;
+
+RecommendationService* RecommendationService::get_instance()
+{
+    if (instance == nullptr)
+        instance = new RecommendationService();
+
+    return instance;
+}
+
+RecommendationService::RecommendationService()
+{
+    database = DataBase::get_instance();
+}
+
+void RecommendationService::add_film(int id)
+{
+
+
+    for (int i = FILM_ID_INDEX + 1; i < films_matrix.size(); i++)
+        films_matrix[i].push_back(ZERO);
+
+    vector <int> new_row(films_matrix[FILM_ID_INDEX].size(), ZERO);
+    new_row[FILM_ID_INDEX] = id;
+    new_row[id] = -1;
+
+    films_matrix.push_back(new_row);
+    
+}
+
+void RecommendationService::add_new_graph(int id, vector <int> related_films)
+{
+    int index;
+    for (int index = 0; index < films_matrix.size(); index++)
+      if (films_matrix[index][ZERO] == id)
+        break;
+
+    for (int i = 0; i < related_films.size(); i++)
+    {
+        if (i != index)
+        {
+            int relatedd_film_index = related_films[i];
+            films_matrix[relatedd_film_index][index]++;
+            films_matrix[index][relatedd_film_index]++;
+        }
+    }
+}
+
+
+vector <Film> RecommendationService::recommended_films(int film_id)
+{
+    vector <int> rates = films_matrix[film_id];
+
+    vector <RateIdPair> rate_row = sort_row_by_rate(film_id, rates);
+
+    vector <Film> recoms;
+
+    for (int i = 1; i < rate_row.size(); i++)
+    {
+        if (rate_row[i].first != film_id)
+            recoms.push_back(*database->search_film(rate_row[i].first));
+    }
+
+    return recoms;
+}
+
+vector <RateIdPair> RecommendationService::sort_row_by_rate(int id, vector <int> rates)
+{
+    vector <RateIdPair> rate_row;
+
+    for (int i = 1; i < rates.size(); i++)
+    {
+        RateIdPair node;
+        node.first = id;
+        node.seconde = rates[i];
+
+        rate_row.push_back(node);
+    }
+
+    sort(rate_row.begin(), rate_row.end(), rate_compare);
+
+    return rate_row;
+}
+
+bool RecommendationService::rate_compare(RateIdPair left, RateIdPair right)
+{
+    return left.second > right.second;
 }#include "RepliesController.h"
 
 #include "Utils.h"
@@ -3153,7 +3365,7 @@ using namespace std;
 
 Request::Request(vector <string> raw_request)
 {
-    map <string, int> methods = {{"GET",GET}, {"PUT", PUT}, {"POST",POST}, {"DELETE",DELETE}};
+    map <string, int> methods = {{"GET",GET}, {"PUT", PUT}};
     string _operator = "?";
     const int COMPLEX_REQ_SIZE = 5;
     
@@ -3253,7 +3465,7 @@ vector <string> RequestReciever::parse_request()
 void RequestReciever::control_format(vector <string> tokens)
 {
 
-    vector <string> standard_methods = {GET_, PUT_, POST_, DELETE_};
+    vector <string> standard_methods = {GET_, PUT_};
     vector <string> standard_urls = {SIGN_UP, LOGIN , FILMS, PUBLISHED, REPLIES, 
             COMMENTS, FOLLOWERS, MONEY, BUY, RATE, PURCHASED, NOTIFICATION, NOTIFICATION_READ};
 
@@ -3513,8 +3725,8 @@ UserSessionManagement* UserSessionManagement::get_instance()
 
 void UserSessionManagement::set_logged_user(User* _logged_user)
 {
-    // if (logged_user != nullptr)
-    //     throw "some exception in case log out do exist";
+    if (logged_user != nullptr)
+        throw BadRequest("some exception in case log out do exist");
 
     logged_user = _logged_user;
 }

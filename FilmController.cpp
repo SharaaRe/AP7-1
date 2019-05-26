@@ -93,7 +93,34 @@ void FilmController::post_required_params()
 }
 
 
+void FilmController::put_params()
+{
+    re_initialize();
 
+    string year_string, length_string;
+
+    set_id_param();
+    try{name = current_request->get_request_param(NAME);}
+    catch(NotFound) {}
+
+    try{summary = current_request->get_request_param(SUMMERY);}
+    catch(NotFound) {}
+
+    try{director = current_request->get_request_param(DIRECTOR);}
+    catch(NotFound) {}    
+
+    try{
+        year_string = current_request->get_request_param(YEAR);
+        year = Utils::string_integer_value(year_string);
+    }
+    catch(NotFound) {}
+
+    try{
+        length_string = current_request->get_request_param(LENGTH);
+        length = Utils::string_integer_value(length_string);
+    }
+    catch(NotFound) {}
+}
 
 
 bool FilmController::get_id_param_exist()

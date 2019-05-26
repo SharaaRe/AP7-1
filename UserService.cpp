@@ -21,20 +21,24 @@ UserService::UserService()
 
 void UserService::signup(std::string email, std::string username, std::string password, int age, bool publisher)
 {
+    if (!database->valid_username(username))
+        throw BadRequest("Username alredy exist");
+    
+    if (user_manager->is_logged_in())
+        throw BadRequest("a user is already signed in");
     Client* new_client;
     if (publisher)
         new_client = new Publisher(email,username, password, age);
     else
         new_client = new Client(email,username, password, age);
-
     database->add_client(new_client);
     login(username, password);
 }
 
 void UserService::login(string username, string password)
 {
-    if (database->search_client(username)->valid_login(username, password))
-        user_manager->set_logged_user(database->search_client(username));
+    if (database->search_user(username)->valid_login(username, password))
+        user_manager->set_logged_user(database->search_user(username));
     else 
         throw BadRequest("wrong password");
 }

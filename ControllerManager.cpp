@@ -28,6 +28,7 @@ ControllerManager::ControllerManager()
 {
     controllers.insert(pair <std::string, Controller*> (SIGN_UP, new SignupController()));
     controllers.insert(pair <std::string, Controller*> (LOGIN, new LoginController()));
+    controllers.insert(pair <std::string, Controller*> (LOGOUT, new LogoutController()));
     controllers.insert(pair <std::string, Controller*> (FILMS, new FilmController()));
     controllers.insert(pair <std::string, Controller*> (FOLLOWERS, new FollowerController()));
     controllers.insert(pair <std::string, Controller*> (MONEY, new MoneyController()));
@@ -40,7 +41,7 @@ ControllerManager::ControllerManager()
     controllers.insert(pair <std::string, Controller*> (PURCHASED, new PurchasedController()));
     controllers.insert(pair <std::string, Controller*> (PUT_FILMS, new PutFilmsController()));
     controllers.insert(pair <std::string, Controller*> (DELETE_FILMS, new DeleteFilmsController()));
-    controllers.insert(pair <std::string, Controller*> (DELETE_COMMENTS, new Controller()));
+    controllers.insert(pair <std::string, Controller*> (DELETE_COMMENTS, new DeleteCommentsController()));
     controllers.insert(pair <std::string, Controller*> (LOGOUT, new LogoutController()));
 
     
@@ -48,14 +49,19 @@ ControllerManager::ControllerManager()
 
 ControllerManager::~ControllerManager()
 {
-    for (map <std::string, Controller*> ::iterator it = controllers.begin(); it != controllers.end(); it++)
+    for (auto it = controllers.begin(); it != controllers.end(); it++)
         delete (it->second);
 }
 
 void ControllerManager::run_controller(Request* request)
 {
     response = Response();
-    Controller* controller = controllers[request->get_url()];
+    Controller* controller;
+    if (controllers.find(request->get_url()) != controllers.end())
+        controller = controllers[request->get_url()];
+    else
+        throw NotFound("url not found");
+    
     switch (request->get_method())
     {
         case GET:

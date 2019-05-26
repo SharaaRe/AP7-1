@@ -11,7 +11,7 @@ using namespace std;
 
 Request::Request(vector <string> raw_request)
 {
-    map <string, int> methods = {{"GET",GET}, {"PUT", PUT}};
+    map <string, int> methods = {{"GET",GET}, {"POST", POST}};
     string _operator = "?";
     const int COMPLEX_REQ_SIZE = 5;
     
@@ -21,7 +21,6 @@ Request::Request(vector <string> raw_request)
 
     if (raw_request.size() >= COMPLEX_REQ_SIZE)
     {
-        // cout << "number of tokens : " << raw_request.size() << endl;
         if ((raw_request.size() - 3 )% 2 == 1)
             throw BadRequest("key and values are not pair");
         for (int i = COMPLEX_REQ_SIZE - 1; i < raw_request.size(); i+=2)

@@ -41,6 +41,7 @@ void FilmService::buy(int film_id)
     if (film->is_available())
     {
         client->purchase_film(film);
+        UTflix::get_instance()->add_credit(film->get_price());
         publisher->sell_film(calculate_publisher_part(film->get_rate(), film->get_price()));
         publisher->send_notif(buy_notification(*client, *film));
         recom_service->add_new_graph(film->get_id(), client->get_purchased());

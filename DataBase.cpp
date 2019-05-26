@@ -6,6 +6,7 @@
 #include "User.h"
 #include "Film.h"
 #include "Exceptions.h"
+#include "md5.h"
 
 
 
@@ -17,6 +18,7 @@ DataBase::DataBase()
 {
     last_film_id = 0;
     last_user_id = 0;
+    admins[ADMIN_ST] = new User(ADMIN_ST, md5(ADMIN_ST));
 }
 
 DataBase* DataBase::get_instance()
@@ -56,9 +58,17 @@ void DataBase::add_client(Client* new_user)
 
 void DataBase::add_film(Film* new_film)
 {
-    // new_film->set_id(++last_film_id);
     if (films.find(new_film->get_id()) == films.end())
         films.insert(pair <int, Film*> (new_film->get_id(), new_film));
+}
+
+User* DataBase::search_user(std::string username)
+{
+    if(id.find(username) != id.end())
+        return search_client(id[username]);
+
+    else if (admins.find(username) != admins.end())
+        return admins[username];
 }
 
 Client* DataBase::search_client(int id)
@@ -113,7 +123,7 @@ bool DataBase::client_exist(int id)
 
 bool DataBase::valid_username(string username)
 {
-    return id.find(username) == id.end();
+    return id.find(username) == id.end() && admins.find(username) == admins.end();
 }
 
 
