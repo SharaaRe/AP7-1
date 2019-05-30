@@ -1,289 +1,298 @@
+
+
 ifdef DEBUG
 	CC = g++ -g -DDEBUG -std=c++11
 else
-	CC = g++ -g -std=c++11
+	CC = g++ -g -I$(INCLUDE_DIR) -std=c++11
 endif
 
+BUILD_DIR=build/
+INCLUDE_DIR=headers
+
 OBJECTS = \
-		main.o \
-		Utils.o \
-		md5.o \
-		Exceptions.o \
-		RequestReciever.o \
-		Request.o \
-		Response.o \
-		DataBase.o \
-		UserSessionManagement.o \
-		Controller.o \
-		ControllerManager.o \
-		SignupController.o \
-		LoginController.o \
-		LogoutController.o \
-		FilmController.o \
-		FollowerController.o \
-		MoneyController.o \
-		BuyController.o \
-		RateController.o \
-		RepliesController.o \
-		CommentsController.o \
-		PurchasedController.o \
-		PublishedController.o \
-		FilmFilterController.o\
-		NotificationsController.o \
-		NotificationsReadController.o \
-		PutFilmsController.o \
-		DeleteFilmsController.o \
-		DeleteCommentsController.o \
-		LoginHandler.o \
-		SignupHandler.o \
-		UserService.o \
-		FilmService.o \
-		FilmFilterService.o \
-		RecommendationService.o \
-		User.o \
-		Client.o \
-		Publisher.o \
-		Film.o \
-		Comment.o \
-		UTflixService.o \
-		ServerManager.o \
-		UTflix.o \
+		$(BUILD_DIR)main.o \
+		$(BUILD_DIR)Utils.o \
+		$(BUILD_DIR)md5.o \
+		$(BUILD_DIR)Exceptions.o \
+		$(BUILD_DIR)RequestReciever.o \
+		$(BUILD_DIR)Request.o \
+		$(BUILD_DIR)Response.o \
+		$(BUILD_DIR)DataBase.o \
+		$(BUILD_DIR)UserSessionManagement.o \
+		$(BUILD_DIR)Controller.o \
+		$(BUILD_DIR)ControllerManager.o \
+		$(BUILD_DIR)SignupController.o \
+		$(BUILD_DIR)LoginController.o \
+		$(BUILD_DIR)LogoutController.o \
+		$(BUILD_DIR)FilmController.o \
+		$(BUILD_DIR)FollowerController.o \
+		$(BUILD_DIR)MoneyController.o \
+		$(BUILD_DIR)BuyController.o \
+		$(BUILD_DIR)RateController.o \
+		$(BUILD_DIR)RepliesController.o \
+		$(BUILD_DIR)CommentsController.o \
+		$(BUILD_DIR)PurchasedController.o \
+		$(BUILD_DIR)PublishedController.o \
+		$(BUILD_DIR)FilmFilterController.o\
+		$(BUILD_DIR)NotificationsController.o \
+		$(BUILD_DIR)NotificationsReadController.o \
+		$(BUILD_DIR)PutFilmsController.o \
+		$(BUILD_DIR)DeleteFilmsController.o \
+		$(BUILD_DIR)DeleteCommentsController.o \
+		$(BUILD_DIR)LoginHandler.o \
+		$(BUILD_DIR)SignupHandler.o \
+		$(BUILD_DIR)UserService.o \
+		$(BUILD_DIR)FilmService.o \
+		$(BUILD_DIR)FilmFilterService.o \
+		$(BUILD_DIR)RecommendationService.o \
+		$(BUILD_DIR)User.o \
+		$(BUILD_DIR)Client.o \
+		$(BUILD_DIR)Publisher.o \
+		$(BUILD_DIR)Film.o \
+		$(BUILD_DIR)Comment.o \
+		$(BUILD_DIR)UTflixService.o \
+		$(BUILD_DIR)ServerManager.o \
+		$(BUILD_DIR)UTflix.o \
+		$(BUILD_DIR)APHTTP.o \
 
 mainSensitivityList = \
 		main.cpp \
-		ServerManager.h \
-		./APHTTP/server/server.hpp \
-		./APHTTP/server/handlers.hpp \
+		$(INCLUDE_DIR)/ServerManager.h \
+		$(INCLUDE_DIR)/SignupHandler.h \
+		$(INCLUDE_DIR)/LoginHandler.h \
+		$(INCLUDE_DIR)/server.hpp \
 
 UtilsSensitivityList = \
 		Utils.cpp \
-		Utils.h \
+		$(INCLUDE_DIR)/Utils.h \
 
 md5SensivityList = \
 		md5.cpp \
-		md5.h \
+		$(INCLUDE_DIR)/md5.h \
 
 ExceptionsSensivityList = \
 		Exceptions.cpp \
-		Exceptions.h \
+		$(INCLUDE_DIR)/Exceptions.h \
 
 RequestRecieverSensitivityList = \
 		RequestReciever.cpp \
-		RequestReciever.h \
-		Request.h \
-		Exceptions.h \
-		Utils.h \
+		$(INCLUDE_DIR)/RequestReciever.h \
+		$(INCLUDE_DIR)/Request.h \
+		$(INCLUDE_DIR)/Exceptions.h \
+		$(INCLUDE_DIR)/Utils.h \
 
 RequestSensivityList = \
 		Request.cpp \
-		Request.h \
-		Exceptions.h \
+		$(INCLUDE_DIR)/Request.h \
+		$(INCLUDE_DIR)/Exceptions.h \
 
 ResponseSensivityList = \
 		Response.cpp \
-		Response.h \
+		$(INCLUDE_DIR)/Response.h \
 
 DataBaseSensivityList = \
 		DataBase.cpp \
-		DataBase.h \
-		Exceptions.h \
-		User.h \
-		Client.h \
-		Film.h \
+		$(INCLUDE_DIR)/DataBase.h \
+		$(INCLUDE_DIR)/Exceptions.h \
+		$(INCLUDE_DIR)/User.h \
+		$(INCLUDE_DIR)/Client.h \
+		$(INCLUDE_DIR)/Film.h \
 
 
 UserSessionManagementSensivityList = \
 		UserSessionManagement.cpp \
-		UserSessionManagement.h \
-		User.h \
-		DataBase.h \
+		$(INCLUDE_DIR)/UserSessionManagement.h \
+		$(INCLUDE_DIR)/User.h \
+		$(INCLUDE_DIR)/DataBase.h \
 
 ControllerSensivityList = \
 		Controller.cpp \
-		Controller.h \
-		Request.h \
-		Response.h \
-		Exceptions.h \
+		$(INCLUDE_DIR)/Controller.h \
+		$(INCLUDE_DIR)/Request.h \
+		$(INCLUDE_DIR)/Response.h \
+		$(INCLUDE_DIR)/Exceptions.h \
 
 
 ControllerManagerSensivityList = \
 		ControllerManager.cpp \
-		ControllerManager.h \
-		Controller.h \
-		SignupController.h \
-		LoginController.h \
-		LogoutController.h \
-		FilmController.h \
-		FollowerController.h \
-		MoneyController.h \
-		BuyController.h \
-		RateController.h \
-		RepliesController.h \
-		CommentsController.h \
-		PurchasedController.h \
-		PublishedController.h \
-		FilmFilterController.h \
-		NotificationsController.h \
-		NotificationsReadController.h \
-		PutFilmsController.h \
-		DeleteFilmsController.h \
-		DeleteCommentsController.h \
-		Request.h \
-		Response.h \
-		Exceptions.h \
+		$(INCLUDE_DIR)/ControllerManager.h \
+		$(INCLUDE_DIR)/Controller.h \
+		$(INCLUDE_DIR)/SignupController.h \
+		$(INCLUDE_DIR)/LoginController.h \
+		$(INCLUDE_DIR)/LogoutController.h \
+		$(INCLUDE_DIR)/FilmController.h \
+		$(INCLUDE_DIR)/FollowerController.h \
+		$(INCLUDE_DIR)/MoneyController.h \
+		$(INCLUDE_DIR)/BuyController.h \
+		$(INCLUDE_DIR)/RateController.h \
+		$(INCLUDE_DIR)/RepliesController.h \
+		$(INCLUDE_DIR)/CommentsController.h \
+		$(INCLUDE_DIR)/PurchasedController.h \
+		$(INCLUDE_DIR)/PublishedController.h \
+		$(INCLUDE_DIR)/FilmFilterController.h \
+		$(INCLUDE_DIR)/NotificationsController.h \
+		$(INCLUDE_DIR)/NotificationsReadController.h \
+		$(INCLUDE_DIR)/PutFilmsController.h \
+		$(INCLUDE_DIR)/DeleteFilmsController.h \
+		$(INCLUDE_DIR)/DeleteCommentsController.h \
+		$(INCLUDE_DIR)/Request.h \
+		$(INCLUDE_DIR)/Response.h \
+		$(INCLUDE_DIR)/Exceptions.h \
 
 
 
 
 SignupControllerSensivityList = \
 		SignupController.cpp \
-		SignupController.h \
-		UserService.h \
-		UserSessionManagement.h\
-		Controller.h \
-		User.h \
-		Client.h \
-		Publisher.h \
-		Exceptions.h \
-		md5.h \
-		Utils.h \
-		Response.h\
-		Request.h \
+		$(INCLUDE_DIR)/SignupController.h \
+		$(INCLUDE_DIR)/UserService.h \
+		$(INCLUDE_DIR)/UserSessionManagement.h\
+		$(INCLUDE_DIR)/Controller.h \
+		$(INCLUDE_DIR)/User.h \
+		$(INCLUDE_DIR)/Client.h \
+		$(INCLUDE_DIR)/Publisher.h \
+		$(INCLUDE_DIR)/Exceptions.h \
+		$(INCLUDE_DIR)/md5.h \
+		$(INCLUDE_DIR)/Utils.h \
+		$(INCLUDE_DIR)/Response.h\
+		$(INCLUDE_DIR)/Request.h \
 
 
 
 LoginControllerSensivityList = \
 		LoginController.cpp \
-		LoginController.h \
-		Controller.h \
-		UserService.h \
-		User.h \
-		UserSessionManagement.h \
-		Request.h \
-		Response.h \
+		$(INCLUDE_DIR)/LoginController.h \
+		$(INCLUDE_DIR)/Controller.h \
+		$(INCLUDE_DIR)/UserService.h \
+		$(INCLUDE_DIR)/User.h \
+		$(INCLUDE_DIR)/UserSessionManagement.h \
+		$(INCLUDE_DIR)/Request.h \
+		$(INCLUDE_DIR)/Response.h \
 
 FilmControllerSensivityList = \
 		FilmController.cpp \
-		FilmController.h \
-		Controller.h \
-		FilmService.h \
-		RecommendationService.h \
-		User.h \
-		Client.h \
-		Film.h \
-		UserSessionManagement.h \
-		Request.h \
-		Response.h \
-		DataBase.h \
-		Comment.h \
+		$(INCLUDE_DIR)/FilmController.h \
+		$(INCLUDE_DIR)/Controller.h \
+		$(INCLUDE_DIR)/FilmService.h \
+		$(INCLUDE_DIR)/RecommendationService.h \
+		$(INCLUDE_DIR)/User.h \
+		$(INCLUDE_DIR)/Client.h \
+		$(INCLUDE_DIR)/Film.h \
+		$(INCLUDE_DIR)/UserSessionManagement.h \
+		$(INCLUDE_DIR)/Request.h \
+		$(INCLUDE_DIR)/Response.h \
+		$(INCLUDE_DIR)/DataBase.h \
+		$(INCLUDE_DIR)/Comment.h \
 
 
 FollowerControllerSensivityList = \
 		FollowerController.cpp \
-		FollowerController.h \
-		Controller.h \
-		UserService.h \
-		Film.h \
-		User.h \
-		Publisher.h \
-		Client.h \
+		$(INCLUDE_DIR)/FollowerController.h \
+		$(INCLUDE_DIR)/Controller.h \
+		$(INCLUDE_DIR)/UserService.h \
+		$(INCLUDE_DIR)/Film.h \
+		$(INCLUDE_DIR)/User.h \
+		$(INCLUDE_DIR)/Publisher.h \
+		$(INCLUDE_DIR)/Client.h \
 
 MoneyControllerSensivityList = \
 		MoneyController.cpp \
-		MoneyController.h \
-		Controller.h \
-		UserSessionManagement.h \
-		Client.h \
-		Publisher.h \
+		$(INCLUDE_DIR)/MoneyController.h \
+		$(INCLUDE_DIR)/Controller.h \
+		$(INCLUDE_DIR)/UserSessionManagement.h \
+		$(INCLUDE_DIR)/Client.h \
+		$(INCLUDE_DIR)/Publisher.h \
 
 BuyControllerSensivityList = \
 		BuyController.cpp \
-		BuyController.h \
-		Controller.h \
-		UserSessionManagement.h \
-		Client.h \
-		UTflix.h \
-		Publisher.h \
+		$(INCLUDE_DIR)/BuyController.h \
+		$(INCLUDE_DIR)/Controller.h \
+		$(INCLUDE_DIR)/UserSessionManagement.h \
+		$(INCLUDE_DIR)/Client.h \
+		$(INCLUDE_DIR)/UTflix.h \
+		$(INCLUDE_DIR)/Publisher.h \
 
 
 RateControllerSensivityList = \
 		RateController.cpp \
-		RateController.h \
-		Controller.h \
-		FilmService.h \
-		Utils.h \
-		Exceptions.h \
+		$(INCLUDE_DIR)/RateController.h \
+		$(INCLUDE_DIR)/Controller.h \
+		$(INCLUDE_DIR)/FilmService.h \
+		$(INCLUDE_DIR)/Utils.h \
+		$(INCLUDE_DIR)/Exceptions.h \
 
 
 
 RepliesControllerSensivityList = \
 		RepliesController.cpp \
-		RepliesController.h \
-		Controller.h \
-		FilmService.h \
-		Utils.h \
-		Exceptions.h \
+		$(INCLUDE_DIR)/RepliesController.h \
+		$(INCLUDE_DIR)/Controller.h \
+		$(INCLUDE_DIR)/FilmService.h \
+		$(INCLUDE_DIR)/Utils.h \
+		$(INCLUDE_DIR)/Exceptions.h \
 
 
 CommentsControllerSensivityList = \
 		CommentsController.cpp \
-		CommentsController.h \
-		Controller.h \
-		FilmService.h \
-		Utils.h \
-		Exceptions.h \
+		$(INCLUDE_DIR)/CommentsController.h \
+		$(INCLUDE_DIR)/Controller.h \
+		$(INCLUDE_DIR)/FilmService.h \
+		$(INCLUDE_DIR)/Utils.h \
+		$(INCLUDE_DIR)/Exceptions.h \
 
 PurchasedControllerSensivityList = \
 		PurchasedController.cpp \
-		FilmFilterController.h \
-		FilmFilterService.h \
+		$(INCLUDE_DIR)/FilmFilterController.h \
+		$(INCLUDE_DIR)/FilmFilterService.h \
 
 PublishedControllerSensivityList = \
-		FilmFilterController.h \
-		FilmFilterService.h \
+		PublishedController.cpp \
+		$(INCLUDE_DIR)/FilmFilterController.h \
+		$(INCLUDE_DIR)/FilmFilterService.h \
 
 FilmFilterControllerSensivityList = \
-		FilmFilterController.h \
-		FilmFilterService.h \
+		FilmFilterController.cpp \
+		$(INCLUDE_DIR)/FilmFilterController.h \
+		$(INCLUDE_DIR)/FilmFilterService.h \
 
 
 
 
 NotificationsControllerSensivityList = \
 		NotificationsController.cpp \
-		NotificationsController.h \
-		Controller.h \
-		UserService.h \
-		Utils.h \
-		Exceptions.h \
+		$(INCLUDE_DIR)/NotificationsController.h \
+		$(INCLUDE_DIR)/Controller.h \
+		$(INCLUDE_DIR)/UserService.h \
+		$(INCLUDE_DIR)/Utils.h \
+		$(INCLUDE_DIR)/Exceptions.h \
 
 
 NotificationsReadControllerSensivityList = \
 		NotificationsReadController.cpp \
-		NotificationsReadController.h \
-		Controller.h \
-		UserService.h \
-		Utils.h \
-		Exceptions.h \
+		$(INCLUDE_DIR)/NotificationsReadController.h \
+		$(INCLUDE_DIR)/Controller.h \
+		$(INCLUDE_DIR)/UserService.h \
+		$(INCLUDE_DIR)/Utils.h \
+		$(INCLUDE_DIR)/Exceptions.h \
 
 PutFilmsControllerSensivityList = \
 		PutFilmsController.cpp \
-		PutFilmsController.h \
-		Controller.h \
-		FilmController.h \
+		$(INCLUDE_DIR)/PutFilmsController.h \
+		$(INCLUDE_DIR)/Controller.h \
+		$(INCLUDE_DIR)/FilmController.h \
 
 DeleteFilmsControllerSensivityList = \
 		DeleteFilmsController.cpp \
-		Controller.h \
-		Controller.h \
-		FilmController.h \
+		$(INCLUDE_DIR)/Controller.h \
+		$(INCLUDE_DIR)/Controller.h \
+		$(INCLUDE_DIR)/FilmController.h \
 
 DeleteCommentsControllerSensivityList = \
 		DeleteCommentsController.cpp \
-		DeleteCommentsController.h \
-		Controller.h \
-		Controller.h \
-		CommentsController.h \
+		$(INCLUDE_DIR)/DeleteCommentsController.h \
+		$(INCLUDE_DIR)/Controller.h \
+		$(INCLUDE_DIR)/Controller.h \
+		$(INCLUDE_DIR)/CommentsController.h \
 
 
 
@@ -295,224 +304,255 @@ DeleteCommentsControllerSensivityList = \
 
 LoginHandlerSensivityList = \
 		LoginHandler.cpp \
-		Utils.h
-		Exceptions.h
-		UserService.h
-		./APHTTP/server/server.hpp\
+		$(INCLUDE_DIR)/Utils.h \
+		$(INCLUDE_DIR)/Exceptions.h \
+		$(INCLUDE_DIR)/UserService.h \
+ 		$(INCLUDE_DIR)/server.hpp\
 
 SignupHandlerSensivityList = \
 		SignupHandler.cpp \
-		Utils.h
-		Exceptions.h
-		UserService.h
-		./APHTTP/server/server.hpp\
+		$(INCLUDE_DIR)/Utils.h \
+		$(INCLUDE_DIR)/Exceptions.h \
+		$(INCLUDE_DIR)/UserService.h \
+		$(INCLUDE_DIR)/server.hpp\
+
+
+
+# Services Sensivity List 
+# 
+# 
+# 
+# 
+
+
+
 
 UserServiceSensivityList = \
 		UserService.cpp \
-		UserService.h \
-		User.h \
-		Client.h \
-		Publisher.h \
-		md5.h \
-		Exceptions.h \
-		UserSessionManagement.h \
-		DataBase.h \
+		$(INCLUDE_DIR)/UserService.h \
+		$(INCLUDE_DIR)/User.h \
+		$(INCLUDE_DIR)/Client.h \
+		$(INCLUDE_DIR)/Publisher.h \
+		$(INCLUDE_DIR)/md5.h \
+		$(INCLUDE_DIR)/Exceptions.h \
+		$(INCLUDE_DIR)/UserSessionManagement.h \
+		$(INCLUDE_DIR)/DataBase.h \
 
 FilmServiceSensivityList = \
 		FilmService.cpp \
-		FilmService.h \
-		DataBase.h \
-		Exceptions.h \
-		UserSessionManagement.h \
-		Client.h \
-		Publisher.h \
-		Comment.h \
+		$(INCLUDE_DIR)/FilmService.h \
+		$(INCLUDE_DIR)/DataBase.h \
+		$(INCLUDE_DIR)/Exceptions.h \
+		$(INCLUDE_DIR)/UserSessionManagement.h \
+		$(INCLUDE_DIR)/Client.h \
+		$(INCLUDE_DIR)/Publisher.h \
+		$(INCLUDE_DIR)/Comment.h \
 
 RecommendationServiceSensivityList = \
 		RecommendationService.cpp \
-		RecommendationService.h \
-		DataBase.h \
+		$(INCLUDE_DIR)/RecommendationService.h \
+		$(INCLUDE_DIR)/DataBase.h \
 
 UserSensivityList = \
 		User.cpp \
-		User.h \
+		$(INCLUDE_DIR)/User.h \
 
 FilmFilterServiceSensivityList = \
 		FilmFilterService.cpp \
-		FilmFilterService.h \
-		FilmService.h \
-		Film.h \
+		$(INCLUDE_DIR)/FilmFilterService.h \
+		$(INCLUDE_DIR)/FilmService.h \
+		$(INCLUDE_DIR)/Film.h \
 
 
 ClientSensivityList = \
 		Client.cpp \
-		Client.h \
-		User.h \
-		Exceptions.h \
-		Publisher.h \
-		Film.h \
+		$(INCLUDE_DIR)/Client.h \
+		$(INCLUDE_DIR)/User.h \
+		$(INCLUDE_DIR)/Exceptions.h \
+		$(INCLUDE_DIR)/Publisher.h \
+		$(INCLUDE_DIR)/Film.h \
 
 
 PublisherSensivityList = \
 		Publisher.cpp \
-		Publisher.h \
-		Client.h \
-		User.h \
-		Film.h \
-		Exceptions.h \
+		$(INCLUDE_DIR)/Publisher.h \
+		$(INCLUDE_DIR)/Client.h \
+		$(INCLUDE_DIR)/User.h \
+		$(INCLUDE_DIR)/Film.h \
+		$(INCLUDE_DIR)/Exceptions.h \
 
 
 FilmSensivityList = \
 		Film.cpp \
-		Film.h \
-		Exceptions.h \
-		Utils.h \
+		$(INCLUDE_DIR)/Film.h \
+		$(INCLUDE_DIR)/Exceptions.h \
+		$(INCLUDE_DIR)/Utils.h \
 
 CommentSensivitiyList = \
 		Comment.cpp \
-		Comment.h \
+		$(INCLUDE_DIR)/Comment.h \
 
 UTflixServiceSernsivityList = \
-		RequestReciever.h \
-		Request.h \
-		Response.h \
-		ControllerManager.h \
-		Controller.h \
+		UTflixService.cpp \
+		$(INCLUDE_DIR)/RequestReciever.h \
+		$(INCLUDE_DIR)/Request.h \
+		$(INCLUDE_DIR)/Response.h \
+		$(INCLUDE_DIR)/ControllerManager.h \
+		$(INCLUDE_DIR)/Controller.h \
+
+ServerManagerSenisivityList = \
+		ServerManager.cpp \
+		$(INCLUDE_DIR)/server.hpp\
 
 UTflixSensivityList = \
 		UTflix.cpp \
-		UTflix.h \
-		Publisher.h \
+		$(INCLUDE_DIR)/UTflix.h \
+		$(INCLUDE_DIR)/Publisher.h \
 		
 
-all: UTflix.out 
+all: $(BUILD_DIR)UTflix.out 
 
 
+$(BUILD_DIR)APHTTP.o:
+	make -f APHTTP/makefile BUILD_DIR=$(BUILD_DIR) INCLUDE_DIR=$(INCLUDE_DIR)
 
-main.o: $(mainSensitivityList)
-	$(CC) -c main.cpp
+$(BUILD_DIR)main.o: $(mainSensitivityList)
+	$(CC) -c main.cpp -o $(BUILD_DIR)main.o
 
+$(BUILD_DIR)Utils.o: $(UtilsSensitivityList)
+	$(CC) -c  Utils.cpp -o $(BUILD_DIR)Utils.o
 
-Utils.o: $(UtilsSensitivityList)
-	$(CC) -c  Utils.cpp
+$(BUILD_DIR)md5.o: $(md5SensivityList)
+	$(CC) -c  md5.cpp -o $(BUILD_DIR)md5.o
 
-md5.o: $(md5SensivityList)
-	$(CC) -c  md5.cpp
+$(BUILD_DIR)Exceptions.o: $(ExceptionsSensivityList)
+	$(CC) -c  Exceptions.cpp -o $(BUILD_DIR)Exceptions.o
 
-Exceptions.o: $(ExceptionsSensivityList)
-	$(CC) -c  Exceptions.cpp
+$(BUILD_DIR)RequestReciever.o: $(RequestRecieverSensitivityList)
+	$(CC) -c  RequestReciever.cpp -o $(BUILD_DIR)RequestReciever.o
 
-RequestReciever.o: $(RequestRecieverSensitivityList)
-	$(CC) -c  RequestReciever.cpp
+$(BUILD_DIR)Request.o: $(RequestSensivityList)
+	$(CC) -c  Request.cpp -o $(BUILD_DIR)Request.o
 
-Request.o: $(RequestSensivityList)
-	$(CC) -c  Request.cpp
+$(BUILD_DIR)Response.o: $(ResponseSensivityList)
+	$(CC) -c  Response.cpp -o $(BUILD_DIR)Response.o
 
-Response.o: $(ResponseSensivityList)
-	$(CC) -c  Response.cpp
+$(BUILD_DIR)DataBase.o: $(DataBaseSensivityList)
+	$(CC) -c  DataBase.cpp -o $(BUILD_DIR)DataBase.o
 
-DataBase.o: $(DataBaseSensivityList)
-	$(CC) -c  DataBase.cpp
+$(BUILD_DIR)UserSessionManagement.o: $(UserSessionManagementSensivityList)
+	$(CC) -c  UserSessionManagement.cpp -o $(BUILD_DIR)UserSessionManagement.o
 
-UserSessionManagement.o: $(UserSessionManagementSensivityList)
-	$(CC) -c  UserSessionManagement.cpp
+$(BUILD_DIR)Controller.o: $(ControllerSensivityList)
+	$(CC) -c  Controller.cpp -o $(BUILD_DIR)Controller.o
 
-Controller.o: $(ControllerSensivityList)
-	$(CC) -c  Controller.cpp
+$(BUILD_DIR)ControllerManager.o: $(ControllerManagerSensivityList)
+	$(CC) -c  ControllerManager.cpp -o $(BUILD_DIR)ControllerManager.o
 
-ControllerManager.o: $(ControllerManagerSensivityList)
-	$(CC) -c  ControllerManager.cpp
+$(BUILD_DIR)SignupController.o: $(SignupControllerSensivityList)
+	$(CC) -c  SignupController.cpp -o $(BUILD_DIR)SignupController.o
 
-SignupController.o: $(SignupControllerSensivityList)
-	$(CC) -c  SignupController.cpp
+$(BUILD_DIR)LoginController.o: $(LoginControllerSensivityList)
+	$(CC) -c  LoginController.cpp -o $(BUILD_DIR)LoginController.o
 
-LoginController.o: $(LoginControllerSensivityList)
-	$(CC) -c  LoginController.cpp
+$(BUILD_DIR)LogoutController.o: $(LogoutControllerSensivityList)
+	$(CC) -c  LogoutController.cpp -o $(BUILD_DIR)LogoutController.o
 
-LogoutController.o: $(LogoutControllerSensivityList)
-	$(CC) -c  LogoutController.cpp
+$(BUILD_DIR)FilmController.o: $(FilmControllerSensivityList)
+	$(CC) -c FilmController.cpp -o $(BUILD_DIR)FilmController.o
 
-FilmController.o: $(FilmControllerSensivityList)
-	$(CC) -c FilmController.cpp
+$(BUILD_DIR)FollowerController.o: $(FollowerController)
+	$(CC) -c FollowerController.cpp -o $(BUILD_DIR)FollowerController.o
 
-FollowerController.o: $(FollowerController)
-	$(CC) -c FollowerController.cpp
+$(BUILD_DIR)MoneyController.o: $(MoneyControllerSensivityList)
+	$(CC) -c MoneyController.cpp -o $(BUILD_DIR)MoneyController.o
 
-MoneyController.o: $(MoneyControllerSensivityList)
-	$(CC) -c MoneyController.cpp
+$(BUILD_DIR)BuyController.o: $(BuyControllerSensivityList)
+	$(CC) -c BuyController.cpp -o $(BUILD_DIR)BuyController.o
 
-BuyController.o: $(BuyControllerSensivityList)
-	$(CC) -c BuyController.cpp
+$(BUILD_DIR)RateController.o: $(RateControllerSensivityList)
+	$(CC) -c RateController.cpp -o $(BUILD_DIR)RateController.o
 
-RateController.o: $(RateControllerSensivityList)
-	$(CC) -c RateController.cpp
+$(BUILD_DIR)RepliesController.o: $(RepliesControllerSensivityList)
+	$(CC) -c RepliesController.cpp -o $(BUILD_DIR)RepliesController.o
 
-RepliesController.o: $(RepliesControllerSensivityList)
-	$(CC) -c RepliesController.cpp
+$(BUILD_DIR)CommentsController.o: $(CommentsControllerSensivityList)
+	$(CC) -c CommentsController.cpp -o $(BUILD_DIR)CommentsController.o
 
-CommentsController.o: $(CommentsControllerSensivityList)
-	$(CC) -c CommentsController.cpp
+$(BUILD_DIR)PublishedController.o: $(PublishedControllerSensivityList)
+	$(CC) -c PublishedController.cpp -o $(BUILD_DIR)PublishedController.o
 
-PublishedController.o: $(PublishedControllerSensivityList)
-	$(CC) -c PublishedController.cpp
+$(BUILD_DIR)FilmFilterController.o: $(FilmFilterControllerSensivityList)
+	$(CC) -c FilmFilterController.cpp -o $(BUILD_DIR)FilmFilterController.o
 
-FilmFilterController.o: $(FilmFilterControllerSensivityList)
-	$(CC) -c FilmFilterController.cpp
+$(BUILD_DIR)PurchasedController.o: $(PurchasedControllerSensivityList)
+	$(CC) -c PurchasedController.cpp -o $(BUILD_DIR)PurchasedController.o
 
-PurchasedController.o: $(PurchasedControllerSensivityList)
-	$(CC) -c PurchasedController.cpp
+$(BUILD_DIR)NotificationsController.o: $(NotificationsSensivityList)
+	$(CC) -c NotificationsController.cpp -o $(BUILD_DIR)NotificationsController.o
 
-NotificationsController.o: $(NotificationsSensivityList)
-	$(CC) -c NotificationsController.cpp
-
-NotificationsReadController.o: $(NotificationsReadControllerSensivityList)
-	$(CC) -c NotificationsReadController.cpp
-
-PutFilmsController.o: $() 
-	$(CC) -c PutFilmsController.cpp
-
-DeleteFilmsController.o: $() 
-	$(CC) -c DeleteFilmsController.cpp
-
-DeleteCommentsController.o: $() 
-	$(CC) -c DeleteCommentsController.cpp
+$(BUILD_DIR)NotificationsReadController.o: $(NotificationsReadControllerSensivityList)
+	$(CC) -c NotificationsReadController.cpp -o $(BUILD_DIR)NotificationsReadController.o
 
 
-UserService.o: $(UserServiceSensivityList)
-	$(CC) -c  UserService.cpp
+$(BUILD_DIR)PutFilmsController.o: $(PublishedControllerSensivityList) 
+	$(CC) -c PutFilmsController.cpp -o $(BUILD_DIR)PutFilmsController.o
 
-FilmService.o: $(FilmServiceSensivityList)
-	$(CC) -c FilmService.cpp
+$(BUILD_DIR)DeleteFilmsController.o: $(DeleteCommentsControllerSensivityList) 
+	$(CC) -c DeleteFilmsController.cpp -o $(BUILD_DIR)DeleteFilmsController.o
 
-FilmFilterService.o: $(FilmFilterServiceSensivityList)
-	$(CC) -c FilmFilterService.cpp
+$(BUILD_DIR)DeleteCommentsController.o: $(DeleteCommentsControllerSensivityList) 
+	$(CC) -c DeleteCommentsController.cpp -o $(BUILD_DIR)DeleteCommentsController.o
 
-RecommendationService.o: $(RecommendationServiceSensivityList)
-	$(CC) -c RecommendationService.cpp
 
-User.o: $(UserSensivityList)
-	$(CC) -c  User.cpp
+# Handler builders
 
-Client.o: $(ClientSensivityList)
-	$(CC) -c  Client.cpp
+$(BUILD_DIR)SignupHandler.o: $(SignupHandlerSensivityList)
+	$(CC) -c SignupHandler.cpp -o $(BUILD_DIR)SignupHandler.o
 
-Publisher.o: $(PublisherSensivityList)
-	$(CC) -c  Publisher.cpp
+$(BUILD_DIR)LoginHandler.o: $(LoginHandlerSensivityList)
+	$(CC) -c LoginHandler.cpp -o $(BUILD_DIR)LoginHandler.o
 
-Film.o: $(FilmSensivityList)
-	$(CC) -c  Film.cpp
 
-Comment.o: $(CommentSensivitiyList)
-	$(CC) -c  Comment.cpp
+$(BUILD_DIR)UserService.o: $(UserServiceSensivityList)
+	$(CC) -c  UserService.cpp -o $(BUILD_DIR)UserService.o
 
-UTflixService.o: $(UTflixServiceSernsivityList)
-	$(CC) -c UTflixService.cpp
+$(BUILD_DIR)FilmService.o: $(FilmServiceSensivityList)
+	$(CC) -c FilmService.cpp -o $(BUILD_DIR)FilmService.o
 
-UTflix.o: $(UTflixSensivityList)
-	$(CC) -c UTflix.cpp
+$(BUILD_DIR)FilmFilterService.o: $(FilmFilterServiceSensivityList)
+	$(CC) -c FilmFilterService.cpp -o $(BUILD_DIR)FilmFilterService.o
 
-UTflix.out: $(OBJECTS)
-	$(CC) -o UTflix.out $(OBJECTS)
+$(BUILD_DIR)RecommendationService.o: $(RecommendationServiceSensivityList)
+	$(CC) -c RecommendationService.cpp -o $(BUILD_DIR)RecommendationService.o
+
+$(BUILD_DIR)User.o: $(UserSensivityList)
+	$(CC) -c  User.cpp -o $(BUILD_DIR)User.o
+
+$(BUILD_DIR)Client.o: $(ClientSensivityList)
+	$(CC) -c  Client.cpp -o $(BUILD_DIR)Client.o
+
+$(BUILD_DIR)Publisher.o: $(PublisherSensivityList)
+	$(CC) -c  Publisher.cpp -o $(BUILD_DIR)Publisher.o
+
+$(BUILD_DIR)Film.o: $(FilmSensivityList)
+	$(CC) -c  Film.cpp -o $(BUILD_DIR)Film.o
+
+$(BUILD_DIR)Comment.o: $(CommentSensivitiyList)
+	$(CC) -c  Comment.cpp -o $(BUILD_DIR)Comment.o
+
+$(BUILD_DIR)UTflixService.o: $(UTflixServiceSernsivityList)
+	$(CC) -c UTflixService.cpp -o $(BUILD_DIR)UTflixService.o
+
+
+$(BUILD_DIR)UTflix.o: $(UTflixSensivityList)
+	$(CC) -c UTflix.cpp -o $(BUILD_DIR)UTflix.o
+
+$(BUILD_DIR)ServerManager.o: $(ServerManagerSenisivityList)
+	$(CC) -c ServerManager.cpp -o $(BUILD_DIR)ServerManager.o
+
+$(BUILD_DIR)UTflix.out: $(OBJECTS)
+	$(CC) -o UTflix.out $(OBJECTS) -o $(BUILD_DIR)UTflix.out
 
 .PHONY: clean
 
