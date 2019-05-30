@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            table {
+                font-family: arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }
+            
+            td, th {
+                border: 1px solid #b6ebf1;
+                text-align: left;
+                padding: 8px;
+            }
+            
+            tr:nth-child(even) {
+                background-color: #b6ebf1;
+            }
+            th.pale_color{
+                color:gray;
+            }
+
+        </style>
+    </head>
+    <header> 
+        <title>PublisherHomePage</title>
+    </header>
+
+    <body>
+        <h2>Home Page</h2>
+        <form action = "/logout" method = "POST" >
+            <button type = "submit" >Log out</button>
+        </form>
+   
+        <table style="width:100%">
+
+             <tr>
+                        <th class = "pale_color"></th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Production Year</th>
+                        <th>Length</th>
+                        <th>Rate</th>
+                        <th>Director</th>>
+            </tr>
+            <tr>
+            <form action = "films" method="POST">   
+                <th class = "pale_color"></th>
+                <th> <input type = "text" name = "name" placeholder="Name"> </th>
+                <th><input type = "number" name = "price" placeholder="Price"></th>
+                <th><input type = "number" name = "year" placeholder="Year"></th>
+                <th><input type = "number" name = "length" placeholder="Length"></th>
+                <th><input type = "text" name = "summary" placeholder="Summary"></th>
+                <th><input type = "text" name = "director" placeholder="Director"></th>
+                <th> <button type="submit">Add</button></th>
+                </th>
+            </form>
+
+            </tr>
+        </table>
+ 
+        <h4>Published Films</h4>
+        <table style="width:100%">
+            <tr>
+                <th class = "pale_color"></th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Production Year</th>
+                <th>Length</th>
+                <th>Rate</th>
+                <th>Director</th>
+                <th> <form action="/films" method = "GET">
+                     <input type="text" name = "director" value = "NOT_FILTERED" placeholder="Director"</form>
+                     <button type="submit" values = "Filter" > Filter </button>
+                </th>
+            </tr>
+
+
+            <%
+            for (int i = 0; i < stoi(context["n"]; i++))
+            {
+                std::string index = to_string(i);
+            %>
+                <tr>
+                    <th class = "pale_color"> <% index %></th>
+                    <th> <% context["name" + index] %> </th>
+                    <th><% context["price" + index] %> </th>
+                    <th><% context["year" + index] %> </th>
+                    <th><% context["length" + index] %> </th>
+                    <th><% context["rate" + index] %> </th>
+                    <th><% context["director" + index] %> </th>
+                    <th> <form action="/films" method = "GET">
+                         <input type="text" name = "director" value = "NOT_FILTERED" placeholder="Director"</form>
+                         <button type="submit" values = "Filter" > Filter </button>
+                    </th>
+                </tr>  
+            <%
+            }
+            %>
+
+        </table>
+
+    </body>
+
+</html>
