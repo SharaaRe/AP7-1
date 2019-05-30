@@ -1,5 +1,5 @@
 #include "server.hpp"
-#include "../utils/utilities.hpp"
+#include "utilities.hpp"
 #include <algorithm>
 #include <dirent.h>
 #include <errno.h>
@@ -313,6 +313,8 @@ ShowFile::ShowFile(string _filePath, string _fileType) {
 
 Response *ShowFile::callback(Request *req) {
   Response *res = new Response;
+  cout<< "file path : " << filePath.c_str() << endl;
+  cout<<readFile(filePath.c_str())<<endl;
   res->setHeader("Content-Type", fileType);
   res->setBody(readFile(filePath.c_str()));
   return res;
