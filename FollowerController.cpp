@@ -8,8 +8,10 @@
 #include "Client.h"
 
 using namespace std;
+// using service::Request;
+// using service::Response;
 
-Response FollowerController::post(Request* request)
+service::Response FollowerController::post(service::Request* request)
 {
 
     current_request = request;
@@ -17,11 +19,11 @@ Response FollowerController::post(Request* request)
 
     user_service.follow(id);
 
-    return Response(SUCCESSFUL, OK);
+    return service::Response(SUCCESSFUL, OK);
 }
 
 
-Response FollowerController::get(Request* request)
+service::Response FollowerController::get(service::Request* request)
 {
 
     current_request = request;
@@ -30,7 +32,7 @@ Response FollowerController::get(Request* request)
 }
 
 
-Response FollowerController::get_follower_response (vector <const Client*> clients)
+service::Response FollowerController::get_follower_response (vector <const Client*> clients)
 {
     stringstream res;
     res << "List of Followers" << endl;
@@ -41,5 +43,5 @@ Response FollowerController::get_follower_response (vector <const Client*> clien
                  << clients[i]->get_username() << " | " << clients[i]->get_email() << endl;
     }
 
-    return Response(SUCCESSFUL,  res.str());
+    return service::Response(SUCCESSFUL,  res.str());
 }

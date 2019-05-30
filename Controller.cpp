@@ -3,18 +3,21 @@
 #include "Response.h"
 #include "Exceptions.h"
 
+using service::Request;
+using service::Response;
+
 Controller::Controller()
 {
     current_request = NULL;
 }
 
 
-Response Controller::get(Request* request)
+service::Response Controller::get(service::Request* request)
 {
     return Response(ERROR, BadRequest("not matching method and url").error());
 }
 
-Response Controller::post(Request* request)
+service::Response Controller::post(service::Request* request)
 {
     return Response(ERROR, BadRequest("not matching method and url").error());
 }

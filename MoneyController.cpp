@@ -11,7 +11,10 @@
 
 #define AMOUNT "amount"
 
-Response MoneyController::post(Request* request)
+// using service::Request;
+// using service::Response;
+
+service::Response MoneyController::post(service::Request* request)
 {
 
     if(request->number_of_params() > 0)
@@ -26,14 +29,14 @@ Response MoneyController::post(Request* request)
         UTflix::get_instance()->pay_publisher_debt(publisher);
     }
 
-    return Response(SUCCESSFUL, OK);
+    return service::Response(SUCCESSFUL, OK);
 }
 
-Response MoneyController::get(Request* request)
+service::Response MoneyController::get(service::Request* request)
 {
     User* user = UserSessionManagement::get_instance()->get_logged_user();
     int credit = user->get_money();
     std::stringstream credit_stream;
     credit_stream << credit << std::endl;
-    return Response(SUCCESSFUL, credit_stream.str());
+    return service::Response(SUCCESSFUL, credit_stream.str());
 }

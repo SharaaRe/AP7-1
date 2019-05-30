@@ -1,7 +1,10 @@
 #include "DeleteFilmsController.h"
 
 
-Response DeleteFilmsController::post(Request* request)
+using service::Request;
+using service::Response;
+
+service::Response DeleteFilmsController::post(service::Request* request)
 {
     re_initialize();
     current_request = request;
@@ -10,7 +13,7 @@ Response DeleteFilmsController::post(Request* request)
     return Response(SUCCESSFUL, OK);
 }
 
-Response DeleteFilmsController::get(Request* request)
+service::Response DeleteFilmsController::get(service::Request* request)
 {
     return Controller::get(request);
 }

@@ -5,15 +5,18 @@
 
 #include <iostream>
 
+using service::Request;
+using service::Response;
+
 LogoutController::LogoutController()
 {
     user_manager = UserSessionManagement::get_instance();
 }
 
 
-Response LogoutController::post(Request* request)
+service::Response LogoutController::post(service::Request* request)
 {
     current_request = request;
     user_manager->sign_out();
-    return Response(SUCCESSFUL, OK);
+    return service::Response(SUCCESSFUL, OK);
 }

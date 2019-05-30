@@ -4,15 +4,17 @@
 #include "FilmService.h"
 #include "Exceptions.h"
 
+// using service::Request;
+// using service::Response;
 
-Response RepliesController::post(Request* request)
+service::Response RepliesController::post(service::Request* request)
 {
     current_request = request;   
     check_post_params();
     FilmService film_service;
     film_service.reply(film_id, comment_id, content);
 
-    return Response(SUCCESSFUL, OK);
+    return service::Response(SUCCESSFUL, OK);
 }
 
 void RepliesController::check_post_params()
@@ -27,6 +29,4 @@ void RepliesController::check_post_params()
     {
         throw BadRequest("a required params do not exist");
     }
-    
-
 }

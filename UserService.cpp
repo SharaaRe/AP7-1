@@ -19,7 +19,7 @@ UserService::UserService()
     user_manager = UserSessionManagement::get_instance();
 }
 
-void UserService::signup(std::string email, std::string username, std::string password, int age, bool publisher)
+int UserService::signup(std::string email, std::string username, std::string password, int age, bool publisher)
 {
     if (!database->valid_username(username))
         throw BadRequest("Username alredy exist");
@@ -32,13 +32,16 @@ void UserService::signup(std::string email, std::string username, std::string pa
     else
         new_client = new Client(email,username, password, age);
     database->add_client(new_client);
-    login(username, password);
+    return login(username, password);
 }
 
-void UserService::login(string username, string password)
+int UserService::login(string username, string password)
 {
     if (database->search_user(username)->valid_login(username, password))
+    {
         user_manager->set_logged_user(database->search_user(username));
+        return 15; ///
+    }
     else 
         throw BadRequest("wrong password");
 }

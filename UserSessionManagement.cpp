@@ -1,6 +1,7 @@
 #include "UserSessionManagement.h"
 
 #include "Exceptions.h"
+#include "DataBase.h"
 #include "User.h"
 #include "Publisher.h"
 #include "Client.h"
@@ -27,6 +28,16 @@ void UserSessionManagement::set_logged_user(User* _logged_user)
     else
         logged_user = _logged_user;
 }
+
+
+void UserSessionManagement::set_logged_user(int id)
+{
+    if (logged_user != nullptr)
+        throw BadRequest("a user is already logged");
+
+    logged_user = DataBase::get_instance()->search_user(id);
+}
+
 
 void UserSessionManagement::sign_out()
 {

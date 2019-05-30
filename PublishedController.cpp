@@ -4,7 +4,10 @@
 #include "FilmFilterService.h"
 #include "FilmService.h"
 
-Response PublishedController::get(Request* request)
+// using service::Request;
+// using service::Response;
+
+service::Response PublishedController::get(service::Request* request)
 {
     current_request = request;
     check_params();

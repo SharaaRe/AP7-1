@@ -6,15 +6,17 @@
 #include "Utils.h"
 #include "Exceptions.h"
 
+// using service::Request;
+// using service::Response;
 
-Response CommentsController::post(Request* request)
+service::Response CommentsController::post(service::Request* request)
 {
     current_request = request;
     FilmService film_service;
     check_post_params();
     film_service.comment(film_id, content);
 
-    return Response(SUCCESSFUL, OK);
+    return service::Response(SUCCESSFUL, OK);
 
 }
 

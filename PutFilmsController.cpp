@@ -1,6 +1,7 @@
 #include "PutFilmsController.h"
 
-
+using service::Request;
+using service::Response;
 
 Response PutFilmsController::post(Request* request)
 {

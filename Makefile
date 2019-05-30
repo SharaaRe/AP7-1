@@ -34,6 +34,8 @@ OBJECTS = \
 		PutFilmsController.o \
 		DeleteFilmsController.o \
 		DeleteCommentsController.o \
+		LoginHandler.o \
+		SignupHandler.o \
 		UserService.o \
 		FilmService.o \
 		FilmFilterService.o \
@@ -44,15 +46,14 @@ OBJECTS = \
 		Film.o \
 		Comment.o \
 		UTflixService.o \
+		ServerManager.o \
 		UTflix.o \
 
 mainSensitivityList = \
 		main.cpp \
-		RequestReciever.h \
-		Request.h \
-		Response.h \
-		ControllerManager.h \
-		Controller.h \
+		ServerManager.h \
+		./APHTTP/server/server.hpp \
+		./APHTTP/server/handlers.hpp \
 
 UtilsSensitivityList = \
 		Utils.cpp \
@@ -284,6 +285,27 @@ DeleteCommentsControllerSensivityList = \
 		Controller.h \
 		CommentsController.h \
 
+
+
+
+# Handler sensivity lists starts from here.
+# 
+# 
+# 
+
+LoginHandlerSensivityList = \
+		LoginHandler.cpp \
+		Utils.h
+		Exceptions.h
+		UserService.h
+		./APHTTP/server/server.hpp\
+
+SignupHandlerSensivityList = \
+		SignupHandler.cpp \
+		Utils.h
+		Exceptions.h
+		UserService.h
+		./APHTTP/server/server.hpp\
 
 UserServiceSensivityList = \
 		UserService.cpp \

@@ -8,14 +8,17 @@
 
 #define FILM_ID "film_id"
 
-Response BuyController::post(Request* request)
+// using service::Request;
+// using service::Response;
+
+service::Response BuyController::post(service::Request* request)
 {
     current_request = request;
     check_post_params();
     FilmService film_service;
     film_service.buy(film_id);
 
-    return Response(SUCCESSFUL, OK);
+    return service::Response(SUCCESSFUL, OK);
 }
 
 void BuyController::check_post_params()

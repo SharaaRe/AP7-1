@@ -18,7 +18,10 @@
 
 using namespace std;
 
-Response SignupController::post(Request* req)
+// using service::Request;
+// using service::Response;
+
+service::Response SignupController::post(service::Request* req)
 {
     current_request = req;
     publisher_flag = false;
@@ -29,7 +32,7 @@ Response SignupController::post(Request* req)
     publisher_flag = is_publisher();
     UserService().signup(email, username, password, age, publisher_flag);
 
-return Response(SUCCESSFUL, OK);
+return service::Response(SUCCESSFUL, OK);
 }
 
 void SignupController::post_required_params()

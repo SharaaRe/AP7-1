@@ -8,8 +8,10 @@
 #include "UserService.h"
 #include "md5.h"
 
+// using service::Request;
+// using service::Response;
 
-Response LoginController::post(Request* req)
+service::Response LoginController::post(service::Request* req)
 {
     current_request = req;
 
@@ -17,7 +19,7 @@ Response LoginController::post(Request* req)
     UserService().login(req->get_request_param(USERNAME),
             md5(req->get_request_param(PASSWORD)));
     
-    return Response(SUCCESSFUL, OK);
+    return service::Response(SUCCESSFUL, OK);
 }
 
 void LoginController::post_required_params()

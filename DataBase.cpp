@@ -45,7 +45,6 @@ void DataBase::add_client(Client* new_user)
     if (valid_username(new_user->get_username())
             && clients.find(new_user->get_id()) == clients.end())
     {
-        // new_user->set_id(++last_user_id);
         clients.insert(pair <int, Client*> (new_user->get_id(), new_user));
         id.insert(pair<string, int> (new_user->get_username(), new_user->get_id()));
     }
@@ -66,6 +65,17 @@ User* DataBase::search_user(std::string username)
 {
     if(id.find(username) != id.end())
         return search_client(id[username]);
+
+    else if (admins.find(username) != admins.end())
+        return admins[username];
+}
+
+User* DataBase::search_user(int _id)
+{
+    string username = ADMIN_ST;
+    if (_id != 0)
+        if(clients.find(_id) != clients.end())
+            return search_client(_id);
 
     else if (admins.find(username) != admins.end())
         return admins[username];

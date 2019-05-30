@@ -23,9 +23,10 @@
 #define DIRECTOR "director"
 
 using namespace std;
+using service::Request;
+using service::Response;
 
-
-Response FilmController::get(Request* request)
+service::Response FilmController::get(service::Request* request)
 {
     re_initialize();
     current_request = request;
@@ -37,7 +38,7 @@ Response FilmController::get(Request* request)
         string film_info = make_film_info_string(film);
         string comments_info = make_comments_string(film);
         string recoms_info = make_recommendation_string(film);
-        return Response(SUCCESSFUL, film_info + comments_info + recoms_info);
+        return service::Response(SUCCESSFUL, film_info + comments_info + recoms_info);
     }
     else
     {   
@@ -47,14 +48,14 @@ Response FilmController::get(Request* request)
 
 }
 
-Response FilmController::post(Request* request)
+service::Response FilmController::post(service::Request* request)
 {
     re_initialize();
     current_request = request;
     post_required_params();
     film_service.add_film(name, year, length, price, summary, director);
 
-    return Response(SUCCESSFUL, OK);
+    return service::Response(SUCCESSFUL, OK);
 
 }
 

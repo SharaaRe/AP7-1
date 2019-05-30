@@ -11,6 +11,9 @@
 
 using namespace std;
 
+using service::Request;
+// using service::Response;
+
 Request RequestReciever::recieve_request()
 {
     if (!getline(cin, request_line))

@@ -4,6 +4,8 @@
 
 
 using namespace std;
+using service::Request;
+using service::Response;
 
 void UTflixService::run()
 {
@@ -27,6 +29,6 @@ void UTflixService::run()
         {
             current_response = Response(ERROR, er.what());
         }
-        cout << current_response;
+        cout << current_response.get_content();
     }
 }

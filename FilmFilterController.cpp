@@ -19,8 +19,10 @@
 #define DIRECTOR "director"
 
 using namespace std;
+// using service::Request;
+// using service::Response;
 
-Response FilmFilterController::get(Request* request)
+service::Response FilmFilterController::get(service::Request* request)
 {
     current_request = request;
     check_params();
@@ -31,7 +33,7 @@ Response FilmFilterController::get(Request* request)
 }
 
 
-Response FilmFilterController::make_get_film_response()
+service::Response FilmFilterController::make_get_film_response()
 {
     const string FILM_HEADER = "#. Film Id | Film Name | Film Length | Film price | Rate | Production Year | Film Director";
     const string spacer = " | ";
@@ -46,7 +48,7 @@ Response FilmFilterController::make_get_film_response()
                  << spacer << films[i].get_director() << endl;
     }
     
-    return Response(SUCCESSFUL, res.str());
+    return service::Response(SUCCESSFUL, res.str());
 }
 
 

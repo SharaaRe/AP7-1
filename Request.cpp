@@ -7,7 +7,7 @@
 
 using namespace std;
 
-
+using service::Request;
 
 Request::Request(vector <string> raw_request)
 {

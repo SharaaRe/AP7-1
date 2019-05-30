@@ -8,9 +8,11 @@
 
 #define LIMIT "limit"
 
-#include <iostream>
 
-Response NotificationsReadController ::get(Request* request)
+// using service::Request;
+// using service::Response;
+
+service::Response NotificationsReadController ::get(service::Request* request)
 {
     current_request = request;
     UserService user_service;

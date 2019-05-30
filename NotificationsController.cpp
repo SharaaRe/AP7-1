@@ -8,8 +8,10 @@
 #include "UserService.h"
 
 using namespace std;
+// using service::Request;
+// using service::Response;
 
-Response NotificationsController::get(Request* request)
+service::Response NotificationsController::get(service::Request* request)
 {
     current_request = request;
     UserService user_service;
@@ -17,7 +19,7 @@ Response NotificationsController::get(Request* request)
     
 }
 
-Response NotificationsController::make_notification_response(vector <string> notifs, int limit)
+service::Response NotificationsController::make_notification_response(vector <string> notifs, int limit)
 {
 
     if (limit == NO_LIMIT || limit > notifs.size())
@@ -29,5 +31,5 @@ Response NotificationsController::make_notification_response(vector <string> not
     {
         res << size - i << ". " << notifs[i] << endl;
     }
-    return Response(SUCCESSFUL, res.str());
+    return service::Response(SUCCESSFUL, res.str());
 }

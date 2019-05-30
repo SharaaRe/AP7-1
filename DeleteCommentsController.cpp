@@ -2,7 +2,10 @@
 
 #include "FilmService.h"
 
-Response DeleteCommentsController::post(Request* request)
+using service::Request;
+using service::Response;
+
+service::Response DeleteCommentsController::post(service::Request* request)
 {
     current_request = request;
     FilmService film_service;

@@ -20,9 +20,12 @@
 #include "DeleteFilmsController.h"
 #include "DeleteCommentsController.h"
 #include "Exceptions.h"
-#include "Response.h"
+
 
 using namespace std;
+
+// using service::Request;
+// using service::Response;
 
 ControllerManager::ControllerManager()
 {
@@ -43,8 +46,6 @@ ControllerManager::ControllerManager()
     controllers.insert(pair <std::string, Controller*> (DELETE_FILMS, new DeleteFilmsController()));
     controllers.insert(pair <std::string, Controller*> (DELETE_COMMENTS, new DeleteCommentsController()));
     controllers.insert(pair <std::string, Controller*> (LOGOUT, new LogoutController()));
-
-    
 }
 
 ControllerManager::~ControllerManager()
@@ -53,9 +54,9 @@ ControllerManager::~ControllerManager()
         delete (it->second);
 }
 
-void ControllerManager::run_controller(Request* request)
+void ControllerManager::run_controller(service::Request* request)
 {
-    response = Response();
+    response = service::Response();
     Controller* controller;
     if (controllers.find(request->get_url()) != controllers.end())
         controller = controllers[request->get_url()];
@@ -73,7 +74,7 @@ void ControllerManager::run_controller(Request* request)
     }
 }
 
-Response ControllerManager::get_response()
+service::Response ControllerManager::get_response()
 {
     return response;
 }

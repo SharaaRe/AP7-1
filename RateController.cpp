@@ -5,6 +5,9 @@
 #include "FilmService.h"
 #include "Exceptions.h"
 
+using service::Request;
+using service::Response;
+
 Response RateController::post(Request* request)
 {
     current_request = request;

@@ -27,13 +27,14 @@ enum METHODS {GET, POST};
 #define PUT_FILMS "put_films"
 #define DELETE_FILMS "delete_films"
 #define DELETE_COMMENTS "delete_comments"
-
+namespace service
+{
 class Request
 {
 public:
     Request(std::vector<std::string>);
     Request() = default;
-    void print_request(); //this should be deleted
+    void print_request();
     std::string get_request_param(std::string);
     int get_method();
     std::string get_url();
@@ -42,6 +43,7 @@ private:
     int method;
     std::string url;
     std::map <std::string, std::string> parameters;
+};
 };
 
 

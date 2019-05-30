@@ -2,7 +2,10 @@
 
 #include "UserSessionManagement.h"
 
-Response PurchasedController::get(Request* request)
+using service::Request;
+using service::Response;
+
+service::Response PurchasedController::get(service::Request* request)
 {
     current_request = request;
     check_params();
