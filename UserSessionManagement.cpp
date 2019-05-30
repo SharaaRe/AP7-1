@@ -38,6 +38,10 @@ void UserSessionManagement::set_logged_user(int id)
     logged_user = DataBase::get_instance()->search_user(id);
 }
 
+int UserSessionManagement::get_session_id()
+{
+    return logged_user->get_id();
+}
 
 void UserSessionManagement::sign_out()
 {

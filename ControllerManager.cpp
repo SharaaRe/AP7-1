@@ -65,10 +65,10 @@ void ControllerManager::run_controller(service::Request* request)
     
     switch (request->get_method())
     {
-        case GET:
+        case GET_MINE:
             response = controller->get(request);
             break;
-        case POST:
+        case POST_MINE:
             response = controller->post(request);
             break;            
     }

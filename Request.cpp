@@ -11,7 +11,7 @@ using service::Request;
 
 Request::Request(vector <string> raw_request)
 {
-    map <string, int> methods = {{"GET",GET}, {"POST", POST}};
+    map <string, int> methods = {{"GET",GET_MINE}, {"POST", POST_MINE}};
     string _operator = "?";
     const int COMPLEX_REQ_SIZE = 5;
     
