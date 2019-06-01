@@ -41,6 +41,9 @@ OBJECTS = \
 		$(BUILD_DIR)DeleteCommentsController.o \
 		$(BUILD_DIR)LoginHandler.o \
 		$(BUILD_DIR)SignupHandler.o \
+		$(BUILD_DIR)HomePageHandler.o \
+		$(BUILD_DIR)AddFilmHandler.o \
+		$(BUILD_DIR)DeleteFilmsHandler.o \
 		$(BUILD_DIR)UserService.o \
 		$(BUILD_DIR)FilmService.o \
 		$(BUILD_DIR)FilmFilterService.o \
@@ -316,7 +319,32 @@ SignupHandlerSensivityList = \
 		$(INCLUDE_DIR)/UserService.h \
 		$(INCLUDE_DIR)/server.hpp\
 
+HomePageHandlerSensivityList = \
+		HomePageHandler.cpp \
+		$(INCLUDE_DIR)/Utils.h \
+		$(INCLUDE_DIR)/Exceptions.h \
+		$(INCLUDE_DIR)/UserService.h \
+		$(INCLUDE_DIR)/server.hpp\
 
+
+AddFilmHandlerSensivityList = \
+		AddFilmHandler.cpp \
+		$(INCLUDE_DIR)/Utils.h \
+		$(INCLUDE_DIR)/Exceptions.h \
+		$(INCLUDE_DIR)/FilmService.h \
+		$(INCLUDE_DIR)/UserSessionManagement.h \
+		$(INCLUDE_DIR)/server.hpp \
+		APHTTP/static/mine/PublisherHomePage.html \
+
+
+DeleteFilmsHanerSensivityList = \
+		DeleteFilmsHandler.cpp \
+		$(INCLUDE_DIR)/DeleteFilmsHandler.h \
+		$(INCLUDE_DIR)/Exceptions.h \
+		$(INCLUDE_DIR)/FilmService.h \
+		$(INCLUDE_DIR)/UserSessionManagement.h \
+		$(INCLUDE_DIR)/server.hpp \
+		APHTTP/static/mine/PublisherHomePage.html \
 
 # Services Sensivity List 
 # 
@@ -513,6 +541,17 @@ $(BUILD_DIR)SignupHandler.o: $(SignupHandlerSensivityList)
 $(BUILD_DIR)LoginHandler.o: $(LoginHandlerSensivityList)
 	$(CC) -c LoginHandler.cpp -o $(BUILD_DIR)LoginHandler.o
 
+$(BUILD_DIR)HomePageHandler.o: $(HomePageHandlerSensivityList)
+	$(CC) -c HomePageHandler.cpp  -o $(BUILD_DIR)HomePageHandler.o
+
+$(BUILD_DIR)AddFilmHandler.o: $(AddFilmHandlerSensivityList)
+	$(CC) -c AddFilmHandler.cpp -o $(BUILD_DIR)AddFilmHandler.o
+
+$(BUILD_DIR)DeleteFilmsHandler.o: $(DeleteFilmsHandlerSensivityList)
+	$(CC) -c DeleteFilmsHandler.cpp -o 	$(BUILD_DIR)DeleteFilmsHandler.o
+
+	
+# 
 
 $(BUILD_DIR)UserService.o: $(UserServiceSensivityList)
 	$(CC) -c  UserService.cpp -o $(BUILD_DIR)UserService.o
@@ -552,10 +591,10 @@ $(BUILD_DIR)ServerManager.o: $(ServerManagerSenisivityList)
 	$(CC) -c ServerManager.cpp -o $(BUILD_DIR)ServerManager.o
 
 $(BUILD_DIR)UTflix.out: $(OBJECTS)
-	$(CC) -o UTflix.out $(OBJECTS) -o $(BUILD_DIR)UTflix.out
+	$(CC) -o UTflix.out $(OBJECTS) -o APHTTP/build/UTflix.out
 
 .PHONY: clean
 
 clean:
-	rm *.o
+	rm $(BUILD_DIR)*.o
 	rm UTflix.out

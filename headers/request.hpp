@@ -4,6 +4,8 @@
 #include "utilities.hpp"
 #include <string>
 
+#define KEY_NOT_FOUND "knf"
+
 class Request {
 public:
   Request(std::string method = "GET");

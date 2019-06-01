@@ -11,6 +11,7 @@ public:
     static UserSessionManagement* get_instance();
     void set_logged_user(User* logged_user);
     void set_logged_user(int session_id);
+    void login(int session_id);
     int get_session_id();
     void sign_out();
     User* get_logged_user();

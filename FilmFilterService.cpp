@@ -89,7 +89,7 @@ void FilmFilterService::filter_by_price(int price)
     vector <Film> filtered;
     for (int i = 0; i < films.size(); i++)
     {
-        if (films[i].get_price() == price)
+        if (films[i].get_price() <= price)
             filtered.push_back(films[i]);
     }
 

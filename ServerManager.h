@@ -10,6 +10,7 @@ public:
     void run();
 private:
     Server my_server;
+    void fake_initializer();
 };
 
 #endif

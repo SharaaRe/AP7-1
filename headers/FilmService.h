@@ -9,6 +9,12 @@
 #include "Film.h"
 
 #define NAME "name"
+#define YEAR "year"
+#define LENGTH "length"
+#define PRICE "price"
+#define SUMMERY "summary"
+#define DIRECTOR "director"
+
 #define FILM_ID "film_id"
 #define COMMENT_ID "comment_id"
 #define CONTENT "content"

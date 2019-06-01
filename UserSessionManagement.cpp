@@ -32,6 +32,11 @@ void UserSessionManagement::set_logged_user(User* _logged_user)
 
 void UserSessionManagement::set_logged_user(int id)
 {
+    logged_user = DataBase::get_instance()->search_user(id);
+}
+
+void UserSessionManagement::login(int id)
+{
     if (logged_user != nullptr)
         throw BadRequest("a user is already logged");
 

@@ -14,13 +14,7 @@
 #include "DataBase.h"
 #include "UserSessionManagement.h"
 
-#define FILM_ID "film_id"
-#define NAME "name"
-#define YEAR "year"
-#define LENGTH "length"
-#define PRICE "price"
-#define SUMMERY "summary"
-#define DIRECTOR "director"
+
 
 using namespace std;
 using service::Request;

@@ -1,5 +1,7 @@
 #include "SignupHandler.h"
 
+#include <iostream>
+
 #include "UserService.h"
 #include "UserSessionManagement.h"
 #include "Utils.h"
@@ -13,20 +15,28 @@ using namespace std;
 
 Response* SignupHandler::callback(Request* req)
 {
-    current_request = req;
-    publisher = false;
-    post_required_params();
-    post_required_params();
-    publisher = is_publisher();
-    UserService().signup(email, username, password, age, publisher);
-    
-    Response* res = new Response;
-    UserSessionManagement* user_manager = UserSessionManagement::get_instance();
-    res->setSessionId(to_string(user_manager->get_session_id()));
-    res->redirect("/HomePage");
+    cout << "entering signup" << endl;
+    try{
+        current_request = req;
+        publisher = false;
+        post_required_params();
+        post_required_params();
+        publisher = is_publisher();
+        UserService().signup(email, username, password, age, publisher);
+        
+        UserSessionManagement* user_manager = UserSessionManagement::get_instance();
+        Response* res = Response::redirect("/HomePage");
+        res->setSessionId(to_string(user_manager->get_session_id()));
+        cout << "signup ok" << endl;
+        return res;
+    }
+    catch(BadRequest& er)
+    {
+        cout << "signup failed: " << er.error() << endl;
 
-
-    return res;
+        Response* res = Response::redirect("/signup");
+        return res;
+    }
 }
 
 

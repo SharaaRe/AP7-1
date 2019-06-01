@@ -29,37 +29,38 @@
 
     <body>
         <h2>Home Page</h2>
-        <form action = "/logout" method = "POST" >
+        <h4><% cout << context["username"]; %></h4>
+        <form action = "/logout" method = "POST">
             <button type = "submit" >Log out</button>
         </form>
-   
+    <% if (context["publisher"] == "true")
+        {
+    %>
         <table style="width:100%">
 
              <tr>
-                        <th class = "pale_color"></th>
                         <th>Name</th>
                         <th>Price</th>
                         <th>Production Year</th>
                         <th>Length</th>
-                        <th>Rate</th>
-                        <th>Director</th>>
+                        <th>Summary</th>
+                        <th>Director</th>
             </tr>
             <tr>
             <form action = "films" method="POST">   
-                <th class = "pale_color"></th>
-                <th> <input type = "text" name = "name" placeholder="Name"> </th>
-                <th><input type = "number" name = "price" placeholder="Price"></th>
-                <th><input type = "number" name = "year" placeholder="Year"></th>
-                <th><input type = "number" name = "length" placeholder="Length"></th>
-                <th><input type = "text" name = "summary" placeholder="Summary"></th>
-                <th><input type = "text" name = "director" placeholder="Director"></th>
+                <th> <input type = "text" name = "name" placeholder="Name" required> </th>
+                <th><input type = "number" name = "price" placeholder="Price" required></th>
+                <th><input type = "number" name = "year" placeholder="Year" required></th>
+                <th><input type = "number" name = "length" placeholder="Length" required></th>
+                <th><input type = "text" name = "summary" placeholder="Summary" required></th>
+                <th><input type = "text" name = "director" placeholder="Director" required></th>
                 <th> <button type="submit">Add</button></th>
                 </th>
             </form>
 
             </tr>
         </table>
- 
+
         <h4>Published Films</h4>
         <table style="width:100%">
             <tr>
@@ -70,36 +71,79 @@
                 <th>Length</th>
                 <th>Rate</th>
                 <th>Director</th>
-                <th> <form action="/films" method = "GET">
-                     <input type="text" name = "director" value = "NOT_FILTERED" placeholder="Director"</form>
+                <th> 
+                    <form action="/HomePage" method = "GET">
+                     <input type="text" name = "director"  placeholder="Director Filter">
                      <button type="submit" values = "Filter" > Filter </button>
+                     </form>
                 </th>
             </tr>
 
-
-            <%
-            for (int i = 0; i < stoi(context["n"]; i++))
+            <% for (int i = 0; i < stoi(context["n"]); i++)
             {
                 std::string index = to_string(i);
+                std::string number = to_string(i + 1);
             %>
                 <tr>
-                    <th class = "pale_color"> <% index %></th>
-                    <th> <% context["name" + index] %> </th>
-                    <th><% context["price" + index] %> </th>
-                    <th><% context["year" + index] %> </th>
-                    <th><% context["length" + index] %> </th>
-                    <th><% context["rate" + index] %> </th>
-                    <th><% context["director" + index] %> </th>
-                    <th> <form action="/films" method = "GET">
-                         <input type="text" name = "director" value = "NOT_FILTERED" placeholder="Director"</form>
-                         <button type="submit" values = "Filter" > Filter </button>
-                    </th>
+                    <th class = "pale_color"> <% cout << number; %></th>
+                    <th> <a href='/films?film_id=<% cout << context["id" + index]; %>'> <% cout << context["name" + index]; %></a></th>
+                    <th><% cout << context["price" + index]; %></th>
+                    <th><% cout << context["year" + index]; %></th>
+                    <th><% cout << context["length" + index]; %></th>
+                    <th><% cout << context["rate" + index]; %></th>
+                    <th><% cout << context["director" + index]; %> </th>
+                    <th> <form action="delete_films" method="POST">
+                        <input type = "hidden" name = "film_id" value='<% cout << context["id" + index]; %>'>
+                        <button type="submit"> Delete </button>
+                    </form></th>
                 </tr>  
-            <%
-            }
-            %>
+            <% } %>
 
         </table>
+        <%
+        }
+        %>
+
+        <h4>Films</h4>
+        <table style="width:100%">
+            <tr>
+                <th class = "pale_color"></th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Production Year</th>
+                <th>Length</th>
+                <th>Rate</th>
+                <th>Director</th>
+                <th> 
+                    <form action="/HomePage" method = "GET">
+                     <input type="text" name = "director"  placeholder="Director Filter">
+                     <button type="submit" values = "Filter" > Filter </button>
+                     </form>
+                </th>
+            </tr>
+
+            <% for (int i = stoi(context["n"]); i < stoi(context["n2"]); i++)
+            {
+                std::string index = to_string(i);
+                std::string number = to_string(i + 1);
+            %>
+                <tr>
+                    <th class = "pale_color"> <% cout << number; %></th>
+                    <th> <a href='/films?film_id=<% cout << context["id" + index]; %>'> <% cout << context["name" + index]; %></a></th>
+                    <th><% cout << context["price" + index]; %></th>
+                    <th><% cout << context["year" + index]; %></th>
+                    <th><% cout << context["length" + index]; %></th>
+                    <th><% cout << context["rate" + index]; %></th>
+                    <th><% cout << context["director" + index]; %> </th>
+                </tr>  
+
+            <% } %>
+        </table>
+
+
+
+
+
 
     </body>
 

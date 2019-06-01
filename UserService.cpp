@@ -1,6 +1,7 @@
 #include "UserService.h"
 
 #include <sstream>
+#include <iostream>
 
 #include "Response.h"
 #include "Request.h"
@@ -28,7 +29,7 @@ int UserService::signup(std::string email, std::string username, std::string pas
         throw BadRequest("a user is already signed in");
     Client* new_client;
     if (publisher)
-        new_client = new Publisher(email,username, password, age);
+        new_client = new Publisher(email, username, md5(password), age);
     else
         new_client = new Client(email,username, password, age);
     database->add_client(new_client);
@@ -37,13 +38,16 @@ int UserService::signup(std::string email, std::string username, std::string pas
 
 int UserService::login(string username, string password)
 {
-    if (database->search_user(username)->valid_login(username, password))
+    if (database->search_user(username)->valid_login(username, md5(password)))
     {
-        user_manager->set_logged_user(database->search_user(username));
-        return 15; ///
+        int id = database->search_user(username)->get_id();
+        user_manager->login(id);
+        return id; ///
     }
     else 
+    {
         throw BadRequest("wrong password");
+    }
 }
 
 void  UserService::follow(int following_id)

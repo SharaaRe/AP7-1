@@ -14,9 +14,21 @@ Request::Request(string _method) {
     method = POST;
 }
 
-string Request::getQueryParam(string key) { return urlDecode(query[key]); }
+string Request::getQueryParam(string key) 
+{
+  if (query.find(key) != query.end())
+    return urlDecode(query[key]);
+  else
+    return KEY_NOT_FOUND;
+}
 
-string Request::getBodyParam(string key) { return urlDecode(body[key]); }
+string Request::getBodyParam(string key) 
+{ if (body.find(key) != body.end())
+    return urlDecode(body[key]);
+  else
+    return KEY_NOT_FOUND;
+  
+}
 
 string Request::getHeader(string key) { return urlDecode(headers[key]); }
 

@@ -1,5 +1,6 @@
 #include "User.h"
 
+#include <iostream>     
 
 using namespace std;
 
@@ -11,6 +12,7 @@ User::User(string _username, string _password)
 
 bool User::valid_login(string _username, string _password)
 {
+    // cout <<"pass word " << password << endl <<endl << endl << _password << endl;
     return (username == _username && password == _password);
 }
 

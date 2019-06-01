@@ -54,6 +54,8 @@ void FilmService::add_film(string name, int year, int length, int price, string 
 {
     Publisher* publisher = user_manager->get_logged_publisher();
     Film* new_film = new Film(name, year, length, price, summary, director, publisher->get_id());
+    if (new_film == nullptr)
+        return;
     database->add_film(new_film);
     publisher->add_film(new_film);
     recom_service->add_film(new_film->get_id());
@@ -140,6 +142,11 @@ std::vector <Film> FilmService::get_published()
 {
     Publisher* pub = user_manager->get_logged_publisher();
     return pub->get_published();
+}
+
+std::vector <Film> FilmService::get_all_films()
+{
+   return database->get_all_films();
 }
 
 vector <Film> FilmService::get_recommendation_list(Film reffering_film)

@@ -10,8 +10,8 @@
 
 const std::string beginCodeBlockTag = "<%";
 const std::string endCodeBlockTag = "%>";
-const std::string utilitiesHeaderPath = "utils/utilities.hpp";
-const std::string utilitiesPath = "utils/utilities.cpp";
+const std::string utilitiesHeaderPath = "APHTTP/utils/utilities.hpp"; //dont't touch anymore!
+const std::string utilitiesPath = "APHTTP/utils/utilities.cpp";
 const std::string cc = "g++ -std=c++11 -Wall -pedantic";
 const std::string compileDirectory = "templateCompile";
 const std::string toCompileFile = "compiled.cpp";
@@ -36,7 +36,7 @@ private:
   int findEndOfCodeBlock(int startPosition, std::string &unparsedTemplate);
   void appendHTMLToCode(int begin, int end, std::string const &html);
   void appendCodeBlockToCode(int begin, int end, std::string &unparsedTemplate);
-  void generateCode();
+  void generateCode() ;
   void addIncludesToCode();
   void addReadFromTemplateToCode();
   void addReturnToCode();

@@ -31,7 +31,11 @@ void Film::set_id(int _id)
 
 void Film::delete_()
 {
-    available = false;
+    if (available)
+        available = false;
+    else 
+        throw BadRequest("Film is already deleted");
+        
 }
 
 bool Film::is_available()
