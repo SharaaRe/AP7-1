@@ -20,7 +20,7 @@ UserService::UserService()
     user_manager = UserSessionManagement::get_instance();
 }
 
-int UserService::signup(std::string email, std::string username, std::string password, int age, bool publisher)
+void UserService::signup(std::string email, std::string username, std::string password, int age, bool publisher)
 {
     if (!database->valid_username(username))
         throw BadRequest("Username alredy exist");
@@ -33,21 +33,26 @@ int UserService::signup(std::string email, std::string username, std::string pas
     else
         new_client = new Client(email,username, password, age);
     database->add_client(new_client);
-    return login(username, password);
+    user_manager->login(new_client->get_id());
 }
 
-int UserService::login(string username, string password)
+void UserService::login(string username, string password)
 {
     if (database->search_user(username)->valid_login(username, md5(password)))
     {
         int id = database->search_user(username)->get_id();
         user_manager->login(id);
-        return id; ///
     }
     else 
     {
         throw BadRequest("wrong password");
     }
+}
+
+
+void UserService::logout()
+{
+    user_manager->sign_out();
 }
 
 void  UserService::follow(int following_id)
@@ -63,6 +68,17 @@ void  UserService::follow(int following_id)
     }
     else 
         throw BadRequest("following id doesnt belong to a publisher");
+}
+
+void UserService::post_money(int amount)
+{
+    Client* logged_client = user_manager->get_logged_client();
+    logged_client->increase_credit(amount);
+}
+
+int UserService::get_session_id()
+{
+    return user_manager->get_logged_user()->get_id();
 }
 
 

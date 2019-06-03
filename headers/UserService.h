@@ -26,9 +26,12 @@ class UserService
 {
 public:
     UserService();
-    int signup(std::string email, std::string username, std::string password, int age, bool publisher);
-    int login(std::string username, std::string password);
+    void signup(std::string email, std::string username, std::string password, int age, bool publisher);
+    void login(std::string username, std::string password);
+    void logout();
     void follow(int publisher_id);
+    void post_money(int amount);
+    int get_session_id();
     std::vector <const Client*> get_followers();
     std::vector <Notification> get_notifications(bool read = false);
 private:

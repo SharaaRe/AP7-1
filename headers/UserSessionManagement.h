@@ -1,9 +1,9 @@
 #ifndef SESSION_MANAGEMENT_H
 #define SESSION_MANAGEMENT_H
 
-class User;
-class Client;
-class Publisher;
+#include "User.h"
+#include "Publisher.h"
+#include "Client.h"
 
 class UserSessionManagement 
 {
@@ -15,8 +15,11 @@ public:
     int get_session_id();
     void sign_out();
     User* get_logged_user();
+    User* get_logged_user(int session_id);
     Publisher* get_logged_publisher();
+    Publisher* get_logged_publisher(int session_id);
     Client* get_logged_client();
+    Client* get_logged_client(int session_id);
     bool is_logged_in();
 private:
     UserSessionManagement();

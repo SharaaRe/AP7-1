@@ -86,6 +86,11 @@ void FilmService::delete_(int id)
     film->delete_();
 }
 
+Film FilmService::get(int id)
+{
+    return *(database->search_film(id));
+}
+
 void FilmService::rate(int id, int score)
 {
     Film* film = database->search_film(id);
@@ -158,6 +163,10 @@ vector <Film> FilmService::get_recommendation_list(Film reffering_film)
     return film_filter.get_filtered();
 }
 
+vector <Comment> FilmService::get_comments(int film_id)
+{
+    return database->search_film(film_id)->get_comments();
+}
 
 
 void FilmService::check_edit_access(int id)
@@ -173,6 +182,14 @@ void FilmService::check_client_access(int film_id)
     Client* client = user_manager->get_logged_client();
     if (!client->is_purchased(film_id))
         throw PermissionDenied("this client didn't buy this film");
+}
+
+bool FilmService::client_access(int film_id)
+{
+    Client* client = user_manager->get_logged_client();
+    if (client->is_purchased(film_id))
+        return true;
+    return false;
 }
 
 void FilmService::send_film_add_notif(vector <int> followers_id)

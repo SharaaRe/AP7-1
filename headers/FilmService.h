@@ -36,6 +36,7 @@ public:
     void edit_film(int id, std::string name = NOT_CHANGED, int year = VALUE_NOT_CHANGED,int length = VALUE_NOT_CHANGED,
              std::string summary = NOT_CHANGED, std::string director = NOT_CHANGED);
     void delete_(int id);
+    Film get(int id);
     void rate(int id, int score);
     void comment(int id, std::string content);
     void delete_comment(int film_id, int comment_id);
@@ -44,6 +45,8 @@ public:
     std::vector <Film> get_published();
     std::vector <Film> get_all_films();
     std::vector <Film> get_recommendation_list(Film refferin_film);
+    std::vector <Comment> get_comments(int film_id);
+    bool client_access(int film_id);
 
 private:
     DataBase* database;

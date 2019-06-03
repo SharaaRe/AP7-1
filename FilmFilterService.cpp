@@ -86,14 +86,18 @@ void FilmFilterService::filter_by_price(int price)
 {
     if (price == NOT_FILTERED)
         return;
-    vector <Film> filtered;
-    for (int i = 0; i < films.size(); i++)
-    {
-        if (films[i].get_price() <= price)
-            filtered.push_back(films[i]);
-    }
 
-    films = filtered;
+
+    for (int i = 0; i < films.size(); )
+    {
+        cout << "film price :" << films[i].get_price() <<"filtering price :" << price << endl; 
+        if (films[i].get_price() > price)
+            films.erase(films.begin() + i);
+        else 
+            i++;
+    }
+    
+    cout << "size after price filter " << films.size() << endl;
 }
 
 void FilmFilterService::filter_by_min_rate(float min_rate)
@@ -127,9 +131,7 @@ void FilmFilterService::filter_purchased(vector <Film> purchased)
             else 
                 i++;
         }
-    }
-
-    films;  
+    }  
 }
 
 void FilmFilterService::filter_not_available()

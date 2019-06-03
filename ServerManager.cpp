@@ -4,10 +4,16 @@
 
 #include "SignupHandler.h"
 #include "LoginHandler.h"
+#include "LogoutHandler.h"
 #include "HomePageHandler.h"
 #include "AddFilmHandler.h"
 #include "DeleteFilmsHandler.h"
-
+#include "PageHandlers.h"
+#include "ProfileHandler.h"
+#include "FilmDetailHandler.h"
+#include "BuyHandler.h"
+#include "RateHandler.h"
+#include "MoneyHandler.h"
 #include "UserService.h"
 #include "FilmService.h"
 #include "Exceptions.h"
@@ -27,13 +33,19 @@ ServerManager::ServerManager()
     try{
         std::cout << "something" << std::endl;
         my_server.setNotFoundErrPage("APHTTP/static/404.html");    
-        my_server.get("/signup", new ShowPage("APHTTP/static/mine/signup.html"));
+        my_server.get("/signup", new PageHandlers("APHTTP/static/mine/signup.html"));
         my_server.post("/signup", new SignupHandler());
-        my_server.get("/login", new ShowPage("APHTTP/static/mine/login.html"));
+        my_server.get("/login", new PageHandlers("APHTTP/static/mine/login.html"));
         my_server.post("/login", new LoginHandler());
+        my_server.post("/logout", new LogoutHandler());
         my_server.get("/HomePage", new HomePageHandler("APHTTP/static/mine/PublisherHomePage.html"));
         my_server.post("/films", new AddFilmHandler());
         my_server.post("/delete_films", new DeleteFilmsHandler());
+        my_server.get("/profile", new ProfileHandler("APHTTP/static/mine/profile.html"));
+        my_server.get("/films", new FilmDetailHandler("APHTTP/static/mine/films.html"));
+        my_server.post("/buy", new BuyHandler());
+        my_server.post("/rate", new RateHandler());
+        my_server.post("/money", new MoneyHandler());
     }
     catch(Server::Exception& er)
     {
@@ -60,6 +72,6 @@ void ServerManager::fake_initializer()
     fs.add_film("film7", 1999, 80, 1000, "summary_of_film_1", "director_1");
     
     Client* client = UserSessionManagement::get_instance()->get_logged_client();
-    client->increase_credit(100);
+    client->increase_credit(1000);
     UserSessionManagement::get_instance()->sign_out();
 }

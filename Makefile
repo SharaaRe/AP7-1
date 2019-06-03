@@ -41,9 +41,16 @@ OBJECTS = \
 		$(BUILD_DIR)DeleteCommentsController.o \
 		$(BUILD_DIR)LoginHandler.o \
 		$(BUILD_DIR)SignupHandler.o \
+		$(BUILD_DIR)LogoutHandler.o \
 		$(BUILD_DIR)HomePageHandler.o \
 		$(BUILD_DIR)AddFilmHandler.o \
 		$(BUILD_DIR)DeleteFilmsHandler.o \
+		$(BUILD_DIR)PageHandlers.o \
+		$(BUILD_DIR)ProfileHandler.o \
+		$(BUILD_DIR)FilmDetailHandler.o \
+		$(BUILD_DIR)RateHandler.o \
+		$(BUILD_DIR)BuyHandler.o \
+		$(BUILD_DIR)MoneyHandler.o \
 		$(BUILD_DIR)UserService.o \
 		$(BUILD_DIR)FilmService.o \
 		$(BUILD_DIR)FilmFilterService.o \
@@ -319,6 +326,13 @@ SignupHandlerSensivityList = \
 		$(INCLUDE_DIR)/UserService.h \
 		$(INCLUDE_DIR)/server.hpp\
 
+LogoutHandlerSensivityList = \
+		LogoutHandler.cpp \
+		$(INCLUDE_DIR)/Utils.h \
+		$(INCLUDE_DIR)/Exceptions.h \
+		$(INCLUDE_DIR)/UserService.h \
+		$(INCLUDE_DIR)/server.hpp\
+
 HomePageHandlerSensivityList = \
 		HomePageHandler.cpp \
 		$(INCLUDE_DIR)/Utils.h \
@@ -346,6 +360,59 @@ DeleteFilmsHanerSensivityList = \
 		$(INCLUDE_DIR)/server.hpp \
 		APHTTP/static/mine/PublisherHomePage.html \
 
+PageHandlersSensivityList = \
+		PageHandlers.cpp \
+		$(INCLUDE_DIR)/PageHandlers.h \
+		$(INCLUDE_DIR)/Exceptions.h \
+		$(INCLUDE_DIR)/FilmService.h \
+		$(INCLUDE_DIR)/UserSessionManagement.h \
+		$(INCLUDE_DIR)/server.hpp \
+		APHTTP/static/mine/PublisherHomePage.html \
+
+ProfileHandlerSensivityList = \
+		ProfileHandler.cpp \
+		$(INCLUDE_DIR)/ProfileHandler.h \
+		$(INCLUDE_DIR)/Exceptions.h \
+		$(INCLUDE_DIR)/FilmService.h \
+		$(INCLUDE_DIR)/UserSessionManagement.h \
+		$(INCLUDE_DIR)/server.hpp \
+		APHTTP/static/mine/profile.html \
+
+FilmDetailHandlerSensivityList = \
+		FilmDetailHandler.cpp \
+		$(INCLUDE_DIR)/FilmDetailHandler.h \
+		$(INCLUDE_DIR)/Exceptions.h \
+		$(INCLUDE_DIR)/FilmService.h \
+		$(INCLUDE_DIR)/UserSessionManagement.h \
+		$(INCLUDE_DIR)/server.hpp \
+		APHTTP/static/mine/films.html \
+
+RateHandlerSensivityList = \
+		RateHandler.cpp \
+		$(INCLUDE_DIR)/FilmDetailHandler.h \
+		$(INCLUDE_DIR)/Exceptions.h \
+		$(INCLUDE_DIR)/FilmService.h \
+		$(INCLUDE_DIR)/UserSessionManagement.h \
+		$(INCLUDE_DIR)/server.hpp \
+
+BuyHandlerSensivityList = \
+		BuyHandler.cpp \
+		$(INCLUDE_DIR)/FilmDetailHandler.h \
+		$(INCLUDE_DIR)/Exceptions.h \
+		$(INCLUDE_DIR)/FilmService.h \
+		$(INCLUDE_DIR)/UserSessionManagement.h \
+		$(INCLUDE_DIR)/server.hpp \
+		APHTTP/static/mine/films.html \
+
+MoneyHandlerSensivityList = \
+		MoneyHandler.cpp \
+		$(INCLUDE_DIR)/FilmDetailHandler.h \
+		$(INCLUDE_DIR)/Exceptions.h \
+		$(INCLUDE_DIR)/FilmService.h \
+		$(INCLUDE_DIR)/UserService.h \
+		$(INCLUDE_DIR)/UserSessionManagement.h \
+		$(INCLUDE_DIR)/server.hpp \
+				
 # Services Sensivity List 
 # 
 # 
@@ -541,6 +608,9 @@ $(BUILD_DIR)SignupHandler.o: $(SignupHandlerSensivityList)
 $(BUILD_DIR)LoginHandler.o: $(LoginHandlerSensivityList)
 	$(CC) -c LoginHandler.cpp -o $(BUILD_DIR)LoginHandler.o
 
+$(BUILD_DIR)LogoutHandler.o: $(LogoutHandlerSensivityList)
+	$(CC) -c LogoutHandler.cpp -o $(BUILD_DIR)LogoutHandler.o
+
 $(BUILD_DIR)HomePageHandler.o: $(HomePageHandlerSensivityList)
 	$(CC) -c HomePageHandler.cpp  -o $(BUILD_DIR)HomePageHandler.o
 
@@ -550,7 +620,23 @@ $(BUILD_DIR)AddFilmHandler.o: $(AddFilmHandlerSensivityList)
 $(BUILD_DIR)DeleteFilmsHandler.o: $(DeleteFilmsHandlerSensivityList)
 	$(CC) -c DeleteFilmsHandler.cpp -o 	$(BUILD_DIR)DeleteFilmsHandler.o
 
-	
+$(BUILD_DIR)PageHandlers.o: $(PageHandlersSensivityList)
+	$(CC) -c PageHandlers.cpp -o $(BUILD_DIR)PageHandlers.o
+
+$(BUILD_DIR)ProfileHandler.o: $(ProfileHandlerSensivityList)
+	$(CC) -c ProfileHandler.cpp -o $(BUILD_DIR)ProfileHandler.o
+
+$(BUILD_DIR)FilmDetailHandler.o: $(FilmDetailHandlerSensivityList)
+	$(CC) -c FilmDetailHandler.cpp -o $(BUILD_DIR)FilmDetailHandler.o
+
+$(BUILD_DIR)RateHandler.o: $(RateHandlerSensivityList)
+	$(CC) -c RateHandler.cpp -o $(BUILD_DIR)RateHandler.o
+
+$(BUILD_DIR)BuyHandler.o: $(BuyHandlerSensivityList)
+	$(CC) -c BuyHandler.cpp -o $(BUILD_DIR)BuyHandler.o
+
+$(BUILD_DIR)MoneyHandler.o: $(MoneyHandlerSensivityList)
+	$(CC) -c MoneyHandler.cpp -o $(BUILD_DIR)MoneyHandler.o
 # 
 
 $(BUILD_DIR)UserService.o: $(UserServiceSensivityList)

@@ -23,10 +23,11 @@ string Request::getQueryParam(string key)
 }
 
 string Request::getBodyParam(string key) 
-{ if (body.find(key) != body.end())
-    return urlDecode(body[key]);
+{
+  if (body.find(key) != body.end())
+      return urlDecode(body[key]);
   else
-    return KEY_NOT_FOUND;
+      return KEY_NOT_FOUND;
   
 }
 

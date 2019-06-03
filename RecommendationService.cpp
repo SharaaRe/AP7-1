@@ -85,7 +85,7 @@ vector <RateIdPair> RecommendationService::sort_row_by_rate(int id, vector <int>
         rate_row.push_back(node);
     }
 
-    sort(rate_row.begin(), rate_row.end(), rate_compare);
+    stable_sort(rate_row.begin(), rate_row.end(), rate_compare);
 
     return rate_row;
 }

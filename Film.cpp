@@ -3,6 +3,8 @@
 #include "Exceptions.h"
 #include "Comment.h"
 
+#include <iostream>
+
 enum {MIN_SCORE = 0, MAX_SCORE = 10};
 
 constexpr int NOT_ASSIGNED = -1;
@@ -141,8 +143,11 @@ float Film::get_rate()
 {
     // float _rate = 0;
     int sum = 0;
+    cout << "film id: " << id << "scores size: " << scores.size() << endl;
+
     if (scores.size() == 0)
         return sum;
+    
     for (map<int, int>::iterator it = scores.begin(); it != scores.end(); it++)
         sum += it->second;
     
