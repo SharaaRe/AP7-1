@@ -30,14 +30,13 @@ Response* HomePageHandler::callback(Request* request)
     }
     catch(PermissionDenied& er)
     {
-
         UserSessionManagement::get_instance()->get_logged_client();
         publisher = false;
         client_handler(request);
     }
     catch(BadRequest& er)
     {
-        res = Response::redirect("/login");
+        res = Response::redirect("/login?error=3");
         return res;
     }
 
@@ -71,14 +70,10 @@ void HomePageHandler::client_handler(Request* req)
     try
     {
         Client* client = UserSessionManagement::get_instance()->get_logged_client();
-        string director_filter = current_request->getQueryParam(DIRECTOR);
-        if (director_filter == KEY_NOT_FOUND)
-            director_filter = NOT_FILTERED_ST;
-        cout << "director filter is: " << director_filter << endl;
-        FilmFilterService film_filer(films);
-        film_filer.filter(NOT_FILTERED_ST, NOT_FILTERED, NOT_FILTERED, client->get_credit(), NOT_FILTERED, director_filter);
-        film_filer.filter_not_available();
-        films = film_filer.get_filtered();
+        FilmFilterService film_filter(films);
+        film_filter.filter(NOT_FILTERED_ST, NOT_FILTERED, NOT_FILTERED, client->get_credit(), NOT_FILTERED, NOT_FILTERED_ST);
+        film_filter.filter_not_available();
+        films = film_filter.get_filtered();
     }
     catch(Exception& er)
     {
@@ -93,13 +88,16 @@ map <string, string> HomePageHandler::handle(Request* request)
 {
 
     map <string, string> context;
-    context["username"] = UserSessionManagement::get_instance()->get_logged_user()->get_username();
+    User* user = UserSessionManagement::get_instance()->get_logged_user();
+    context["username"] = user->get_username();
+    context["credit"] = user->get_money();
     if (publisher)
         context["publisher"] = "true";
     else 
         context["publisher"] = "false";
     int n = published_films.size();
     context["n"] = to_string(n);
+    
     for (int i = 0; i < published_films.size(); i++)
     {
         string index = to_string(i);
@@ -116,15 +114,16 @@ map <string, string> HomePageHandler::handle(Request* request)
     }
     int n2 = n + films.size();
     context["n2"] = to_string(n2);
-    for (int i = n; i < n + films.size(); i++)
+    for (int i = 0; i < films.size(); i++)
     {        
-        string index = to_string(i);
+        string index = to_string(i + n);
         stringstream rate;
         context["id" + index] = to_string(films[i].get_id());
         context["name" + index] = films[i].get_name();
         context["price" + index] = to_string(films[i].get_price());
         context["year" + index] = to_string(films[i].get_year());
         context["length" + index] = to_string(films[i].get_length());
+        cout << "index : " << i << endl;
         rate.precision(2);
         rate << films[i].get_rate();
         context["rate" + index] = rate.str();

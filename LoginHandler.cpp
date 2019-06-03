@@ -13,15 +13,15 @@ Response* LoginHandler::callback(Request* req)
     current_request = req;
     try{
         required_params();
-        int id = UserService().login(username,password);
+        UserService().login(username,password);
         Response* res = Response::redirect("/HomePage");
-        res->setSessionId(to_string(id));
+        res->setSessionId(to_string(UserService().get_session_id()));
         return res;
     }
     catch(Exception& er)
     {
         cout << "User name or password is wrong! "<< er.error() << endl;
-        Response* res = Response::redirect("/login");
+        Response* res = Response::redirect("/login?error=1");
         return res;
     }
 }

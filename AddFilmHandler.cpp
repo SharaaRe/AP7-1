@@ -30,6 +30,10 @@ Response* AddFilmHandler::callback(Request* request)
         Response* res = Response::redirect("/HomePage");
         return res;
     }
+    catch(PermissionDenied& er)
+    {
+        Response* res = Response::redirect("/HomePage?error=4");
+    }
     catch(Exception& er)
     {
         throw Server::Exception(er.error());

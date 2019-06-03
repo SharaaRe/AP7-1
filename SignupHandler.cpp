@@ -9,7 +9,7 @@
 
 
 #define TRUE "true"
-#define FALSE "false"
+#define FALSE "knf"
 
 using namespace std;
 
@@ -33,8 +33,8 @@ Response* SignupHandler::callback(Request* req)
     catch(BadRequest& er)
     {
         cout << "signup failed: " << er.error() << endl;
-
-        Response* res = Response::redirect("/signup");
+        throw Server::Exception(er.error());
+        Response* res = Response::redirect("/signup?error=2");
         return res;
     }
 }
@@ -70,17 +70,7 @@ bool SignupHandler::is_publisher()
 {
     const string NOT_ASSIGNED = "not assigned";
     string publisher_flag = NOT_ASSIGNED;
-    try
-    {
-        publisher_flag = current_request->getBodyParam(PUBLISHER_PARAM);
-    }
-    catch(Exception& er)
-    {
-        return false;
-    }
-    if (publisher_flag != TRUE && publisher_flag != FALSE && publisher_flag != NOT_ASSIGNED)
-            throw BadRequest("value of publisher flag is not valid");
-
+    publisher_flag = current_request->getBodyParam(PUBLISHER_PARAM);
     return publisher_flag == TRUE? true : false;
 }
 
