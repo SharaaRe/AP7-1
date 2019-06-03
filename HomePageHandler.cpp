@@ -66,13 +66,15 @@ void HomePageHandler::publisher_handler(Request* request)
 
 void HomePageHandler::client_handler(Request* req)
 {
-    films = DataBase::get_instance()->get_all_films();
+    films = FilmService().get_all_films();
+    
     try
     {
         Client* client = UserSessionManagement::get_instance()->get_logged_client();
         FilmFilterService film_filter(films);
         film_filter.filter(NOT_FILTERED_ST, NOT_FILTERED, NOT_FILTERED, client->get_credit(), NOT_FILTERED, NOT_FILTERED_ST);
         film_filter.filter_not_available();
+        film_filter.filter_purchased(FilmService().get_purchased());
         films = film_filter.get_filtered();
     }
     catch(Exception& er)

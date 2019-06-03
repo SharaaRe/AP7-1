@@ -112,7 +112,7 @@ Film* DataBase::search_film(int film_id)
 vector <Film> DataBase::get_all_films()
 {
     vector <Film> res;
-    for (map <int, Film*>:: iterator it = films.begin(); it != films.end(); it++)
+    for (auto it = films.begin(); it != films.end(); it++)
     {
         if (it->second->is_available())
             res.push_back(*(it->second));

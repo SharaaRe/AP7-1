@@ -19,7 +19,7 @@ Response* BuyHandler::callback(Request* req)
     catch(PermissionDenied& er)
     {
         Response* res = Response::redirect("/films?film_id=" + req->getBodyParam(FILM_ID) + "&error=4");
-
+        return res;
     }
     catch(Exception& er)
     {
