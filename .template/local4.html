@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+table {
+            border-collapse: collapse;
+            width: 100%;
+            text-decoration: none;
+            font-size: 16px;
+            }
+
+
+            hr {
+                border: 1px solid #f1f1f1;
+                margin-bottom: 25px;
+            }
+
+            th, td {
+            text-align: left;
+            padding: 8px;
+            }
+
+            tr:nth-child(even){
+                background-color: #f2f2f2;
+                opacity:0.9;
+            }
+            tr:nth-child(odd){
+                background-color: white;
+                opacity:0.9;
+            }
+
+            tr:hover ~:nth-child(even){
+                opacity:1;
+            }
+
+            tr:hover ~:nth-child(odd){
+                background-color: #f5f5f5;
+            }
+
+
+            th.number{
+                width: 5%;
+            }
+            th.name_title{
+                color: #ea5858
+            }
+
+
+            input[type=number] {
+                width:10%;
+                padding: 10px;
+                border-radius: 4px;
+                margin: 5px 0 22px 0;
+                display: inline-block;
+                border: none;
+                background: #f2f2f2;
+            }
+
+
+            input[type=number]:focus {
+                background-color: #ddd;
+                outline: none;
+            }
+
+            tr.info{
+                background-color: #ea5858;
+                color: white;
+
+            }
+
+            button {
+                background-color: #ea5858;
+                border: none;
+                border-radius: 4px;
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                }
+            .error{
+                color: #ea5858;
+            }
+            .msg{
+                color: grey;
+            }
+
+        </style>
+    </head>
+    <header> 
+        <title><% cout << context["name"]; %></title>
+    </header>
+
+    <body>
+        <h4><% cout << context["username"]; %> |  <a href="/profile"> Profile  | <a href="/HomePage"> HomePage </a></h4>
+        <form action = "/logout" method = "POST">
+            <button type = "submit" >Log out</button>
+        </form>
+        <hr>
+        <p class="error"><%cout << context["error"]; %></p>
+        <p class="msg"><%cout << context["msg"]; %></p>
+        <h2><% cout << context["name"]; %> 
+            <% if (context["access"] == "false") {%>
+            <form action="/buy" method="POST">
+                <input type="hidden" name = "film_id" value='<%cout << context["id"];%>' >
+                <button type="submit">Buy</button>
+            </form>
+            <%}%>
+                
+        </h2>
+        <p>Year: <% cout << context["year"]; %></p>
+        <p>Price: <% cout << context["price"]; %></p>
+        <p>Length: <% cout << context["length"]; %></p>
+
+        <p>Rate: <% cout << context["rate"]; %> 
+            <% if (context["access"] == "true"){ %>
+            <form action="/rate" method="POST">
+                <input type="hidden" name = "film_id" value='<%cout << context["id"];%>' >
+                <input type="number" name = "score" placeholder="Score" min = "0" max="10">
+                <button type="submit" >Rate</button>
+            </form> 
+        </p>
+        <form action="/comment" method="POST">
+            <textarea type = "text" rows="4" cols="50" name="content of comment" placeholder="content"></textarea>
+            <input type="hidden" name="film_id" value='<% cout << context["id"]; %>'> <br>
+            <button type="submit" >Comment</button>
+        </form>
+        <% } %>
+        <hr>
+        Recomended Films <br>
+        <hr>
+        <table style="width:100%">
+            <tr class="info">
+                <th class = "pale_color"></th>
+                <th>Name</th>
+                <th>Length</th>
+                <th>Director</th>
+            </tr>
+
+            <% for (int i = 0; i < stoi(context["n"]); i++)
+            {
+                std::string index = to_string(i);
+                std::string number = to_string(i + 1);
+            %>
+                <tr>
+                    <th class = "pale_color"> <% cout << number; %></th>
+                    <th> <a href='/films?film_id=<% cout << context["id" + index]; %>'> <% cout << context["name" + index]; %></a></th>
+                    <th><% cout << context["length" + index]; %></th>
+                    <th><% cout << context["director" + index]; %> </th>
+                </tr>  
+
+            <% } %>
+        </table>
+
+
+    </body>
+
+</html>
