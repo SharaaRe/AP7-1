@@ -6,6 +6,7 @@
 class CommentHandler:public RequestHandler
 {
 public:
+    CommentHandler() :RequestHandler() {};
     virtual Response* callback(Request*);
 };
 

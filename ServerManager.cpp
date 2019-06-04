@@ -17,22 +17,17 @@
 #include "UserService.h"
 #include "FilmService.h"
 #include "Exceptions.h"
+#include "CommentHandler.h"
 #include "UserSessionManagement.h"
 
 ServerManager::ServerManager()
 {
     std::cout << "server manager" << std::endl;
-    try{
-    fake_initializer();
-    }
-    catch(Exception& er)
-    {
-        std::cout << er.error() << std::endl;
-    }
 
     try{
         std::cout << "something" << std::endl;
-        my_server.setNotFoundErrPage("APHTTP/static/404.html");    
+        my_server.setNotFoundErrPage("APHTTP/static/404.html"); 
+        my_server.get("/", new HomePageHandler("APHTTP/static/mine/PublisherHomePage.html"));   
         my_server.get("/signup", new PageHandlers("APHTTP/static/mine/signup.html"));
         my_server.post("/signup", new SignupHandler());
         my_server.get("/login", new PageHandlers("APHTTP/static/mine/login.html"));
@@ -46,6 +41,7 @@ ServerManager::ServerManager()
         my_server.post("/buy", new BuyHandler());
         my_server.post("/rate", new RateHandler());
         my_server.post("/money", new MoneyHandler());
+        my_server.post("/comment", new CommentHandler());
     }
     catch(Server::Exception& er)
     {

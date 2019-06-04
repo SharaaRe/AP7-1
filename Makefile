@@ -51,6 +51,7 @@ OBJECTS = \
 		$(BUILD_DIR)RateHandler.o \
 		$(BUILD_DIR)BuyHandler.o \
 		$(BUILD_DIR)MoneyHandler.o \
+		$(BUILD_DIR)CommentHandler.o \
 		$(BUILD_DIR)UserService.o \
 		$(BUILD_DIR)FilmService.o \
 		$(BUILD_DIR)FilmFilterService.o \
@@ -412,6 +413,15 @@ MoneyHandlerSensivityList = \
 		$(INCLUDE_DIR)/UserService.h \
 		$(INCLUDE_DIR)/UserSessionManagement.h \
 		$(INCLUDE_DIR)/server.hpp \
+
+CommentHandlerSensivityList = \
+		CommentHandler.cpp \
+		$(INCLUDE_DIR)/FilmDetailHandler.h \
+		$(INCLUDE_DIR)/Exceptions.h \
+		$(INCLUDE_DIR)/FilmService.h \
+		$(INCLUDE_DIR)/UserService.h \
+		$(INCLUDE_DIR)/UserSessionManagement.h \
+		$(INCLUDE_DIR)/server.hpp \
 				
 # Services Sensivity List 
 # 
@@ -637,6 +647,9 @@ $(BUILD_DIR)BuyHandler.o: $(BuyHandlerSensivityList)
 
 $(BUILD_DIR)MoneyHandler.o: $(MoneyHandlerSensivityList)
 	$(CC) -c MoneyHandler.cpp -o $(BUILD_DIR)MoneyHandler.o
+
+$(BUILD_DIR)CommentHandler.o: $(CommentHandlerSensivityList)
+	$(CC) -c CommentHandler.cpp -o $(BUILD_DIR)CommentHandler.o
 # 
 
 $(BUILD_DIR)UserService.o: $(UserServiceSensivityList)

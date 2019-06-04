@@ -1,14 +1,67 @@
-<DOCTYPE! html>
+<!DOCTYPE html>
 <html>
     <head>
         <style>
-            input {
-            width: 50%;
-            padding: 12px 20px;
-            margin: 8px 0;
-            box-sizing: border-box;
+            table {
+            border-collapse: collapse;
+            width: 100%;
+            text-decoration: none;
+            font-size: 16px;
             }
-            .rgstrbtn {
+
+
+            hr {
+                border: 1px solid #f1f1f1;
+                margin-bottom: 25px;
+            }
+
+            th, td {
+            text-align: left;
+            padding: 8px;
+            }
+
+            tr:nth-child(even){
+                background-color: #f2f2f2;
+                opacity:0.9;
+            }
+            tr:nth-child(odd){
+                background-color: white;
+                opacity:0.9;
+            }
+
+            tr:hover ~:nth-child(even){
+                opacity:1;
+            }
+
+            tr:hover ~:nth-child(odd){
+                background-color: #f5f5f5;
+            }
+
+
+            th.number{
+                width: 5%;
+            }
+            th.name_title{
+                color: #ea5858
+            }
+
+
+            input[type=number], input[type=text] {
+                padding: 10px;
+                border-radius: 4px;
+                margin: 5px 0 22px 0;
+                display: inline-block;
+                border: none;
+                background: white;
+            }
+
+
+            input[type=number]:focus input[type=text]:focus{
+                background-color: #ddd;
+                outline: none;
+            }
+
+            button {
                 background-color: #ea5858;
                 border: none;
                 border-radius: 4px;
@@ -20,136 +73,138 @@
                 font-size: 16px;
                 opacity: 0.9;
             }
-            .rgstrbtn:hover {
+            button:hover {
                 opacity:1;
             }
 
-            hr {
-                border: 1px solid #f1f1f1;
-                margin-bottom: 25px;
-            }
-            .error{
-                color: #ea5858;
-            }
-            .container {
-                padding: 16px;
-            }
-            input[type=text], input[type=password], input[type=email], input[type=number] {
-                width: 50%;
-                padding: 15px;
-                border-radius: 4px;
-                margin: 5px 0 22px 0;
-                display: inline-block;
-                border: none;
-                background: #f1f1f1;
-            }
-
-            input[type=number]{
-                width: 10%;
-            }
-
-            input[type=text]:focus, input[type=password]:focus, input[type=email]:focus, input[type=number]:focus {
-                background-color: #ddd;
-                outline: none;
-            }
-
-
-            input[type="checkbox"] {
-                position: absolute;
-                opacity: 0;
-                cursor: pointer;
-                height: 0;
-                width: 0;
-            }
-            .checkcontain{
-                display: block;
-                position: relative;
-                padding-left: 35px;
-                margin-bottom: 12px;
-                cursor: pointer;
-                font-size: 22px;
-                -webkit-user-select: none;
-                -moz-user-select: none;
-                -ms-user-select: none;
-                user-select: none;
-            }
-            .checkmark {
-                position: absolute;
-                top: 0;
-                left: 0;
-                height: 15px;
-                width: 15px;
-                background-color: #eee;
-            }
-            .cackcontain:hover input ~ .checkmark {
-                background-color: rgb(156, 154, 154);
-            }
-
-            .cackcontain input:checked ~ .checkmark {
+            tr.info{
                 background-color: #ea5858;
-            }
-/* Create the checkmark/indicator (hidden when not checked) */
-            .checkmark:after {
-            content: "";
-            position: absolute;
-            display: none;
+                color: white;
+
             }
 
-            /* Show the checkmark when checked */
-            .checkcontain input:checked ~ .checkmark:after {
-            display: block;
-            }
 
-            /* Style the checkmark/indicator */
-            .checkcontain .checkmark:after {
-            left: 5px;
-            top: 2.5px;
-            width: 3px;
-            height: 7px;
-            border: solid black;
-            border-width: 0 2px 2px 0;
-            -webkit-transform: rotate(45deg);
-            -ms-transform: rotate(45deg);
-            transform: rotate(45deg);
-            }
-     </style>
-        
+        </style>
     </head>
-    <header>
-        <title>Signup Page</title>
+    <header> 
+        <title>Home Page</title>
     </header>
 
     <body>
-        <h2>Signup</h2> 
-        <hr>
-        <p class="error"> <% cout << context["error"];%></p><br>
-        <p>Please fill in this form to create an account <br></p>
-        <form action="/signup" method="post">
-            <div clas="container">
-                <label for="username"><b>Username</b></label> <br>
-                <input type="text" name = "username" placeholder="Username" required> <br>
-
-                <label for="password"><b>Password</b></label> <br>
-                <input type="password" name = "password" placeholder="Password" required> <br>
-
-                <label for="email"><b>Email</b></label> <br>
-                <input type="email" name = "email" placeholder="Email" required> <br>
-
-                <label for="age"><b>Age</b></label> <br>
-                <input type="number" name = "age" placeholder="Age" required> <br>
-
-                <label for="publisher">I am a publisher.</label> <br>
-                <label class="checkcontain">
-                    <input type="checkbox" name = "publisher" value = "true" checked="checked" > <br>
-                    <span class="checkmark"></span>
-                </label>
-
-                <button type="submit" class="rgstrbtn"> Register </button><br>
-            </div>
+        <h2>Home Page</h2>
+        <h4><% cout << context["username"]; %> |  <a href="/profile"> Profile </a></h4>
+        <form action = "/logout" method = "POST">
+            <button type = "submit" >Log out</button>
         </form>
+        <hr>
+    <% if (context["publisher"] == "true")
+        {
+    %>
+        <table style="width:100%">
 
-        <p>already have an account?  <a href = "/login"> Sign in</a></p> <br>
-        
+             <tr class="info">
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Production Year</th>
+                        <th>Length</th>
+                        <th>Summary</th>
+                        <th>Director</th>
+                        <th></th>
+            </tr>
+            <tr>
+            <form action = "films" method="POST">   
+                <th> <input type = "text" name = "name" placeholder="Name" required> </th>
+                <th><input type = "number" name = "price" placeholder="Price" required></th>
+                <th><input type = "number" name = "year" placeholder="Year" required></th>
+                <th><input type = "number" name = "length" placeholder="Length" required></th>
+                <th><input type = "text" name = "summary" placeholder="Summary" required></th>
+                <th><input type = "text" name = "director" placeholder="Director" required></th>
+                <th> <button type="submit">Add</button></th>
+                </th>
+            </form>
+            </tr>
+        </table>
+
+        <h4>Published Films</h4>
+        <hr>
+        <table style="width:100%">
+            <tr class="info">
+                <th class = "pale_color"></th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Production Year</th>
+                <th>Length</th>
+                <th>Rate</th>
+                <th>Director</th>
+                <th> 
+                    <form action="/HomePage" method = "GET">
+                     <input type="text" name = "director"  placeholder="Director Filter">
+                     <button type="submit" values = "Filter" > Filter </button>
+                     </form>
+                </th>
+            </tr>
+
+            <% for (int i = 0; i < stoi(context["n"]); i++)
+            {
+                std::string index = to_string(i);
+                std::string number = to_string(i + 1);
+            %>
+                <tr>
+                    <th class = "pale_color"> <% cout << number; %></th>
+                    <th> <a href='/films?film_id=<% cout << context["id" + index]; %>'> <% cout << context["name" + index]; %></a></th>
+                    <th><% cout << context["price" + index]; %></th>
+                    <th><% cout << context["year" + index]; %></th>
+                    <th><% cout << context["length" + index]; %></th>
+                    <th><% cout << context["rate" + index]; %></th>
+                    <th><% cout << context["director" + index]; %> </th>
+                    <th> <form action="delete_films" method="POST">
+                        <input type = "hidden" name = "film_id" value='<% cout << context["id" + index]; %>'>
+                        <button type="submit"> Delete </button>
+                    </form></th>
+                </tr>  
+            <% } %>
+
+        </table>
+        <%
+        }
+        %>
+
+        <h4>Films</h4>
+        <hr>
+        <table style="width:100%">
+            <tr class="info">
+                <th class = "pale_color"></th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Production Year</th>
+                <th>Length</th>
+                <th>Rate</th>
+                <th>Director</th>
+            </tr>
+
+            <% for (int i = stoi(context["n"]); i < stoi(context["n2"]); i++)
+            {
+                std::string index = to_string(i);
+                std::string number = to_string(i + 1 - stoi(context["n"]));
+            %>
+                <tr>
+                    <th class = "pale_color"> <% cout << number ; %></th>
+                    <th> <a href='/films?film_id=<% cout << context["id" + index]; %>'> <% cout << context["name" + index]; %></a></th>
+                    <th><% cout << context["price" + index]; %></th>
+                    <th><% cout << context["year" + index]; %></th>
+                    <th><% cout << context["length" + index]; %></th>
+                    <th><% cout << context["rate" + index]; %></th>
+                    <th><% cout << context["director" + index]; %> </th>
+                </tr>  
+
+            <% } %>
+        </table>
+
+
+
+
+
+
     </body>
 
 </html>

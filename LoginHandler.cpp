@@ -28,8 +28,8 @@ Response* LoginHandler::callback(Request* req)
 
 void LoginHandler::required_params()
 {
-    if ((username = current_request->getBodyParam(USERNAME)) == ""
-            || (password = current_request->getBodyParam(PASSWORD)) == "")
+    if ((username = current_request->getBodyParam(USERNAME)) == KEY_NOT_FOUND
+            || (password = current_request->getBodyParam(PASSWORD)) == KEY_NOT_FOUND)
         
         throw Server::Exception("Username or Password param is missing");
 

@@ -5,6 +5,7 @@
 #include "Exceptions.h"
 #include "Utils.h"
 #include "FilmService.h"
+#include "UserSessionManagement.h"
 
 
 #define MSG "msg"
@@ -121,6 +122,10 @@ map <string, string> FilmDetailHandler::handle(Request* req)
 {
     map <string, string> context;
     stringstream rate;
+    User* user = UserSessionManagement::get_instance()->get_logged_user();
+    context["username"] = user->get_username();
+    context["credit"] = to_string(user->get_money());
+
     context["msg"] = msg;
     context["error"] = error;
     context["access"] = access? "true" : "false";
@@ -136,7 +141,7 @@ map <string, string> FilmDetailHandler::handle(Request* req)
     context["rate" ] = rate.str();
     context["director" ] = film.get_director();
 
-    context["cn"] = comments.size();
+    context["cn"] = to_string(comments.size());
     for (int i = 0; i < comments.size(); i++)
     {
         context["comment" + to_string(i)] = comments[i].get_content();

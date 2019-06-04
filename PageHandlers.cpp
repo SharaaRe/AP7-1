@@ -2,9 +2,10 @@
 
 #include "Utils.h"
 #include "Exceptions.h"
+#include "UserSessionManagement.h"
 
 #define ERROR "error"
-#define WRONG_PASS "Wrong password!"
+#define WRONG_PASS "Wrong username or password!"
 #define WRONG_PASS_CODE 1
 #define DUP_USER "Username already exists!"
 #define DUP_USER_CODE 2
@@ -23,6 +24,14 @@ PageHandlers::PageHandlers(string file_path)
     :TemplateHandler(file_path)
 {};
 
+Response* PageHandlers::callback(Request* req)
+{
+    if (UserSessionManagement::get_instance()->is_logged_in())
+        return Response::redirect("/HomePage");
+    else
+        return TemplateHandler::callback(req);
+    
+}
 
 map <string, string> PageHandlers::handle(Request* req)
 {

@@ -45,7 +45,15 @@ table {
                 color: #ea5858
             }
 
-
+            p.comment{
+                width:30%;
+                padding: 10px;
+                border-radius: 4px;
+                margin: 5px 0 22px 0;
+                display: inline-block;
+                border: none;
+                background: #f2f2f2;
+            }
             input[type=number] {
                 width:10%;
                 padding: 10px;
@@ -94,6 +102,8 @@ table {
 
     <body>
         <h4><% cout << context["username"]; %> |  <a href="/profile"> Profile  | <a href="/HomePage"> HomePage </a></h4>
+        <h4> Credit: <%cout << context["credit"];%></h4>
+
         <form action = "/logout" method = "POST">
             <button type = "submit" >Log out</button>
         </form>
@@ -109,23 +119,30 @@ table {
             <%}%>
                 
         </h2>
-        <p>Year: <% cout << context["year"]; %></p>
-        <p>Price: <% cout << context["price"]; %></p>
-        <p>Length: <% cout << context["length"]; %></p>
+        <p><b>Year: </b><% cout << context["year"]; %></p>
+        <p><b>Price: </b><% cout << context["price"]; %></p>
+        <p><b>Length: </b><% cout << context["length"]; %></p>
 
-        <p>Rate: <% cout << context["rate"]; %> 
-            <% if (context["access"] == "true"){ %>
-            <form action="/rate" method="POST">
-                <input type="hidden" name = "film_id" value='<%cout << context["id"];%>' >
-                <input type="number" name = "score" placeholder="Score" min = "0" max="10">
-                <button type="submit" >Rate</button>
-            </form> 
-        </p>
-        <form action="/comment" method="POST">
-            <textarea type = "text" rows="4" cols="50" name="content of comment" placeholder="content"></textarea>
-            <input type="hidden" name="film_id" value='<% cout << context["id"]; %>'> <br>
-            <button type="submit" >Comment</button>
-        </form>
+        <p><b>Rate: </b><% cout << context["rate"]; %> </p>
+        <% if (context["access"] == "true"){ %>
+                <form action="/rate" method="POST">
+                    <input type="hidden" name = "film_id" value='<%cout << context["id"];%>' >
+                    <input type="number" name = "score" placeholder="Score" min = "0" max="10">
+                    <button type="submit" >Rate</button>
+                </form> 
+            <form action="/comment" method="POST" id="cmform">
+                <textarea type = "text" rows="4" cols="50" name="content">Write Your Comment Here!</textarea>
+                <input type="hidden" name="film_id" value='<% cout << context["id"]; %>'> <br>
+                <button type="submit" >Comment</button>
+            </form>
+            <% if (stoi(context["cn"]) > 0)  {%>
+            
+                <p> <b>Comments </b></p> <hr>
+                <% for (int i = 0; i < stoi(context["cn"]); i++){ %>
+                    <p class="comment"> <% cout << context["comment" + to_string(i)]; %></p> <br>
+                <% } %>
+            <% } %>
+
         <% } %>
         <hr>
         Recomended Films <br>

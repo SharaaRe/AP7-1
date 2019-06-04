@@ -2,7 +2,7 @@
 <html>
     <head>
         <style>
-table {
+            table {
             border-collapse: collapse;
             width: 100%;
             text-decoration: none;
@@ -37,6 +37,11 @@ table {
                 background-color: #f5f5f5;
             }
 
+            /* tr:hover() */
+
+            
+
+            
 
             th.number{
                 width: 5%;
@@ -47,25 +52,19 @@ table {
 
 
             input[type=number] {
-                width:10%;
-                padding: 10px;
+                width: 10%;
+                padding: 15px;
                 border-radius: 4px;
                 margin: 5px 0 22px 0;
                 display: inline-block;
                 border: none;
-                background: #f2f2f2;
+                background: #f1f1f1;
             }
 
 
             input[type=number]:focus {
                 background-color: #ddd;
                 outline: none;
-            }
-
-            tr.info{
-                background-color: #ea5858;
-                color: white;
-
             }
 
             button {
@@ -78,82 +77,71 @@ table {
                 text-decoration: none;
                 display: inline-block;
                 font-size: 16px;
-                }
-            .error{
-                color: #ea5858;
+                opacity: 0.9;
             }
-            .msg{
-                color: grey;
+            button:hover {
+                opacity:1;
+            }
+
+            tr.info{
+                background-color: #ea5858;
+                color: white;
+
             }
 
         </style>
     </head>
+    
     <header> 
-        <title><% cout << context["name"]; %></title>
+        <title>Profile</title>
     </header>
 
     <body>
-        <h4><% cout << context["username"]; %> |  <a href="/profile"> Profile  | <a href="/HomePage"> HomePage </a></h4>
+        <h2>Profile</h2>
+        <h4 class="name_titile"><% cout << context["username"]; %> |  <a href="/HomePage"> HomePage </a></h4>
         <form action = "/logout" method = "POST">
             <button type = "submit" >Log out</button>
         </form>
         <hr>
-        <p class="error"><%cout << context["error"]; %></p>
-        <p class="msg"><%cout << context["msg"]; %></p>
-        <h2><% cout << context["name"]; %> 
-            <% if (context["access"] == "false") {%>
-            <form action="/buy" method="POST">
-                <input type="hidden" name = "film_id" value='<%cout << context["id"];%>' >
-                <button type="submit">Buy</button>
-            </form>
-            <%}%>
-                
-        </h2>
-        <p>Year: <% cout << context["year"]; %></p>
-        <p>Price: <% cout << context["price"]; %></p>
-        <p>Length: <% cout << context["length"]; %></p>
-
-        <p>Rate: <% cout << context["rate"]; %> 
-            <% if (context["access"] == "true"){ %>
-            <form action="/rate" method="POST">
-                <input type="hidden" name = "film_id" value='<%cout << context["id"];%>' >
-                <input type="number" name = "score" placeholder="Score" min = "0" max="10">
-                <button type="submit" >Rate</button>
-            </form> 
-        </p>
-        <form action="/comment" method="POST">
-            <textarea type = "text" rows="4" cols="50" name="content of comment" placeholder="content"></textarea>
-            <input type="hidden" name="film_id" value='<% cout << context["id"]; %>'> <br>
-            <button type="submit" >Comment</button>
+        <h4>Increase Credit</h4>
+        <p>Credit: <%cout << context["credit"];%></p>
+        <form action="/money" method="POST">
+            <div class="container">
+            <input type="number" name = "amount" placeholder="Amount" required> <br>
+            <button type="submit">Add</button>
+            </div>
         </form>
-        <% } %>
         <hr>
-        Recomended Films <br>
-        <hr>
+        <h4>Purchased Films</h4>
         <table style="width:100%">
             <tr class="info">
-                <th class = "pale_color"></th>
+                <th class = "number"></th>
                 <th>Name</th>
+                <th>Price</th>
+                <th>Production Year</th>
                 <th>Length</th>
+                <th>Rate</th>
                 <th>Director</th>
             </tr>
-
-            <% for (int i = 0; i < stoi(context["n"]); i++)
+            
+            <%
+            for (int i = 0; i < stoi(context["n"]); i++)
             {
                 std::string index = to_string(i);
                 std::string number = to_string(i + 1);
             %>
-                <tr>
-                    <th class = "pale_color"> <% cout << number; %></th>
-                    <th> <a href='/films?film_id=<% cout << context["id" + index]; %>'> <% cout << context["name" + index]; %></a></th>
+                <tr >
+                    <th class = "number"> <% cout << number; %></th>
+                    <th class="name_title"> <a href='/films?film_id=<% cout << context["id" + index]; %>'> <% cout << context["name" + index]; %></a></th>
+                    <th><% cout << context["price" + index]; %></th>
+                    <th><% cout << context["year" + index]; %></th>
                     <th><% cout << context["length" + index]; %></th>
+                    <th><% cout << context["rate" + index]; %></th>
                     <th><% cout << context["director" + index]; %> </th>
                 </tr>  
 
             <% } %>
         </table>
-
-
     </body>
 
 </html>
