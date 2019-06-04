@@ -141,10 +141,7 @@ int Film::get_id()
 
 float Film::get_rate()
 {
-    // float _rate = 0;
     int sum = 0;
-    cout << "film id: " << id << "scores size: " << scores.size() << endl;
-
     if (scores.size() == 0)
         return sum;
     

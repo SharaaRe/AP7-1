@@ -696,4 +696,4 @@ $(BUILD_DIR)UTflix.out: $(OBJECTS)
 
 clean:
 	rm $(BUILD_DIR)*.o
-	rm UTflix.out
+	rm ./APHTTP/build/UTflix.out

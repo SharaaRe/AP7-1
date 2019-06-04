@@ -22,10 +22,8 @@
 
 ServerManager::ServerManager()
 {
-    std::cout << "server manager" << std::endl;
 
     try{
-        std::cout << "something" << std::endl;
         my_server.setNotFoundErrPage("APHTTP/static/404.html"); 
         my_server.get("/", new HomePageHandler("APHTTP/static/mine/PublisherHomePage.html"));   
         my_server.get("/signup", new PageHandlers("APHTTP/static/mine/signup.html"));

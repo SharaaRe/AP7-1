@@ -5,7 +5,6 @@
 
 int main()
 {
-    std::cout << "main" << std::endl;
     // UTflixService().run();
     ServerManager().run();
     

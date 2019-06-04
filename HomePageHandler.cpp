@@ -18,7 +18,6 @@ HomePageHandler::HomePageHandler(string file_path)
 
 Response* HomePageHandler::callback(Request* request)
 {
-    // cout << "start callback" << endl;
     published_films.clear();
     films.clear();
     current_request = request;
@@ -49,9 +48,8 @@ void HomePageHandler::publisher_handler(Request* request)
     published_films = film_service.get_published();
     try{
         string director_filter = current_request->getQueryParam(DIRECTOR);
-        if (director_filter == KEY_NOT_FOUND )
+        if (director_filter == KEY_NOT_FOUND || director_filter == "")
             director_filter = NOT_FILTERED_ST;
-        cout << "director filter is: " << director_filter << endl;
         FilmFilterService film_filer(published_films);
         film_filer.filter(NOT_FILTERED_ST, NOT_FILTERED, NOT_FILTERED, NOT_FILTERED, NOT_FILTERED, director_filter);
         film_filer.filter_not_available();

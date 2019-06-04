@@ -15,7 +15,6 @@ using namespace std;
 
 Response* SignupHandler::callback(Request* req)
 {
-    cout << "entering signup" << endl;
     try{
         current_request = req;
         publisher = false;
@@ -27,12 +26,10 @@ Response* SignupHandler::callback(Request* req)
         UserSessionManagement* user_manager = UserSessionManagement::get_instance();
         Response* res = Response::redirect("/HomePage");
         res->setSessionId(to_string(user_manager->get_session_id()));
-        cout << "signup ok" << endl;
         return res;
     }
     catch(BadRequest& er)
     {
-        cout << "signup failed: " << er.error() << endl;
         throw Server::Exception(er.error());
         Response* res = Response::redirect("/signup?error=2");
         return res;

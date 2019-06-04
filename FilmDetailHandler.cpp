@@ -28,6 +28,10 @@ Response* FilmDetailHandler::callback(Request* req)
 {
     recoms.clear();
     current_request = req;
+    if (!UserSessionManagement::get_instance()->is_logged_in())
+    {
+        return Response::redirect("/login?error=3");
+    }
     try
     {
         film_id =  Utils::string_integer_value(req->getQueryParam(FILM_ID));
